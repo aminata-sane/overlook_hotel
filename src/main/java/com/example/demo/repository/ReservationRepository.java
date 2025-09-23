@@ -11,3 +11,4 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     // Lister toutes les réservations d'une chambre
     List<Reservation> findByChambreId(Long chambreId);
 }
+

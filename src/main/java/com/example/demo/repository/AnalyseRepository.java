@@ -6,3 +6,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface AnalyseRepository extends JpaRepository<Analyse, Long> {
     // Tu peux ajouter des méthodes personnalisées si nécessaire
 }
+

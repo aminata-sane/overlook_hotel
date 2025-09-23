@@ -9,3 +9,4 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
     // Liste des feedbacks auxquels un gestionnaire peut répondre
     List<Feedback> findByGestionnaire(Gestionnaire gestionnaire);
 }
+

@@ -51,3 +51,4 @@ public class AnalyseController {
         return ResponseEntity.ok(revenus);
     }
 }
+

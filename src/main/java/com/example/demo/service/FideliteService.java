@@ -40,3 +40,4 @@ public class FideliteService {
         return fideliteRepository.save(fidelite);
     }
 }
+

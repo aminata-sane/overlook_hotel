@@ -50,3 +50,4 @@ public class InstallationService {
         installationRepository.delete(installation);
     }
 }
+

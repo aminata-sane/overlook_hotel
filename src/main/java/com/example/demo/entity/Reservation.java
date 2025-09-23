@@ -57,3 +57,4 @@ public class Reservation {
     public Chambre getChambre() { return chambre; }
     public void setChambre(Chambre chambre) { this.chambre = chambre; }
 }
+

@@ -19,6 +19,8 @@ public class Installation {
 
     private int capacite; // nombre de personnes maximum
 
+    private String type; // nouveau champ ajouté pour remplacer getType()
+
     // Relation avec les événements utilisant cette installation
     @OneToMany(mappedBy = "installation", cascade = CascadeType.ALL)
     private List<Evenement> evenements = new ArrayList<>();
@@ -26,10 +28,11 @@ public class Installation {
     // Constructeurs
     public Installation() {}
 
-    public Installation(String nom, String description, int capacite) {
+    public Installation(String nom, String description, int capacite, String type) {
         this.nom = nom;
         this.description = description;
         this.capacite = capacite;
+        this.type = type;
     }
 
     // Getters & Setters
@@ -44,6 +47,9 @@ public class Installation {
 
     public int getCapacite() { return capacite; }
     public void setCapacite(int capacite) { this.capacite = capacite; }
+
+    public String getType() { return type; }
+    public void setType(String type) { this.type = type; }
 
     public List<Evenement> getEvenements() { return evenements; }
     public void setEvenements(List<Evenement> evenements) { this.evenements = evenements; }
@@ -63,3 +69,4 @@ public class Installation {
         }
     }
 }
+

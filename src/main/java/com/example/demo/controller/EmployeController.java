@@ -43,31 +43,33 @@ public class EmployeController {
     // PUT : mise à jour partielle d’un employé
     @PutMapping("/{id}")
     public ResponseEntity<Employe> updateEmploye(@PathVariable Long id, @RequestBody Employe employeDetails) {
-        return employeService.getEmployeById(id)
-                .map(employe -> {
-                    if (employeDetails.getNom() != null) employe.setNom(employeDetails.getNom());
-                    if (employeDetails.getPrenom() != null) employe.setPrenom(employeDetails.getPrenom());
-                    if (employeDetails.getEmail() != null) employe.setEmail(employeDetails.getEmail());
-                    if (employeDetails.getMotDePasse() != null) employe.setMotDePasse(employeDetails.getMotDePasse());
-                    if (employeDetails.getHoraires() != null) employe.setHoraires(employeDetails.getHoraires());
-                    if (employeDetails.getConges() != null) employe.setConges(employeDetails.getConges());
-                    if (employeDetails.getFormations() != null) employe.setFormations(employeDetails.getFormations());
+        Optional<Employe> employeOpt = employeService.getEmployeById(id);
+        if (employeOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
 
-                    Employe updated = employeService.saveEmploye(employe);
-                    return ResponseEntity.ok(updated);
-                })
-                .orElse(ResponseEntity.notFound().build());
+        Employe employe = employeOpt.get();
+        if (employeDetails.getNom() != null) employe.setNom(employeDetails.getNom());
+        if (employeDetails.getPrenom() != null) employe.setPrenom(employeDetails.getPrenom());
+        if (employeDetails.getEmail() != null) employe.setEmail(employeDetails.getEmail());
+        if (employeDetails.getMotDePasse() != null) employe.setMotDePasse(employeDetails.getMotDePasse());
+        if (employeDetails.getHoraires() != null) employe.setHoraires(employeDetails.getHoraires());
+        if (employeDetails.getConges() != null) employe.setConges(employeDetails.getConges());
+        if (employeDetails.getFormations() != null) employe.setFormations(employeDetails.getFormations());
+
+        Employe updated = employeService.saveEmploye(employe);
+        return ResponseEntity.ok(updated);
     }
 
     // DELETE : suppression d’un employé
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEmploye(@PathVariable Long id) {
-        return employeService.getEmployeById(id)
-                .map(e -> {
-                    employeService.deleteEmploye(id);
-                    return ResponseEntity.noContent().build();
-                })
-                .orElse(ResponseEntity.notFound().build());
+        Optional<Employe> employeOpt = employeService.getEmployeById(id);
+        if (employeOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        employeService.deleteEmploye(id);
+        return ResponseEntity.noContent().build();
     }
 
     // === DTOs internes avec validation ===
@@ -102,33 +104,33 @@ public class EmployeController {
     // POST : ajouter un horaire
     @PostMapping("/{id}/horaire")
     public ResponseEntity<Employe> ajouterHoraire(@PathVariable Long id, @Valid @RequestBody HoraireRequest request) {
-        return employeService.getEmployeById(id)
-                .map(e -> {
-                    employeService.ajouterHoraire(e, request.getHoraire());
-                    return ResponseEntity.ok(employeService.saveEmploye(e));
-                })
-                .orElse(ResponseEntity.notFound().build());
+        Optional<Employe> employeOpt = employeService.getEmployeById(id);
+        if (employeOpt.isEmpty()) return ResponseEntity.notFound().build();
+
+        Employe employe = employeOpt.get();
+        employeService.ajouterHoraire(employe, request.getHoraire());
+        return ResponseEntity.ok(employeService.saveEmploye(employe));
     }
 
     // POST : demander un congé
     @PostMapping("/{id}/conge")
     public ResponseEntity<Employe> demanderConge(@PathVariable Long id, @Valid @RequestBody CongeRequest request) {
-        return employeService.getEmployeById(id)
-                .map(e -> {
-                    employeService.demanderConge(e, request.getDateDebut(), request.getDateFin());
-                    return ResponseEntity.ok(employeService.saveEmploye(e));
-                })
-                .orElse(ResponseEntity.notFound().build());
+        Optional<Employe> employeOpt = employeService.getEmployeById(id);
+        if (employeOpt.isEmpty()) return ResponseEntity.notFound().build();
+
+        Employe employe = employeOpt.get();
+        employeService.demanderConge(employe, request.getDateDebut(), request.getDateFin());
+        return ResponseEntity.ok(employeService.saveEmploye(employe));
     }
 
     // POST : suivre une formation
     @PostMapping("/{id}/formation")
     public ResponseEntity<Employe> suivreFormation(@PathVariable Long id, @Valid @RequestBody FormationRequest request) {
-        return employeService.getEmployeById(id)
-                .map(e -> {
-                    employeService.suivreFormation(e, request.getFormation());
-                    return ResponseEntity.ok(employeService.saveEmploye(e));
-                })
-                .orElse(ResponseEntity.notFound().build());
+        Optional<Employe> employeOpt = employeService.getEmployeById(id);
+        if (employeOpt.isEmpty()) return ResponseEntity.notFound().build();
+
+        Employe employe = employeOpt.get();
+        employeService.suivreFormation(employe, request.getFormation());
+        return ResponseEntity.ok(employeService.saveEmploye(employe));
     }
 }

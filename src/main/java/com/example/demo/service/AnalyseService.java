@@ -4,6 +4,7 @@ import com.example.demo.entity.Analyse;
 import com.example.demo.entity.Chambre;
 import com.example.demo.entity.Feedback;
 import com.example.demo.entity.Reservation;
+import com.example.demo.entity.Reservation.StatutReservation;
 import com.example.demo.repository.AnalyseRepository;
 import com.example.demo.repository.ChambreRepository;
 import com.example.demo.repository.FeedbackRepository;
@@ -33,9 +34,11 @@ public class AnalyseService {
     // Calculer le taux d'occupation en pourcentage
     public int calculerTauxOccupation() {
         List<Chambre> toutesChambres = chambreRepository.findAll();
+
         long chambresOccupees = reservationRepository.findAll().stream()
-                .filter(res -> res.getStatut() != null && res.getStatut().equalsIgnoreCase("CONFIRMEE"))
+                .filter(res -> res.getStatut() == StatutReservation.CONFIRMEE)
                 .count();
+
         return toutesChambres.isEmpty() ? 0 : (int)((chambresOccupees * 100) / toutesChambres.size());
     }
 
@@ -49,15 +52,20 @@ public class AnalyseService {
                 .mapToDouble(Feedback::getNote)
                 .sum();
 
-        long nbNotes = feedbacks.stream().filter(f -> f.getNote() != null).count();
+        long nbNotes = feedbacks.stream()
+                .filter(f -> f.getNote() != null)
+                .count();
+
         return nbNotes == 0 ? 0.0 : sommeNotes / nbNotes;
     }
 
     // Calculer les revenus totaux à partir des réservations confirmées
     public double calculerRevenus() {
         return reservationRepository.findAll().stream()
-                .filter(res -> res.getStatut() != null && res.getStatut().equalsIgnoreCase("CONFIRMEE"))
-                .mapToDouble(res -> res.getChambre() != null && res.getChambre().getPrix() != null ? res.getChambre().getPrix() : 0)
+                .filter(res -> res.getStatut() == StatutReservation.CONFIRMEE)
+                .mapToDouble(res -> res.getChambre() != null && res.getChambre().getPrix() != null
+                        ? res.getChambre().getPrix()
+                        : 0)
                 .sum();
     }
 

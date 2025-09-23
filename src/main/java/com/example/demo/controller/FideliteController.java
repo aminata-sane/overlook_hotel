@@ -1,3 +1,14 @@
+package com.example.demo.controller;
+
+import com.example.demo.entity.Client;
+import com.example.demo.entity.Fidelite;
+import com.example.demo.repository.ClientRepository;
+import com.example.demo.service.FideliteService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/client/fidelite")
 public class FideliteController {
@@ -45,7 +56,8 @@ public class FideliteController {
     }
 
     // === Gestionnaire (optionnel) ===
-    // @GetMapping("/all") 
+    // Exemple : récupérer toutes les fidélités
+    // @GetMapping("/all")
     // public List<Fidelite> getAllFidelites() {
     //     return fideliteService.getAllFidelites();
     // }

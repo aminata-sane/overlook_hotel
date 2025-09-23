@@ -31,10 +31,10 @@ public class ReservationService {
         reservation.setDateDebut(debut);
         reservation.setDateFin(fin);
 
-        long jours = fin.toEpochDay() - debut.toEpochDay() + 1; // Inclut le dernier jour
+        long jours = fin.toEpochDay() - debut.toEpochDay() + 1; // inclut le dernier jour
         reservation.setPrixTotal(chambre.getPrix() * jours);
 
-        reservation.setStatut("CONFIRMEE");
+        reservation.setStatut(Reservation.StatutReservation.CONFIRMEE); // utilisation de l'enum
 
         return reservationRepository.save(reservation);
     }
@@ -59,8 +59,8 @@ public class ReservationService {
         return reservationRepository.findByChambreId(chambreId);
     }
 
-    // Mettre à jour une réservation
-    public Reservation updateReservation(Long id, LocalDate dateDebut, LocalDate dateFin, Long chambreId) {
+    // Mettre à jour une réservation avec statut (méthode principale)
+    public Reservation updateReservation(Long id, LocalDate dateDebut, LocalDate dateFin, Long chambreId, Reservation.StatutReservation statut) {
         Reservation reservation = reservationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Réservation non trouvée avec l'id " + id));
 
@@ -82,7 +82,17 @@ public class ReservationService {
             reservation.setPrixTotal(reservation.getChambre().getPrix() * jours);
         }
 
+        // Mettre à jour le statut si fourni
+        if (statut != null) {
+            reservation.setStatut(statut);
+        }
+
         return reservationRepository.save(reservation);
+    }
+
+    // Overload pour compatibilité avec le controller actuel (4 arguments)
+    public Reservation updateReservation(Long id, LocalDate dateDebut, LocalDate dateFin, Long chambreId) {
+        return updateReservation(id, dateDebut, dateFin, chambreId, null);
     }
 
     // Supprimer une réservation

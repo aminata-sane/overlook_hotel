@@ -8,3 +8,4 @@ public interface ChambreRepository extends JpaRepository<Chambre, Long> {
     // Liste des chambres disponibles
     List<Chambre> findByDisponibleTrue();
 }
+

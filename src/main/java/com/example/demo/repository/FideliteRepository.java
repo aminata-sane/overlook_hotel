@@ -9,3 +9,4 @@ import java.util.Optional;
 public interface FideliteRepository extends JpaRepository<Fidelite, Long> {
     Optional<Fidelite> findByClient(Client client);
 }
+

@@ -8,3 +8,4 @@ public interface GestionnaireRepository extends JpaRepository<Gestionnaire, Long
     // Méthode pour retrouver un gestionnaire par email (utile pour l'authentification)
     Optional<Gestionnaire> findByEmail(String email);
 }
+

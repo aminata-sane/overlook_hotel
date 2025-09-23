@@ -85,3 +85,4 @@ public class Employe {
     public void addFormation(String formation) { formations.add(formation); }
     public void removeFormation(String formation) { formations.remove(formation); }
 }
+

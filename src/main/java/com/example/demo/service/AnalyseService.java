@@ -84,3 +84,4 @@ public class AnalyseService {
         return analyseRepository.findAll();
     }
 }
+

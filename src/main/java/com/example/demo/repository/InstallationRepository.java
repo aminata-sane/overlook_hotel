@@ -7,3 +7,4 @@ public interface InstallationRepository extends JpaRepository<Installation, Long
     // Tu peux ajouter des méthodes personnalisées si nécessaire, par exemple :
     // List<Installation> findByType(String type);
 }
+

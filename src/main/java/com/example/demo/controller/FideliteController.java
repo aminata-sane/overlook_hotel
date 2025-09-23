@@ -62,3 +62,4 @@ public class FideliteController {
     //     return fideliteService.getAllFidelites();
     // }
 }
+

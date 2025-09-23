@@ -50,3 +50,4 @@ public class GestionnaireService {
         gestionnaireRepository.delete(gestionnaire);
     }
 }
+

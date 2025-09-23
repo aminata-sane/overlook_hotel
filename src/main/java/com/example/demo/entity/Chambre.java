@@ -61,3 +61,4 @@ public class Chambre {
     public void reserver() { this.disponible = false; }
     public void liberer() { this.disponible = true; }
 }
+

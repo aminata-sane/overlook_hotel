@@ -72,3 +72,4 @@ public class ChambreService {
         return chambreRepository.findByDisponibleTrue();
     }
 }
+

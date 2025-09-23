@@ -40,3 +40,4 @@ public class Gestionnaire {
     public List<Feedback> getFeedbacks() { return feedbacks; }
     public void setFeedbacks(List<Feedback> feedbacks) { this.feedbacks = feedbacks; }
 }
+

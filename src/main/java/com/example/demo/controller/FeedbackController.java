@@ -10,28 +10,27 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/gestionnaire/feedbacks")
+@RequestMapping("/api/feedbacks") // endpoint accessible aux clients pour créer un feedback
 public class FeedbackController {
 
     @Autowired
     private FeedbackRepository feedbackRepository;
 
-    
-    @GetMapping
+    // === Gestionnaire ===
+
+    @GetMapping("/gestionnaire")
     public List<Feedback> getAllFeedbacks() {
         return feedbackRepository.findAll();
     }
 
-    
-    @GetMapping("/{id}")
+    @GetMapping("/gestionnaire/{id}")
     public ResponseEntity<Feedback> getFeedbackById(@PathVariable Long id) {
         Optional<Feedback> feedback = feedbackRepository.findById(id);
         return feedback.map(ResponseEntity::ok)
                        .orElse(ResponseEntity.notFound().build());
     }
 
-    
-    @PutMapping("/{id}/reponse")
+    @PutMapping("/gestionnaire/{id}/reponse")
     public ResponseEntity<Feedback> respondToFeedback(@PathVariable Long id, @RequestBody String reponse) {
         Optional<Feedback> feedbackOptional = feedbackRepository.findById(id);
         if (!feedbackOptional.isPresent()) {
@@ -44,13 +43,19 @@ public class FeedbackController {
         return ResponseEntity.ok(updatedFeedback);
     }
 
-    
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/gestionnaire/{id}")
     public ResponseEntity<Void> deleteFeedback(@PathVariable Long id) {
         if (!feedbackRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
         feedbackRepository.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    // === Client ===
+
+    @PostMapping
+    public Feedback createFeedback(@RequestBody Feedback feedback) {
+        return feedbackRepository.save(feedback);
     }
 }

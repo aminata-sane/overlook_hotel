@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.Fidelite;
 import com.example.demo.entity.Client;
+import com.example.demo.entity.Fidelite;
 import com.example.demo.repository.FideliteRepository;
 import org.springframework.stereotype.Service;
 
@@ -21,21 +21,21 @@ public class FideliteService {
     }
 
     public Fidelite ajouterPoints(Client client, int points) {
-        Fidelite fidelite = fideliteRepository.findByClient(client).orElse(new Fidelite());
-        fidelite.setClient(client);
+        Fidelite fidelite = fideliteRepository.findByClient(client)
+                .orElse(new Fidelite(client));
         fidelite.setPoints(fidelite.getPoints() + points);
         return fideliteRepository.save(fidelite);
     }
 
     public Fidelite utiliserPoints(Client client, int points) {
-        Fidelite fidelite = fideliteRepository.findByClient(client).orElseThrow(() ->
-            new RuntimeException("Client n'a pas de compte fidélité")
-        );
+        Fidelite fidelite = fideliteRepository.findByClient(client)
+                .orElseThrow(() -> new RuntimeException("Client n'a pas de compte fidélité"));
 
         int nouveauSolde = fidelite.getPoints() - points;
         if (nouveauSolde < 0) {
             throw new RuntimeException("Points insuffisants");
         }
+
         fidelite.setPoints(nouveauSolde);
         return fideliteRepository.save(fidelite);
     }

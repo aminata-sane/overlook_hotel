@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des Clients - Overlook Hotel</title>
+</head>
+<body>
+    <h1>👥 Liste des Clients</h1>
+    
+    <div th:if="${#lists.isEmpty(clients)}">
+        <p>Aucun client inscrit pour le moment.</p>
+    </div>
+    
+    <div th:if="${!#lists.isEmpty(clients)}">
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Email</th>
+                    <th>Téléphone</th>
+                    <th>Statut</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="client : ${clients}">
+                    <td th:text="${client.id}"></td>
+                    <td th:text="${client.nom}"></td>
+                    <td th:text="${client.prenom}"></td>
+                    <td th:text="${client.email}"></td>
+                    <td th:text="${client.telephone}"></td>
+                    <td th:text="${client.statut.libelle}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <p>
+        <a href="/inscription">📝 Nouveau client</a> |
+        <a href="/">← Accueil</a> |
+        <a href="/h2-console">🗄️ Console H2</a>
+    </p>
+</body>
+</html>

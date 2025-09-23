@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription - Overlook Hotel</title>
+</head>
+<body>
+    <h1>📝 Inscription Client</h1>
+    
+    <div th:if="${erreur}" style="color: red;">
+        <p th:text="${erreur}"></p>
+    </div>
+    
+    <form th:action="@{/inscription}" th:object="${client}" method="post">
+        <div>
+            <label for="nom">Nom :</label>
+            <input type="text" id="nom" th:field="*{nom}" required>
+        </div>
+        
+        <div>
+            <label for="prenom">Prénom :</label>
+            <input type="text" id="prenom" th:field="*{prenom}" required>
+        </div>
+        
+        <div>
+            <label for="email">Email :</label>
+            <input type="email" id="email" th:field="*{email}" required>
+        </div>
+        
+        <div>
+            <label for="motDePasse">Mot de passe :</label>
+            <input type="password" id="motDePasse" th:field="*{motDePasse}" required minlength="6">
+        </div>
+        
+        <div>
+            <label for="telephone">Téléphone :</label>
+            <input type="text" id="telephone" th:field="*{telephone}">
+        </div>
+        
+        <div>
+            <label for="dateNaissance">Date de naissance :</label>
+            <input type="date" id="dateNaissance" th:field="*{dateNaissance}">
+        </div>
+        
+        <button type="submit">S'inscrire</button>
+    </form>
+    
+    <p><a href="/">← Retour à l'accueil</a></p>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - Overlook Hotel</title>
+</head>
+<body>
+    <h1>🔐 Connexion</h1>
+    
+    <div th:if="${succes}" style="color: green;">
+        <p th:text="${succes}"></p>
+    </div>
+    
+    <p>Page de connexion (à implémenter plus tard)</p>
+    
+    <p>
+        <a href="/inscription">📝 Pas encore inscrit ? S'inscrire</a> |
+        <a href="/">← Accueil</a>
+    </p>
+</body>
+</html>

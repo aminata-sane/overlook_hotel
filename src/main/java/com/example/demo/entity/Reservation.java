@@ -14,17 +14,26 @@ public class Reservation {
     private LocalDate dateDebut;
     private LocalDate dateFin;
 
-    private String statut; // ex : "CONFIRMEE", "ANNULEE", "EN_ATTENTE"
+    @Enumerated(EnumType.STRING)
+    private StatutReservation statut = StatutReservation.EN_ATTENTE;
 
-    
+    private double prixTotal;
+
+    // Relations
     @ManyToOne
     @JoinColumn(name = "client_id")
     private Client client;
 
-    
     @ManyToOne
     @JoinColumn(name = "chambre_id")
     private Chambre chambre;
+
+    // Enum pour le statut
+    public enum StatutReservation {
+        CONFIRMEE,
+        ANNULEE,
+        EN_ATTENTE
+    }
 
     // Getters & Setters
     public Long getId() { return id; }
@@ -36,8 +45,11 @@ public class Reservation {
     public LocalDate getDateFin() { return dateFin; }
     public void setDateFin(LocalDate dateFin) { this.dateFin = dateFin; }
 
-    public String getStatut() { return statut; }
-    public void setStatut(String statut) { this.statut = statut; }
+    public StatutReservation getStatut() { return statut; }
+    public void setStatut(StatutReservation statut) { this.statut = statut; }
+
+    public double getPrixTotal() { return prixTotal; }
+    public void setPrixTotal(double prixTotal) { this.prixTotal = prixTotal; }
 
     public Client getClient() { return client; }
     public void setClient(Client client) { this.client = client; }

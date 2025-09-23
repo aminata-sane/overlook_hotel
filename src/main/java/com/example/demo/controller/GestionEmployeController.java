@@ -1,61 +1,61 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.Client;
 import com.example.demo.entity.Employe;
-import com.example.demo.repository.ClientRepository;
-import com.example.demo.repository.EmployeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.service.GestionEmployeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/gestionnaire")
+@RequestMapping("/api/gestionnaire/employes")
 public class GestionEmployeController {
 
-    @Autowired
-    private EmployeRepository employeRepository;
+    private final GestionEmployeService employeService;
 
-
-
-    //Employe
-    @GetMapping("/employes")
-    public List<Employe> getAllEmployes() {
-        return employeRepository.findAll();
+    public GestionEmployeController(GestionEmployeService employeService) {
+        this.employeService = employeService;
     }
 
-    @GetMapping("/employes/{id}")
+    // GET /api/gestionnaire/employes
+    @GetMapping
+    public ResponseEntity<List<Employe>> getAllEmployes() {
+        return ResponseEntity.ok(employeService.getAllEmployes());
+    }
+
+    // GET /api/gestionnaire/employes/{id}
+    @GetMapping("/{id}")
     public ResponseEntity<Employe> getEmployeById(@PathVariable Long id) {
-        Optional<Employe> employe = employeRepository.findById(id);
-        return employe.map(ResponseEntity::ok)
-                      .orElse(ResponseEntity.notFound().build());
+        return employeService.getEmployeById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/employes")
-    public Employe createEmploye(@RequestBody Employe employe) {
-        return employeRepository.save(employe);
+    // POST /api/gestionnaire/employes
+    @PostMapping
+    public ResponseEntity<Employe> createEmploye(@RequestBody Employe employe) {
+        return ResponseEntity.ok(employeService.createEmploye(employe));
     }
 
-    @PutMapping("/employes/{id}")
+    // PUT /api/gestionnaire/employes/{id}
+    @PutMapping("/{id}")
     public ResponseEntity<Employe> updateEmploye(@PathVariable Long id, @RequestBody Employe employeDetails) {
-        Optional<Employe> employeOptional = employeRepository.findById(id);
-        if (!employeOptional.isPresent()) return ResponseEntity.notFound().build();
-
-        Employe employe = employeOptional.get();
-        employe.setNom(employeDetails.getNom());
-        employe.setPrenom(employeDetails.getPrenom());
-        employe.setEmail(employeDetails.getEmail());
-        employe.setMotDePasse(employeDetails.getMotDePasse());
-
-        return ResponseEntity.ok(employeRepository.save(employe));
+        try {
+            Employe updatedEmploye = employeService.updateEmploye(id, employeDetails);
+            return ResponseEntity.ok(updatedEmploye);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    @DeleteMapping("/employes/{id}")
+    // DELETE /api/gestionnaire/employes/{id}
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEmploye(@PathVariable Long id) {
-        if (!employeRepository.existsById(id)) return ResponseEntity.notFound().build();
-        employeRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
+        try {
+            employeService.deleteEmploye(id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

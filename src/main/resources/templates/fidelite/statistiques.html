@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistiques de fidélité - Overlook Hotel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container mt-4">
+        <h1 class="mb-4">Statistiques du programme de fidélité</h1>
+        
+        <!-- Statistiques générales -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary" th:text="${statistiques.totalCartes}">0</h5>
+                        <p class="card-text">Cartes actives</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title text-success" th:text="${statistiques.totalPoints}">0</h5>
+                        <p class="card-text">Total points</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title text-info" th:text="${#numbers.formatDecimal(statistiques.moyennePoints, 0, 0)}">0</h5>
+                        <p class="card-text">Moyenne points</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title text-warning" th:text="${topClients.size() > 0 ? topClients[0].points : 0}">0</h5>
+                        <p class="card-text">Record points</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Répartition par niveaux -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Répartition par niveaux</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="niveauxChart" width="400" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Détails par niveau</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span><span class="badge bg-secondary">Bronze</span> (0-999 pts)</span>
+                                <span class="badge bg-light text-dark" th:text="${statistiques.nombreBRONZE}">0</span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span><span class="badge bg-info">Argent</span> (1000-2499 pts)</span>
+                                <span class="badge bg-light text-dark" th:text="${statistiques.nombreARGENT}">0</span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span><span class="badge bg-warning text-dark">Or</span> (2500-4999 pts)</span>
+                                <span class="badge bg-light text-dark" th:text="${statistiques.nombreOR}">0</span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span><span class="badge bg-dark">Platine</span> (5000-9999 pts)</span>
+                                <span class="badge bg-light text-dark" th:text="${statistiques.nombrePLATINE}">0</span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span><span class="badge bg-primary">Diamant</span> (10000+ pts)</span>
+                                <span class="badge bg-light text-dark" th:text="${statistiques.nombreDIAMANT}">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Top clients -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Top 10 des clients les plus fidèles</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Rang</th>
+                                        <th>Client</th>
+                                        <th>Email</th>
+                                        <th>Points</th>
+                                        <th>Niveau</th>
+                                        <th>Progression</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="fidelite, iterStat : ${topClients}" th:if="${iterStat.index < 10}">
+                                        <td>
+                                            <span th:if="${iterStat.index == 0}" class="badge bg-warning text-dark">🥇</span>
+                                            <span th:if="${iterStat.index == 1}" class="badge bg-secondary">🥈</span>
+                                            <span th:if="${iterStat.index == 2}" class="badge bg-success">🥉</span>
+                                            <span th:if="${iterStat.index > 2}" th:text="${iterStat.index + 1}"></span>
+                                        </td>
+                                        <td>
+                                            <a th:href="@{/fidelite/{id}(id=${fidelite.id})}" class="text-decoration-none">
+                                                <span th:text="${fidelite.client.prenom + ' ' + fidelite.client.nom}"></span>
+                                            </a>
+                                        </td>
+                                        <td th:text="${fidelite.client.email}"></td>
+                                        <td>
+                                            <span class="badge bg-primary" th:text="${fidelite.points}"></span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-primary"
+                                                  th:text="${fidelite.niveauFidelite.libelle}">
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="progress" style="width: 100px;">
+                                                <div class="progress-bar" role="progressbar" 
+                                                     th:style="'width: ' + ${fidelite.pourcentageVersProchainNiveau} + '%'"
+                                                     th:attr="aria-valuenow=${fidelite.pourcentageVersProchainNiveau}">
+                                                </div>
+                                            </div>
+                                            <small class="text-muted" th:if="${fidelite.pointsJusquProchainNiveau > 0}"
+                                                   th:text="'+ ' + ${fidelite.pointsJusquProchainNiveau} + ' pts'">
+                                            </small>
+                                            <small class="text-muted" th:if="${fidelite.pointsJusquProchainNiveau == 0}">
+                                                Max
+                                            </small>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            
+                            <div th:if="${topClients.isEmpty()}" class="text-center text-muted py-4">
+                                Aucune carte de fidélité trouvée.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <a href="/fidelite" class="btn btn-outline-primary">← Retour à la liste</a>
+            <a href="/" class="btn btn-outline-secondary">← Accueil</a>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:inline="javascript">
+        // Données pour le graphique
+        const niveauxData = {
+            Bronze: /*[[${statistiques.nombreBRONZE}]]*/ 0,
+            Argent: /*[[${statistiques.nombreARGENT}]]*/ 0,
+            Or: /*[[${statistiques.nombreOR}]]*/ 0,
+            Platine: /*[[${statistiques.nombrePLATINE}]]*/ 0,
+            Diamant: /*[[${statistiques.nombreDIAMANT}]]*/ 0
+        };
+        
+        // Configuration du graphique
+        const ctx = document.getElementById('niveauxChart').getContext('2d');
+        const niveauxChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(niveauxData),
+                datasets: [{
+                    data: Object.values(niveauxData),
+                    backgroundColor: [
+                        '#6c757d', // Bronze - gray
+                        '#17a2b8', // Argent - info blue
+                        '#ffc107', // Or - warning yellow
+                        '#343a40', // Platine - dark
+                        '#007bff'  // Diamant - primary blue
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

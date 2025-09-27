@@ -4,48 +4,479 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inscription - Overlook Hotel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #e74c3c;
+            --accent-color: #f39c12;
+            --light-bg: #ecf0f1;
+            --dark-bg: #34495e;
+            --success-color: #27ae60;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+
+        .registration-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .registration-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--dark-bg));
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .card-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.2;
+        }
+
+        .card-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin: 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hotel-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card-body {
+            padding: 40px 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-control {
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 15px 20px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 0.2rem rgba(243, 156, 18, 0.25);
+            background: white;
+            transform: translateY(-2px);
+        }
+
+        .form-control:valid {
+            border-color: var(--success-color);
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            z-index: 10;
+        }
+
+        .btn-register {
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+            border: none;
+            border-radius: 12px;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            width: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-register:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
+            color: white;
+        }
+
+        .btn-register:active {
+            transform: translateY(-1px);
+        }
+
+        .alert {
+            border-radius: 12px;
+            border: none;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .back-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 25px;
+            background: rgba(44, 62, 80, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .back-link a:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .password-strength {
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .strength-weak { background: #e74c3c; width: 33%; }
+        .strength-medium { background: #f39c12; width: 66%; }
+        .strength-strong { background: #27ae60; width: 100%; }
+
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-element {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-element:nth-child(1) {
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-element:nth-child(2) {
+            top: 60%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+
+        .floating-element:nth-child(3) {
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+
+        .required-field::after {
+            content: " *";
+            color: var(--secondary-color);
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .registration-container {
+                padding: 10px;
+            }
+            
+            .card-header {
+                padding: 30px 20px;
+            }
+            
+            .card-header h1 {
+                font-size: 2rem;
+            }
+            
+            .card-body {
+                padding: 30px 20px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>📝 Inscription Client</h1>
-    
-    <div th:if="${erreur}" style="color: red;">
-        <p th:text="${erreur}"></p>
+    <!-- Éléments flottants décoratifs -->
+    <div class="floating-elements">
+        <i class="fas fa-hotel floating-element" style="font-size: 60px;"></i>
+        <i class="fas fa-key floating-element" style="font-size: 40px;"></i>
+        <i class="fas fa-star floating-element" style="font-size: 50px;"></i>
     </div>
-    
-    <form th:action="@{/inscription}" th:object="${client}" method="post">
-        <div>
-            <label for="nom">Nom :</label>
-            <input type="text" id="nom" th:field="*{nom}" required>
+
+    <div class="registration-container">
+        <div class="registration-card">
+            <!-- En-tête -->
+            <div class="card-header">
+                <div class="hotel-icon">
+                    <i class="fas fa-hotel"></i>
+                </div>
+                <h1>Overlook Hotel</h1>
+                <p>Créez votre compte pour des séjours d'exception</p>
+            </div>
+
+            <!-- Corps du formulaire -->
+            <div class="card-body">
+                <!-- Messages d'erreur -->
+                <div th:if="${erreur}" class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span th:text="${erreur}"></span>
+                </div>
+
+                <!-- Messages de succès -->
+                <div th:if="${succes}" class="alert alert-success">
+                    <i class="fas fa-check-circle"></i>
+                    <span th:text="${succes}"></span>
+                </div>
+
+                <!-- Formulaire d'inscription -->
+                <form th:action="@{/inscription}" th:object="${client}" method="post" id="registrationForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="nom" class="form-label required-field">
+                                    <i class="fas fa-user"></i> Nom
+                                </label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="nom" th:field="*{nom}" 
+                                           placeholder="Votre nom de famille" required>
+                                    <i class="fas fa-check input-icon text-success" style="display: none;"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="prenom" class="form-label required-field">
+                                    <i class="fas fa-user"></i> Prénom
+                                </label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="prenom" th:field="*{prenom}" 
+                                           placeholder="Votre prénom" required>
+                                    <i class="fas fa-check input-icon text-success" style="display: none;"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email" class="form-label required-field">
+                            <i class="fas fa-envelope"></i> Adresse e-mail
+                        </label>
+                        <div class="input-group">
+                            <input type="email" class="form-control" id="email" th:field="*{email}" 
+                                   placeholder="exemple@email.com" required>
+                            <i class="fas fa-check input-icon text-success" style="display: none;"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="motDePasse" class="form-label required-field">
+                            <i class="fas fa-lock"></i> Mot de passe
+                        </label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="motDePasse" th:field="*{motDePasse}" 
+                                   placeholder="Minimum 6 caractères" required minlength="6">
+                            <i class="fas fa-eye input-icon" id="togglePassword" style="cursor: pointer;"></i>
+                        </div>
+                        <div class="password-strength">
+                            <div class="password-strength-bar" id="strengthBar"></div>
+                        </div>
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle"></i> 
+                            Utilisez au moins 6 caractères avec des lettres et des chiffres
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="telephone" class="form-label">
+                            <i class="fas fa-phone"></i> Téléphone
+                        </label>
+                        <div class="input-group">
+                            <input type="tel" class="form-control" id="telephone" th:field="*{telephone}" 
+                                   placeholder="+33 1 23 45 67 89">
+                            <i class="fas fa-check input-icon text-success" style="display: none;"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dateNaissance" class="form-label">
+                            <i class="fas fa-birthday-cake"></i> Date de naissance
+                        </label>
+                        <div class="input-group">
+                            <input type="date" class="form-control" id="dateNaissance" th:field="*{dateNaissance}">
+                            <i class="fas fa-check input-icon text-success" style="display: none;"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-register">
+                            <i class="fas fa-user-plus"></i> Créer mon compte
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Lien de retour -->
+                <div class="back-link">
+                    <a href="/">
+                        <i class="fas fa-arrow-left"></i> Retour à l'accueil
+                    </a>
+                </div>
+
+                <!-- Lien vers la connexion -->
+                <div class="text-center mt-4">
+                    <p class="text-muted">
+                        Vous avez déjà un compte ? 
+                        <a href="/connexion" style="color: var(--accent-color); font-weight: 600; text-decoration: none;">
+                            Connectez-vous ici
+                        </a>
+                    </p>
+                </div>
+            </div>
         </div>
-        
-        <div>
-            <label for="prenom">Prénom :</label>
-            <input type="text" id="prenom" th:field="*{prenom}" required>
-        </div>
-        
-        <div>
-            <label for="email">Email :</label>
-            <input type="email" id="email" th:field="*{email}" required>
-        </div>
-        
-        <div>
-            <label for="motDePasse">Mot de passe :</label>
-            <input type="password" id="motDePasse" th:field="*{motDePasse}" required minlength="6">
-        </div>
-        
-        <div>
-            <label for="telephone">Téléphone :</label>
-            <input type="text" id="telephone" th:field="*{telephone}">
-        </div>
-        
-        <div>
-            <label for="dateNaissance">Date de naissance :</label>
-            <input type="date" id="dateNaissance" th:field="*{dateNaissance}">
-        </div>
-        
-        <button type="submit">S'inscrire</button>
-    </form>
-    
-    <p><a href="/">← Retour à l'accueil</a></p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Validation en temps réel
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('registrationForm');
+            const inputs = form.querySelectorAll('input[required]');
+            
+            // Validation pour chaque champ requis
+            inputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    const icon = this.parentElement.querySelector('.input-icon.fa-check');
+                    if (this.validity.valid && this.value.trim() !== '') {
+                        this.classList.add('is-valid');
+                        this.classList.remove('is-invalid');
+                        if (icon) icon.style.display = 'block';
+                    } else {
+                        this.classList.remove('is-valid');
+                        if (icon) icon.style.display = 'none';
+                    }
+                });
+            });
+
+            // Indicateur de force du mot de passe
+            const passwordInput = document.getElementById('motDePasse');
+            const strengthBar = document.getElementById('strengthBar');
+            
+            passwordInput.addEventListener('input', function() {
+                const password = this.value;
+                let strength = 0;
+                
+                if (password.length >= 6) strength++;
+                if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+                if (password.match(/[0-9]/)) strength++;
+                if (password.match(/[^a-zA-Z0-9]/)) strength++;
+                
+                strengthBar.className = 'password-strength-bar';
+                if (strength >= 1) strengthBar.classList.add('strength-weak');
+                if (strength >= 2) strengthBar.classList.add('strength-medium');
+                if (strength >= 3) strengthBar.classList.add('strength-strong');
+            });
+
+            // Toggle visibilité du mot de passe
+            const togglePassword = document.getElementById('togglePassword');
+            togglePassword.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+            });
+
+            // Animation du formulaire
+            const formGroups = document.querySelectorAll('.form-group');
+            formGroups.forEach((group, index) => {
+                group.style.opacity = '0';
+                group.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    group.style.transition = 'all 0.5s ease';
+                    group.style.opacity = '1';
+                    group.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
 </body>
 </html>

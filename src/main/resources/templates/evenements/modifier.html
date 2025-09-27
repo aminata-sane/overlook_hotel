@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier un événement - Overlook Hotel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="mb-0">Modifier l'événement</h4>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/evenements/{id}/modifier(id=${evenement.id})}" th:object="${evenement}" method="post">
+                            <div class="mb-3">
+                                <label for="titre" class="form-label">Titre <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="titre" th:field="*{titre}" required>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('titre')}" th:errors="*{titre}"></div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Description</label>
+                                <textarea class="form-control" id="description" th:field="*{description}" rows="4" 
+                                          placeholder="Description détaillée de l'événement"></textarea>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="dateDebut" class="form-label">Date de début <span class="text-danger">*</span></label>
+                                        <input type="date" class="form-control" id="dateDebut" th:field="*{dateDebut}" required>
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('dateDebut')}" th:errors="*{dateDebut}"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="dateFin" class="form-label">Date de fin</label>
+                                        <input type="date" class="form-control" id="dateFin" th:field="*{dateFin}">
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('dateFin')}" th:errors="*{dateFin}"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="maxParticipants" class="form-label">Nombre maximum de participants</label>
+                                        <input type="number" class="form-control" id="maxParticipants" th:field="*{maxParticipants}" min="1">
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('maxParticipants')}" th:errors="*{maxParticipants}"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="statut" class="form-label">Statut</label>
+                                        <select class="form-select" id="statut" th:field="*{statut}">
+                                            <option th:each="statut : ${T(com.example.demo.model.Evenement.StatutEvenement).values()}" 
+                                                    th:value="${statut}" th:text="${statut.libelle}"></option>
+                                        </select>
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('statut')}" th:errors="*{statut}"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="installation" class="form-label">Installation</label>
+                                <select class="form-select" id="installation" th:field="*{installation}">
+                                    <option value="">-- Sélectionner une installation --</option>
+                                    <option th:each="installation : ${installations}" 
+                                            th:value="${installation.id}" 
+                                            th:text="${installation.nom}"></option>
+                                </select>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('installation')}" th:errors="*{installation}"></div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Participants</label>
+                                <div class="row">
+                                    <div th:each="client : ${clients}" class="col-md-4 mb-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" 
+                                                   th:id="'participant_' + ${client.id}"
+                                                   th:value="${client.id}"
+                                                   th:checked="${evenement.participants.contains(client)}"
+                                                   name="participantIds">
+                                            <label class="form-check-label" th:for="'participant_' + ${client.id}" 
+                                                   th:text="${client.prenom + ' ' + client.nom}"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between">
+                                <a href="/evenements" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left"></i> Annuler
+                                </a>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-save"></i> Enregistrer les modifications
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    
+    <script>
+        // Validation côté client pour s'assurer que la date de fin est après la date de début
+        document.getElementById('dateDebut').addEventListener('change', function() {
+            const dateDebut = this.value;
+            const dateFin = document.getElementById('dateFin');
+            dateFin.min = dateDebut;
+            
+            if (dateFin.value && dateFin.value < dateDebut) {
+                dateFin.value = dateDebut;
+            }
+        });
+    </script>
+</body>
+</html>

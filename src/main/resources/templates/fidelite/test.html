@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Fidélité</title>
+</head>
+<body>
+    <h1>Test Page Fidélité</h1>
+    
+    <div th:if="${fidelites != null}">
+        <p>Nombre de fidélités: <span th:text="${#lists.size(fidelites)}"></span></p>
+    </div>
+    
+    <div th:if="${fidelites == null}">
+        <p>Aucune fidélité trouvée</p>
+    </div>
+    
+    <div th:if="${statistiques != null}">
+        <p>Statistiques disponibles</p>
+    </div>
+    
+</body>
+</html>

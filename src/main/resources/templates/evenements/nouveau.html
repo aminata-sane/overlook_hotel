@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nouvel Événement - Overlook Hotel</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; text-align: center; margin-bottom: 30px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #34495e; }
+        input, textarea, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; box-sizing: border-box; }
+        textarea { height: 100px; resize: vertical; }
+        .btn { padding: 12px 25px; margin: 10px 5px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; text-decoration: none; display: inline-block; }
+        .btn-primary { background-color: #3498db; color: white; }
+        .btn-success { background-color: #27ae60; color: white; }
+        .btn-secondary { background-color: #6c757d; color: white; }
+        .btn:hover { opacity: 0.8; }
+        .form-actions { text-align: center; margin-top: 30px; }
+        .alert { padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .alert-error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .required { color: #e74c3c; }
+        .form-help { font-size: 12px; color: #6c757d; margin-top: 5px; }
+        .form-row { display: flex; gap: 15px; }
+        .form-row .form-group { flex: 1; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎉 Créer un Nouvel Événement</h1>
+        
+        <!-- Messages d'erreur -->
+        <div th:if="${erreur}" class="alert alert-error" th:text="${erreur}"></div>
+        
+        <form th:action="@{/evenements/nouveau}" method="post" th:object="${evenement}">
+            
+            <div class="form-group">
+                <label for="titre">Titre de l'événement <span class="required">*</span></label>
+                <input type="text" id="titre" th:field="*{titre}" required 
+                       placeholder="Nom de l'événement" maxlength="100">
+                <div class="form-help">Maximum 100 caractères</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" th:field="*{description}" 
+                          placeholder="Description détaillée de l'événement..." maxlength="1000"></textarea>
+                <div class="form-help">Maximum 1000 caractères</div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="dateDebut">Date de début <span class="required">*</span></label>
+                    <input type="date" id="dateDebut" th:field="*{dateDebut}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="dateFin">Date de fin</label>
+                    <input type="date" id="dateFin" th:field="*{dateFin}">
+                    <div class="form-help">Optionnel - laquer vide pour un événement d'une journée</div>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="maxParticipants">Nombre maximum de participants</label>
+                    <input type="number" id="maxParticipants" th:field="*{maxParticipants}" 
+                           min="1" placeholder="Ex: 50">
+                    <div class="form-help">Laisser vide pour un nombre illimité</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="statut">Statut</label>
+                    <select id="statut" th:field="*{statut}">
+                        <option th:each="statut : ${statuts}" 
+                                th:value="${statut.name()}" 
+                                th:text="${statut.libelle}"
+                                th:selected="${statut.name() == 'PLANIFIE'}">
+                            Statut
+                        </option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="installation">Installation</label>
+                <select id="installation" th:field="*{installation}">
+                    <option value="">-- Aucune installation --</option>
+                    <option th:each="installation : ${installations}" 
+                            th:value="${installation.id}" 
+                            th:text="${installation.nomComplet + ' (Capacité: ' + (installation.capacite != null ? installation.capacite : 'Non définie') + ')'}">
+                        Installation
+                    </option>
+                </select>
+                <div class="form-help">Choisir une installation pour l'événement (optionnel)</div>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-success">✅ Créer l'Événement</button>
+                <a href="/evenements" class="btn btn-secondary">❌ Annuler</a>
+            </div>
+        </form>
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="/evenements" class="btn btn-primary">📋 Retour à la liste</a>
+            <a href="/installations/nouvelle" class="btn btn-primary">🏢 Créer une installation</a>
+        </div>
+    </div>
+
+    <script>
+        // Validation côté client
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const dateDebut = document.getElementById('dateDebut').value;
+            const dateFin = document.getElementById('dateFin').value;
+            
+            if (dateFin && dateFin < dateDebut) {
+                e.preventDefault();
+                alert('La date de fin ne peut pas être antérieure à la date de début !');
+                return false;
+            }
+        });
+        
+        // Suggestion de la date de début à aujourd'hui par défaut
+        document.addEventListener('DOMContentLoaded', function() {
+            const dateDebut = document.getElementById('dateDebut');
+            if (!dateDebut.value) {
+                const aujourd = new Date().toISOString().split('T')[0];
+                dateDebut.value = aujourd;
+            }
+        });
+    </script>
+</body>
+</html>

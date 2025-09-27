@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nouvelle Installation - Overlook Hotel</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; text-align: center; margin-bottom: 30px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #34495e; }
+        input, textarea, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; box-sizing: border-box; }
+        textarea { height: 100px; resize: vertical; }
+        .btn { padding: 12px 25px; margin: 10px 5px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; text-decoration: none; display: inline-block; }
+        .btn-primary { background-color: #3498db; color: white; }
+        .btn-success { background-color: #27ae60; color: white; }
+        .btn-secondary { background-color: #6c757d; color: white; }
+        .btn:hover { opacity: 0.8; }
+        .form-actions { text-align: center; margin-top: 30px; }
+        .alert { padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .alert-error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .required { color: #e74c3c; }
+        .form-help { font-size: 12px; color: #6c757d; margin-top: 5px; }
+        .form-row { display: flex; gap: 15px; }
+        .form-row .form-group { flex: 1; }
+        .checkbox-group { display: flex; align-items: center; gap: 10px; }
+        .checkbox-group input[type="checkbox"] { width: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏢 Créer une Nouvelle Installation</h1>
+        
+        <!-- Messages d'erreur -->
+        <div th:if="${erreur}" class="alert alert-error" th:text="${erreur}"></div>
+        
+        <form th:action="@{/installations/nouvelle}" method="post" th:object="${installation}">
+            
+            <div class="form-group">
+                <label for="nom">Nom de l'installation <span class="required">*</span></label>
+                <input type="text" id="nom" th:field="*{nom}" required 
+                       placeholder="Ex: Salle de conférence principale" maxlength="100">
+                <div class="form-help">Maximum 100 caractères</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" th:field="*{description}" 
+                          placeholder="Description détaillée de l'installation..." maxlength="500"></textarea>
+                <div class="form-help">Maximum 500 caractères</div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="type">Type d'installation <span class="required">*</span></label>
+                    <select id="type" th:field="*{type}" required>
+                        <option value="">-- Choisir un type --</option>
+                        <option th:each="type : ${types}" 
+                                th:value="${type.name()}" 
+                                th:text="${type.libelle}">
+                            Type
+                        </option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="capacite">Capacité (nombre de personnes)</label>
+                    <input type="number" id="capacite" th:field="*{capacite}" 
+                           min="1" placeholder="Ex: 50">
+                    <div class="form-help">Laisser vide si non applicable</div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="disponible" th:field="*{disponible}" checked>
+                    <label for="disponible">Installation disponible dès maintenant</label>
+                </div>
+                <div class="form-help">Décocher si l'installation n'est pas encore prête à l'utilisation</div>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-success">✅ Créer l'Installation</button>
+                <a href="/installations" class="btn btn-secondary">❌ Annuler</a>
+            </div>
+        </form>
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="/installations" class="btn btn-primary">📋 Retour à la liste</a>
+            <a href="/evenements/nouveau" class="btn btn-primary">🎉 Créer un événement</a>
+        </div>
+    </div>
+
+    <script>
+        // Suggestions automatiques selon le type
+        document.getElementById('type').addEventListener('change', function() {
+            const type = this.value;
+            const capaciteField = document.getElementById('capacite');
+            const descriptionField = document.getElementById('description');
+            
+            // Suggestions de capacité selon le type
+            const suggestions = {
+                'SALLE_CONFERENCE': { capacite: 100, description: 'Salle équipée pour les grandes présentations avec écran de projection.' },
+                'SALLE_REUNION': { capacite: 20, description: 'Espace intime pour les réunions d\'équipe.' },
+                'RESTAURANT': { capacite: 80, description: 'Service de restauration avec cuisine complète.' },
+                'BAR': { capacite: 40, description: 'Espace de détente avec service de boissons.' },
+                'SPA': { capacite: 10, description: 'Espace de bien-être et de relaxation.' },
+                'PISCINE': { capacite: 30, description: 'Bassin de natation et espace aquatique.' },
+                'SALLE_SPORT': { capacite: 25, description: 'Équipement sportif et espace d\'entraînement.' }
+            };
+            
+            if (suggestions[type]) {
+                if (!capaciteField.value) {
+                    capaciteField.value = suggestions[type].capacite;
+                }
+                if (!descriptionField.value) {
+                    descriptionField.value = suggestions[type].description;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

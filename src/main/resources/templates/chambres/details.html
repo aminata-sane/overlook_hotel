@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détails Chambre - Overlook Hotel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">
+                    <i class="fas fa-hotel"></i> Overlook Hotel
+                </a>
+                <div class="navbar-nav ms-auto">
+                    <a class="nav-link" href="/"><i class="fas fa-home"></i> Accueil</a>
+                    <a class="nav-link" href="/liste-clients"><i class="fas fa-users"></i> Clients</a>
+                    <a class="nav-link" href="/chambres"><i class="fas fa-bed"></i> Chambres</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- En-tête -->
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <h1>
+                    <i class="fas fa-bed"></i> 
+                    Chambre <span th:text="${chambre.numero}">101</span>
+                    <span th:if="${chambre.disponible}" class="badge bg-success ms-2">
+                        <i class="fas fa-check"></i> Disponible
+                    </span>
+                    <span th:if="${!chambre.disponible}" class="badge bg-danger ms-2">
+                        <i class="fas fa-times"></i> Occupée
+                    </span>
+                </h1>
+                <p class="text-muted">Détails complets de la chambre</p>
+            </div>
+            <div class="col-md-4 text-end">
+                <a href="/chambres" class="btn btn-secondary me-2">
+                    <i class="fas fa-arrow-left"></i> Retour
+                </a>
+                <a th:href="@{/chambres/{id}/modifier(id=${chambre.id})}" class="btn btn-warning">
+                    <i class="fas fa-edit"></i> Modifier
+                </a>
+            </div>
+        </div>
+
+        <!-- Détails de la chambre -->
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-info-circle"></i> Informations de la chambre</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-hashtag text-primary"></i> Numéro
+                                    </label>
+                                    <p class="h4" th:text="${chambre.numero}">101</p>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-tags text-info"></i> Type
+                                    </label>
+                                    <p>
+                                        <span class="badge bg-info fs-6" th:text="${chambre.type}">SIMPLE</span>
+                                    </p>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-users text-success"></i> Capacité
+                                    </label>
+                                    <p>
+                                        <i class="fas fa-user"></i> 
+                                        <span th:text="${chambre.capacite}">2</span> 
+                                        <span th:text="${chambre.capacite > 1} ? 'personnes' : 'personne'">personnes</span>
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-euro-sign text-warning"></i> Prix par nuit
+                                    </label>
+                                    <p class="h4 text-success">
+                                        <span th:text="${#numbers.formatDecimal(chambre.prix, 0, 2)}">100,00</span> €
+                                    </p>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-circle text-primary"></i> Statut
+                                    </label>
+                                    <p>
+                                        <span th:if="${chambre.disponible}" class="badge bg-success fs-6">
+                                            <i class="fas fa-check"></i> Disponible
+                                        </span>
+                                        <span th:if="${!chambre.disponible}" class="badge bg-danger fs-6">
+                                            <i class="fas fa-times"></i> Occupée
+                                        </span>
+                                    </p>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-calendar text-info"></i> Date de création
+                                    </label>
+                                    <p th:if="${chambre.dateCreation}" 
+                                       th:text="${#temporals.format(chambre.dateCreation, 'dd/MM/yyyy à HH:mm')}">
+                                       01/01/2024 à 10:30
+                                    </p>
+                                    <p th:if="${chambre.dateCreation == null}" class="text-muted">Non renseignée</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div th:if="${chambre.description != null and !#strings.isEmpty(chambre.description)}" class="mt-4">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-align-left text-secondary"></i> Description
+                            </label>
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <p th:text="${chambre.description}" class="mb-0">Description de la chambre...</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div th:if="${chambre.description == null or #strings.isEmpty(chambre.description)}" class="mt-4">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-align-left text-secondary"></i> Description
+                            </label>
+                            <p class="text-muted">Aucune description fournie</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Actions -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-cogs"></i> Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a th:href="@{/chambres/{id}/modifier(id=${chambre.id})}" 
+                               class="btn btn-warning">
+                                <i class="fas fa-edit"></i> Modifier la chambre
+                            </a>
+                            
+                            <form th:action="@{/chambres/{id}/toggle-disponibilite(id=${chambre.id})}" 
+                                  method="post">
+                                <button type="submit" 
+                                        th:class="${chambre.disponible} ? 'btn btn-danger w-100' : 'btn btn-success w-100'">
+                                    <i th:class="${chambre.disponible} ? 'fas fa-ban' : 'fas fa-check'"></i>
+                                    <span th:text="${chambre.disponible} ? 'Marquer comme occupée' : 'Marquer comme disponible'">
+                                        Changer statut
+                                    </span>
+                                </button>
+                            </form>
+                            
+                            <hr>
+                            
+                            <form th:action="@{/chambres/{id}/supprimer(id=${chambre.id})}" 
+                                  method="post" 
+                                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer définitivement cette chambre ?')">
+                                <button type="submit" class="btn btn-outline-danger w-100">
+                                    <i class="fas fa-trash"></i> Supprimer la chambre
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Statistiques rapides -->
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h6><i class="fas fa-chart-bar"></i> Informations rapides</h6>
+                    </div>
+                    <div class="card-body">
+                        <small class="text-muted">
+                            <i class="fas fa-id-badge"></i> ID: <span th:text="${chambre.id}">1</span><br>
+                            <i class="fas fa-euro-sign"></i> Prix/mois: 
+                            <span th:text="${#numbers.formatDecimal(chambre.prix * 30, 0, 0)}">3000</span> €<br>
+                            <i class="fas fa-percentage"></i> Coût/personne: 
+                            <span th:text="${#numbers.formatDecimal(chambre.prix / chambre.capacite, 0, 2)}">50,00</span> €
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

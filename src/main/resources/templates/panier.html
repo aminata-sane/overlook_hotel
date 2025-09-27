@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Panier - Overlook Hotel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #e74c3c;
+            --accent-color: #f39c12;
+            --success-color: #27ae60;
+            --light-bg: #ecf0f1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--light-bg);
+            min-height: 100vh;
+        }
+
+        .navbar-custom {
+            background: var(--primary-color) !important;
+            padding: 1rem 0;
+        }
+
+        .container-custom {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+
+        .panier-header {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+        }
+
+        .panier-title {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .panier-subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .panier-item {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .panier-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        .item-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .item-details h5 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .item-info {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .item-price {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+
+        .btn-remove {
+            background: var(--secondary-color);
+            border: none;
+            color: white;
+            border-radius: 8px;
+            padding: 8px 15px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-remove:hover {
+            background: #c0392b;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .panier-resume {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 2rem;
+        }
+
+        .resume-title {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .resume-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .resume-row:last-child {
+            border-bottom: none;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--secondary-color), var(--accent-color));
+            border: none;
+            border-radius: 12px;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+        }
+
+        .btn-outline-secondary {
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            border-radius: 12px;
+            padding: 15px 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-secondary:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+        }
+
+        .empty-cart-icon {
+            font-size: 4rem;
+            color: #ccc;
+            margin-bottom: 1rem;
+        }
+
+        .badge-custom {
+            background: var(--accent-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .login-prompt {
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid var(--secondary-color);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .login-prompt h5 {
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-hotel"></i> Overlook Hotel
+            </a>
+            <div class="ms-auto">
+                <a href="/" class="text-white text-decoration-none me-3">
+                    <i class="fas fa-home"></i> Accueil
+                </a>
+                <span class="text-white">
+                    <i class="fas fa-shopping-cart"></i> Mon Panier
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-custom">
+        <!-- En-tête du panier -->
+        <div class="panier-header">
+            <h1 class="panier-title">
+                <i class="fas fa-shopping-cart"></i> Mon Panier
+            </h1>
+            <p class="panier-subtitle" th:if="${!panier.estVide()}">
+                Vous avez <strong th:text="${panier.nombreItems}"></strong> réservation(s) dans votre panier
+            </p>
+        </div>
+
+        <!-- Messages d'erreur ou succès -->
+        <div th:if="${erreur}" class="alert alert-danger">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span th:text="${erreur}"></span>
+        </div>
+
+        <div th:if="${succes}" class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            <span th:text="${succes}"></span>
+        </div>
+
+        <!-- Invitation à se connecter -->
+        <div th:unless="${clientConnecte}" class="login-prompt">
+            <h5><i class="fas fa-user"></i> Connectez-vous pour finaliser vos réservations</h5>
+            <p>Vous devez être connecté pour confirmer vos réservations</p>
+            <a href="/connexion" class="btn btn-primary me-2">
+                <i class="fas fa-sign-in-alt"></i> Se connecter
+            </a>
+            <a href="/inscription" class="btn btn-outline-secondary">
+                <i class="fas fa-user-plus"></i> Créer un compte
+            </a>
+        </div>
+
+        <div class="row" th:if="${!panier.estVide()}">
+            <!-- Liste des items du panier -->
+            <div class="col-lg-8">
+                <div class="panier-item" th:each="item, iterStat : ${panier.items}">
+                    <div class="row align-items-center">
+                        <div class="col-md-3">
+                            <img th:src="${item.imageUrl}" alt="Chambre" class="item-image">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="item-details">
+                                <h5 th:text="${item.chambreNom}"></h5>
+                                <div class="item-info">
+                                    <i class="fas fa-bed"></i> <span th:text="${item.chambreType}"></span>
+                                </div>
+                                <div class="item-info">
+                                    <i class="fas fa-calendar-alt"></i> 
+                                    Du <span th:text="${#temporals.format(item.dateArrivee, 'dd/MM/yyyy')}"></span> 
+                                    au <span th:text="${#temporals.format(item.dateDepart, 'dd/MM/yyyy')}"></span>
+                                </div>
+                                <div class="item-info">
+                                    <i class="fas fa-moon"></i> <span th:text="${item.nombreNuits}"></span> nuit(s)
+                                </div>
+                                <div class="item-info">
+                                    <i class="fas fa-users"></i> 
+                                    <span th:text="${item.nombreAdultes}"></span> adulte(s)
+                                    <span th:if="${item.nombreEnfants > 0}" th:text="', ' + ${item.nombreEnfants} + ' enfant(s)'"></span>
+                                </div>
+                                <div class="item-info" th:if="${item.commentaires and !#strings.isEmpty(item.commentaires)}">
+                                    <i class="fas fa-comment"></i> <span th:text="${item.commentaires}"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2 text-center">
+                            <div class="item-price mb-2" th:text="${item.prixTotal} + '€'"></div>
+                            <div class="badge-custom" th:text="${item.prixParNuit} + '€/nuit'"></div>
+                        </div>
+                        <div class="col-md-1 text-center">
+                            <button class="btn btn-remove" th:onclick="'supprimerItem(' + ${iterStat.index} + ')'">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Résumé du panier -->
+            <div class="col-lg-4">
+                <div class="panier-resume">
+                    <h4 class="resume-title">
+                        <i class="fas fa-calculator"></i> Résumé
+                    </h4>
+                    
+                    <div class="resume-row">
+                        <span>Nombre de réservations :</span>
+                        <span th:text="${panier.nombreItems}"></span>
+                    </div>
+                    
+                    <div class="resume-row">
+                        <span>Total des nuits :</span>
+                        <span th:text="${panier.nombreTotalNuits}"></span>
+                    </div>
+                    
+                    <div class="resume-row">
+                        <span><strong>Prix total :</strong></span>
+                        <span><strong th:text="${panier.prixTotal} + '€'"></strong></span>
+                    </div>
+
+                    <div class="mt-4" th:if="${clientConnecte}">
+                        <div class="d-grid gap-2">
+                            <form th:action="@{/panier/finaliser}" method="post">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-check"></i> Finaliser les réservations
+                                </button>
+                            </form>
+                            <button class="btn btn-outline-secondary" onclick="viderPanier()">
+                                <i class="fas fa-trash"></i> Vider le panier
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <a href="/" class="btn btn-outline-secondary w-100">
+                            <i class="fas fa-arrow-left"></i> Continuer mes achats
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panier vide -->
+        <div th:if="${panier.estVide()}" class="empty-cart">
+            <div class="empty-cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+            </div>
+            <h3>Votre panier est vide</h3>
+            <p class="text-muted mb-4">Découvrez nos chambres d'exception et ajoutez vos réservations favorites</p>
+            <a href="/" class="btn btn-primary">
+                <i class="fas fa-bed"></i> Découvrir nos chambres
+            </a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Supprimer un item du panier
+        function supprimerItem(index) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer cette réservation de votre panier ?')) {
+                fetch(`/panier/supprimer/${index}`, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Erreur lors de la suppression : ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur:', error);
+                    alert('Une erreur est survenue');
+                });
+            }
+        }
+
+        // Vider le panier
+        function viderPanier() {
+            if (confirm('Êtes-vous sûr de vouloir vider complètement votre panier ?')) {
+                fetch('/panier/vider', {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Erreur lors du vidage : ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur:', error);
+                    alert('Une erreur est survenue');
+                });
+            }
+        }
+    </script>
+</body>
+</html>

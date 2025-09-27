@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Événements - Overlook Hotel</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; text-align: center; }
+        .stats { display: flex; justify-content: space-around; margin: 20px 0; }
+        .stat-card { background-color: #3498db; color: white; padding: 15px; border-radius: 5px; text-align: center; flex: 1; margin: 0 5px; }
+        .stat-card.success { background-color: #27ae60; }
+        .stat-card.warning { background-color: #f39c12; }
+        .stat-card.danger { background-color: #e74c3c; }
+        .actions { margin: 20px 0; text-align: center; }
+        .btn { padding: 10px 20px; margin: 5px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; }
+        .btn-primary { background-color: #3498db; color: white; }
+        .btn-success { background-color: #27ae60; color: white; }
+        .btn-warning { background-color: #f39c12; color: white; }
+        .btn-danger { background-color: #e74c3c; color: white; }
+        .btn:hover { opacity: 0.8; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f8f9fa; font-weight: bold; }
+        tr:hover { background-color: #f5f5f5; }
+        .status-planifie { color: #3498db; font-weight: bold; }
+        .status-en-cours { color: #27ae60; font-weight: bold; }
+        .status-termine { color: #7f8c8d; font-weight: bold; }
+        .status-annule { color: #e74c3c; font-weight: bold; }
+        .alert { padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .alert-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert-error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .nav-links { margin: 20px 0; text-align: center; }
+        .nav-links a { margin: 0 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎉 Gestion des Événements</h1>
+        
+        <!-- Messages d'alerte -->
+        <div th:if="${succes}" class="alert alert-success" th:text="${succes}"></div>
+        <div th:if="${erreur}" class="alert alert-error" th:text="${erreur}"></div>
+        
+        <!-- Statistiques -->
+        <div class="stats">
+            <div class="stat-card">
+                <h3 th:text="${nombreEvenements}">0</h3>
+                <p>Total Événements</p>
+            </div>
+            <div class="stat-card success">
+                <h3 th:text="${nombrePlanifies}">0</h3>
+                <p>Planifiés</p>
+            </div>
+            <div class="stat-card warning">
+                <h3 th:text="${nombreEnCours}">0</h3>
+                <p>En Cours</p>
+            </div>
+            <div class="stat-card danger">
+                <h3 th:text="${nombreTermines}">0</h3>
+                <p>Terminés</p>
+            </div>
+        </div>
+        
+        <!-- Actions -->
+        <div class="actions">
+            <a href="/evenements/nouveau" class="btn btn-primary">➕ Nouvel Événement</a>
+            <a href="/evenements/rechercher" class="btn btn-success">🔍 Rechercher</a>
+            <a href="/installations" class="btn btn-warning">🏢 Gérer Installations</a>
+        </div>
+        
+        <!-- Événements d'aujourd'hui -->
+        <div th:if="${evenementsAujourdhui != null and !evenementsAujourdhui.empty}">
+            <h2>📅 Événements d'aujourd'hui</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Titre</th>
+                        <th>Installation</th>
+                        <th>Participants</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="evenement : ${evenementsAujourdhui}">
+                        <td th:text="${evenement.titre}">Titre</td>
+                        <td th:text="${evenement.installation != null ? evenement.installation.nomComplet : 'Aucune'}">Installation</td>
+                        <td th:text="${evenement.nombreParticipants} + '/' + ${evenement.maxParticipants != null ? evenement.maxParticipants : '∞'}">0/∞</td>
+                        <td>
+                            <span th:class="'status-' + ${evenement.statut.name().toLowerCase().replace('_', '-')}" 
+                                  th:text="${evenement.statut.libelle}">Statut</span>
+                        </td>
+                        <td>
+                            <a th:href="@{'/evenements/' + ${evenement.id}}" class="btn btn-primary">👁️ Voir</a>
+                            <a th:href="@{'/evenements/' + ${evenement.id} + '/modifier'}" class="btn btn-warning">✏️ Modifier</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Liste de tous les événements -->
+        <h2>📋 Tous les Événements</h2>
+        <div th:if="${evenements != null and !evenements.empty}">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Titre</th>
+                        <th>Date Début</th>
+                        <th>Date Fin</th>
+                        <th>Installation</th>
+                        <th>Participants</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="evenement : ${evenements}">
+                        <td th:text="${evenement.id}">1</td>
+                        <td th:text="${evenement.titre}">Titre</td>
+                        <td th:text="${evenement.dateDebut}">2024-01-01</td>
+                        <td th:text="${evenement.dateFin != null ? evenement.dateFin : 'Non définie'}">2024-01-02</td>
+                        <td th:text="${evenement.installation != null ? evenement.installation.nomComplet : 'Aucune'}">Installation</td>
+                        <td th:text="${evenement.nombreParticipants} + '/' + ${evenement.maxParticipants != null ? evenement.maxParticipants : '∞'}">0/∞</td>
+                        <td>
+                            <span th:class="'status-' + ${evenement.statut.name().toLowerCase().replace('_', '-')}" 
+                                  th:text="${evenement.statut.libelle}">Statut</span>
+                        </td>
+                        <td>
+                            <a th:href="@{'/evenements/' + ${evenement.id}}" class="btn btn-primary">👁️ Voir</a>
+                            <a th:href="@{'/evenements/' + ${evenement.id} + '/modifier'}" class="btn btn-warning">✏️ Modifier</a>
+                            <form style="display:inline;" th:action="@{'/evenements/' + ${evenement.id} + '/supprimer'}" method="post" 
+                                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet événement ?')">
+                                <button type="submit" class="btn btn-danger">🗑️ Supprimer</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div th:if="${evenements == null or evenements.empty}">
+            <p style="text-align: center; color: #7f8c8d; font-style: italic;">
+                Aucun événement trouvé. <a href="/evenements/nouveau">Créer le premier événement</a>
+            </p>
+        </div>
+        
+        <!-- Navigation -->
+        <div class="nav-links">
+            <a href="/" class="btn btn-primary">🏠 Accueil</a>
+            <a href="/clients" class="btn btn-success">👥 Clients</a>
+            <a href="/chambres" class="btn btn-warning">🏠 Chambres</a>
+            <a href="/employes" class="btn btn-primary">👨‍💼 Employés</a>
+            <a href="/installations" class="btn btn-success">🏢 Installations</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Réservation - Overlook Hotel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #e74c3c;
+            --accent-color: #f39c12;
+            --light-bg: #ecf0f1;
+            --dark-bg: #34495e;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--dark-bg) 100%);
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+
+        .reservation-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .reservation-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .chamber-info {
+            background: linear-gradient(135deg, var(--accent-color), var(--secondary-color));
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .chamber-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .chamber-price {
+            font-size: 1.5rem;
+            font-weight: 600;
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 50px;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .form-section {
+            padding: 2rem;
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--accent-color);
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-control, .form-select {
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 15px 20px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 0.2rem rgba(243, 156, 18, 0.25);
+            background: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--secondary-color), var(--accent-color));
+            border: none;
+            border-radius: 12px;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+        }
+
+        .btn-outline-secondary {
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            border-radius: 12px;
+            padding: 15px 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-secondary:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .alert {
+            border-radius: 12px;
+            border: none;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .guest-info {
+            background: var(--light-bg);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .date-summary {
+            background: rgba(243, 156, 18, 0.1);
+            border-left: 4px solid var(--accent-color);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .pricing-summary {
+            background: var(--light-bg);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .total-price {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            border-top: 2px solid var(--accent-color);
+            padding-top: 0.75rem;
+        }
+
+        .login-section {
+            background: rgba(44, 62, 80, 0.05);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 2px dashed var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="reservation-container">
+        <!-- Informations sur la chambre -->
+        <div class="reservation-card">
+            <div class="chamber-info">
+                <div class="chamber-title">
+                    <i class="fas fa-bed"></i>
+                    <span th:text="${chambre.description != null and chambre.description.contains(' - ') ? chambre.description.substring(0, chambre.description.indexOf(' - ')) : 'Chambre ' + chambre.type.libelle + ' - ' + chambre.numero}"></span>
+                </div>
+                <div class="chamber-price">
+                    <i class="fas fa-euro-sign"></i> <span th:text="${chambre.prix}"></span>€ / nuit
+                </div>
+                <p th:text="${chambre.description}"></p>
+            </div>
+        </div>
+
+        <!-- Messages d'erreur ou succès -->
+        <div th:if="${erreur}" class="alert alert-danger">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span th:text="${erreur}"></span>
+        </div>
+
+        <div th:if="${succes}" class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            <span th:text="${succes}"></span>
+        </div>
+
+        <!-- Section pour client connecté -->
+        <div th:if="${clientConnecte}" class="reservation-card">
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-user-check"></i> Connecté en tant que <span th:text="${clientConnecte.prenom + ' ' + clientConnecte.nom}"></span>
+                </h3>
+                
+                <form th:action="@{/panier/ajouter}" method="post" th:object="${reservation}" id="reservationForm">
+                    <input type="hidden" name="chambreId" th:value="${chambre.id}">
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="dateArrivee" class="form-label">
+                                    <i class="fas fa-calendar-alt"></i> Date d'arrivée
+                                </label>
+                                <input type="date" class="form-control" id="dateArrivee" 
+                                       th:field="*{dateArrivee}" th:min="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="dateDepart" class="form-label">
+                                    <i class="fas fa-calendar-alt"></i> Date de départ
+                                </label>
+                                <input type="date" class="form-control" id="dateDepart" 
+                                       th:field="*{dateDepart}" th:min="${#temporals.format(#temporals.createNow().plusDays(1), 'yyyy-MM-dd')}" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="nombreAdultes" class="form-label">
+                                    <i class="fas fa-users"></i> Nombre d'adultes
+                                </label>
+                                <select class="form-select" id="nombreAdultes" th:field="*{nombreAdultes}" required>
+                                    <option value="1">1 adulte</option>
+                                    <option value="2">2 adultes</option>
+                                    <option value="3">3 adultes</option>
+                                    <option value="4">4 adultes</option>
+                                    <option value="5">5 adultes</option>
+                                    <option value="6">6 adultes</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="nombreEnfants" class="form-label">
+                                    <i class="fas fa-child"></i> Nombre d'enfants
+                                </label>
+                                <select class="form-select" id="nombreEnfants" th:field="*{nombreEnfants}">
+                                    <option value="0">0 enfant</option>
+                                    <option value="1">1 enfant</option>
+                                    <option value="2">2 enfants</option>
+                                    <option value="3">3 enfants</option>
+                                    <option value="4">4 enfants</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="commentaires" class="form-label">
+                            <i class="fas fa-comment"></i> Commentaires ou demandes spéciales (optionnel)
+                        </label>
+                        <textarea class="form-control" id="commentaires" th:field="*{commentaires}" rows="3"
+                                  placeholder="Lit bébé, étage élevé, vue mer, allergies alimentaires..."></textarea>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="/" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left"></i> Retour
+                        </a>
+                        <button type="submit" class="btn btn-primary" id="btnAjouterPanier">
+                            <i class="fas fa-shopping-cart"></i> Ajouter au panier
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Section pour client non connecté -->
+        <div th:unless="${clientConnecte}" class="reservation-card">
+            <div class="form-section">
+                <div class="login-section">
+                    <h4><i class="fas fa-info-circle"></i> Vous devez être connecté pour réserver</h4>
+                    <p>Vous avez déjà un compte ? <a href="/connexion" class="fw-bold text-decoration-none">Connectez-vous ici</a></p>
+                    <p>Pas encore de compte ? Remplissez le formulaire ci-dessous pour créer votre compte et réserver en une seule étape !</p>
+                </div>
+
+                <h3 class="section-title">
+                    <i class="fas fa-user-plus"></i> Créer un compte et réserver
+                </h3>
+                
+                <form th:action="@{/reservation/avec-inscription}" method="post">
+                    <input type="hidden" name="chambreId" th:value="${chambre.id}">
+                    
+                    <!-- Informations client -->
+                    <div class="guest-info">
+                        <h5><i class="fas fa-user"></i> Vos informations</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="nom" class="form-label">
+                                        <i class="fas fa-user"></i> Nom
+                                    </label>
+                                    <input type="text" class="form-control" id="nom" name="client.nom" 
+                                           placeholder="Votre nom de famille" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="prenom" class="form-label">
+                                        <i class="fas fa-user"></i> Prénom
+                                    </label>
+                                    <input type="text" class="form-control" id="prenom" name="client.prenom" 
+                                           placeholder="Votre prénom" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">
+                                        <i class="fas fa-envelope"></i> Email
+                                    </label>
+                                    <input type="email" class="form-control" id="email" name="client.email" 
+                                           placeholder="votre@email.com" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="telephone" class="form-label">
+                                        <i class="fas fa-phone"></i> Téléphone
+                                    </label>
+                                    <input type="tel" class="form-control" id="telephone" name="client.telephone" 
+                                           placeholder="+33 1 23 45 67 89">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="motDePasse" class="form-label">
+                                <i class="fas fa-lock"></i> Mot de passe
+                            </label>
+                            <input type="password" class="form-control" id="motDePasse" name="client.motDePasse" 
+                                   placeholder="Minimum 6 caractères" required minlength="6">
+                        </div>
+                    </div>
+
+                    <!-- Informations réservation -->
+                    <div class="guest-info">
+                        <h5><i class="fas fa-calendar"></i> Détails de votre séjour</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="dateArrivee2" class="form-label">
+                                        <i class="fas fa-calendar-alt"></i> Date d'arrivée
+                                    </label>
+                                    <input type="date" class="form-control" id="dateArrivee2" 
+                                           name="reservation.dateArrivee" th:min="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="dateDepart2" class="form-label">
+                                        <i class="fas fa-calendar-alt"></i> Date de départ
+                                    </label>
+                                    <input type="date" class="form-control" id="dateDepart2" 
+                                           name="reservation.dateDepart" th:min="${#temporals.format(#temporals.createNow().plusDays(1), 'yyyy-MM-dd')}" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="nombreAdultes2" class="form-label">
+                                        <i class="fas fa-users"></i> Nombre d'adultes
+                                    </label>
+                                    <select class="form-select" id="nombreAdultes2" name="reservation.nombreAdultes" required>
+                                        <option value="1" selected>1 adulte</option>
+                                        <option value="2">2 adultes</option>
+                                        <option value="3">3 adultes</option>
+                                        <option value="4">4 adultes</option>
+                                        <option value="5">5 adultes</option>
+                                        <option value="6">6 adultes</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="nombreEnfants2" class="form-label">
+                                        <i class="fas fa-child"></i> Nombre d'enfants
+                                    </label>
+                                    <select class="form-select" id="nombreEnfants2" name="reservation.nombreEnfants">
+                                        <option value="0" selected>0 enfant</option>
+                                        <option value="1">1 enfant</option>
+                                        <option value="2">2 enfants</option>
+                                        <option value="3">3 enfants</option>
+                                        <option value="4">4 enfants</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="commentaires2" class="form-label">
+                                <i class="fas fa-comment"></i> Commentaires ou demandes spéciales (optionnel)
+                            </label>
+                            <textarea class="form-control" id="commentaires2" name="reservation.commentaires" rows="3"
+                                      placeholder="Lit bébé, étage élevé, vue mer, allergies alimentaires..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="/" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left"></i> Retour
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-user-plus"></i> Créer compte et réserver
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Modal pour confirmation d'ajout au panier -->
+    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="confirmationModalLabel">
+                        <i class="fas fa-check-circle"></i> Ajouté au panier !
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-shopping-cart text-success" style="font-size: 3rem;"></i>
+                        </div>
+                        <h6 id="modal-message">Votre réservation a été ajoutée au panier avec succès !</h6>
+                        <div id="modal-details" class="mt-3 text-muted">
+                            <!-- Détails de la réservation -->
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-arrow-left"></i> Continuer mes achats
+                    </button>
+                    <a href="/panier" class="btn btn-primary">
+                        <i class="fas fa-shopping-cart"></i> Voir mon panier
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Indicateur de panier dans la navigation -->
+    <div id="cart-indicator" style="position: fixed; top: 20px; right: 20px; z-index: 1050; display: none;">
+        <a href="/panier" class="btn btn-primary rounded-pill shadow">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="badge bg-danger ms-1" id="cart-count">0</span>
+        </a>
+    </div>
+
+    <script>
+        // Variables globales
+        let cartCount = 0;
+        let cartTotal = 0;
+
+        // Validation des dates
+        document.addEventListener('DOMContentLoaded', function() {
+            const dateArriveeInputs = document.querySelectorAll('input[type="date"][name*="dateArrivee"], input[type="date"][id*="dateArrivee"]');
+            const dateDepartInputs = document.querySelectorAll('input[type="date"][name*="dateDepart"], input[type="date"][id*="dateDepart"]');
+            
+            dateArriveeInputs.forEach((arriveeInput, index) => {
+                const departInput = dateDepartInputs[index];
+                
+                arriveeInput.addEventListener('change', function() {
+                    if (departInput && this.value) {
+                        const dateArrivee = new Date(this.value);
+                        const minDepart = new Date(dateArrivee);
+                        minDepart.setDate(minDepart.getDate() + 1);
+                        
+                        departInput.min = minDepart.toISOString().split('T')[0];
+                        
+                        if (departInput.value && new Date(departInput.value) <= dateArrivee) {
+                            departInput.value = minDepart.toISOString().split('T')[0];
+                        }
+                    }
+                });
+            });
+
+            // Gestion du formulaire de réservation (client connecté)
+            const reservationForm = document.getElementById('reservationForm');
+            if (reservationForm) {
+                reservationForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    ajouterAuPanier(this);
+                });
+            }
+
+            // Charger le compteur de panier depuis le serveur
+            chargerCompteurPanier();
+        });
+
+        // Fonction pour ajouter au panier via AJAX
+        function ajouterAuPanier(form) {
+            const btn = form.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+            
+            // Désactiver le bouton et afficher un loader
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Ajout en cours...';
+            
+            // Préparer les données du formulaire
+            const formData = new FormData(form);
+            
+            // Envoyer la requête AJAX
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                
+                if (data.success) {
+                    // Mettre à jour le compteur de panier
+                    cartCount = data.nombreItems;
+                    cartTotal = data.prixTotal;
+                    mettreAJourIndicateurPanier();
+                    
+                    // Afficher le modal de confirmation
+                    document.getElementById('modal-message').textContent = data.message;
+                    document.getElementById('modal-details').innerHTML = `
+                        <strong>${data.item.chambreNom}</strong><br>
+                        ${data.item.nombreNuits} nuit(s) - ${data.item.prixTotal}€
+                    `;
+                    
+                    const modal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+                    modal.show();
+                    
+                    // Animation de succès sur le bouton
+                    btn.classList.add('btn-success');
+                    btn.innerHTML = '<i class="fas fa-check"></i> Ajouté !';
+                    setTimeout(() => {
+                        btn.classList.remove('btn-success');
+                        btn.innerHTML = originalText;
+                    }, 2000);
+                    
+                } else {
+                    // Afficher l'erreur
+                    alert('Erreur: ' + data.message);
+                }
+            })
+            .catch(error => {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                console.error('Erreur:', error);
+                alert('Une erreur est survenue lors de l\'ajout au panier.');
+            });
+        }
+
+        // Mettre à jour l'indicateur de panier
+        function mettreAJourIndicateurPanier() {
+            const cartIndicator = document.getElementById('cart-indicator');
+            const cartCountElement = document.getElementById('cart-count');
+            
+            if (cartCount > 0) {
+                cartIndicator.style.display = 'block';
+                cartCountElement.textContent = cartCount;
+                
+                // Animation de bouncing
+                cartIndicator.style.animation = 'bounce 0.6s ease-in-out';
+                setTimeout(() => {
+                    cartIndicator.style.animation = '';
+                }, 600);
+            } else {
+                cartIndicator.style.display = 'none';
+            }
+        }
+
+        // Charger le compteur de panier depuis le serveur
+        function chargerCompteurPanier() {
+            fetch('/panier/count', {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    cartCount = data.nombreItems;
+                    cartTotal = data.prixTotal;
+                    mettreAJourIndicateurPanier();
+                }
+            })
+            .catch(error => {
+                console.log('Pas de panier existant');
+            });
+        }
+    </script>
+
+    <style>
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+        
+        #cart-indicator {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</body>
+</html>

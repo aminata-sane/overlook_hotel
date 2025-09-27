@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détails de la Carte de Fidélité - Overlook Hotel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .card-fidelite {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .niveau-badge {
+            font-size: 1.2rem;
+            padding: 10px 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-10 offset-md-1">
+                <!-- Messages d'alerte -->
+                <div th:if="${succes}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle"></i> <span th:text="${succes}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                <div th:if="${erreur}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle"></i> <span th:text="${erreur}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+                <!-- Carte de fidélité principale -->
+                <div class="card card-fidelite mb-4">
+                    <div class="card-body text-center">
+                        <h3 class="mb-3">
+                            <i class="fas fa-award"></i> 
+                            Carte de Fidélité
+                        </h3>
+                        <h4 th:text="${fidelite.client.prenom + ' ' + fidelite.client.nom}"></h4>
+                        <p class="mb-4" th:text="${fidelite.client.email}"></p>
+                        
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h2 th:text="${fidelite.points}">0</h2>
+                                <small>Points Total</small>
+                            </div>
+                            <div class="col-md-4">
+                                <span class="badge niveau-badge"
+                                      th:class="${fidelite.niveauFidelite.name() == 'BRONZE'} ? 'badge niveau-badge' : 
+                                                ${fidelite.niveauFidelite.name() == 'ARGENT'} ? 'badge bg-secondary niveau-badge' : 
+                                                ${fidelite.niveauFidelite.name() == 'OR'} ? 'badge bg-warning niveau-badge' : 
+                                                ${fidelite.niveauFidelite.name() == 'PLATINE'} ? 'badge bg-info niveau-badge' : 
+                                                'badge bg-light text-dark niveau-badge'"
+                                      th:text="${fidelite.niveauFidelite.libelle}">
+                                </span>
+                            </div>
+                            <div class="col-md-4" th:if="${fidelite.pointsJusquProchainNiveau > 0}">
+                                <h5 th:text="${fidelite.pointsJusquProchainNiveau}">0</h5>
+                                <small>Points jusqu'au prochain niveau</small>
+                            </div>
+                            <div class="col-md-4" th:if="${fidelite.pointsJusquProchainNiveau == 0}">
+                                <i class="fas fa-crown fa-2x text-warning"></i>
+                                <br><small>Niveau Maximum</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Détails complets -->
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Informations détaillées</h5>
+                        <div>
+                            <a th:href="@{/fidelite/{id}/ajouter-points(id=${fidelite.id})}" class="btn btn-success btn-sm">
+                                <i class="fas fa-plus"></i> Ajouter Points
+                            </a>
+                            <a th:href="@{/fidelite/{id}/retirer-points(id=${fidelite.id})}" class="btn btn-warning btn-sm">
+                                <i class="fas fa-minus"></i> Retirer Points
+                            </a>
+                            <a th:href="@{/fidelite/{id}/modifier(id=${fidelite.id})}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-edit"></i> Modifier
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-sm-3"><strong>ID Carte :</strong></div>
+                            <div class="col-sm-9" th:text="${fidelite.id}"></div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-sm-3"><strong>Client :</strong></div>
+                            <div class="col-sm-9">
+                                <strong th:text="${fidelite.client.prenom + ' ' + fidelite.client.nom}"></strong><br>
+                                <small class="text-muted" th:text="${fidelite.client.email}"></small>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-sm-3"><strong>Points actuels :</strong></div>
+                            <div class="col-sm-9">
+                                <span class="badge bg-success fs-6" th:text="${fidelite.points + ' points'}"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-sm-3"><strong>Niveau actuel :</strong></div>
+                            <div class="col-sm-9">
+                                <span class="badge fs-6"
+                                      th:class="${fidelite.niveauFidelite.name() == 'BRONZE'} ? 'badge' : 
+                                                ${fidelite.niveauFidelite.name() == 'ARGENT'} ? 'badge bg-secondary' : 
+                                                ${fidelite.niveauFidelite.name() == 'OR'} ? 'badge bg-warning' : 
+                                                ${fidelite.niveauFidelite.name() == 'PLATINE'} ? 'badge bg-info' : 
+                                                'badge bg-primary'"
+                                      th:text="${fidelite.niveauFidelite.libelle}">
+                                </span>
+                                <small class="text-muted ms-2" 
+                                       th:text="'(' + ${fidelite.niveauFidelite.seuilMin} + ' - ' + ${fidelite.niveauFidelite.seuilMax} + ' pts)'"></small>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3" th:if="${fidelite.pointsJusquProchainNiveau > 0}">
+                            <div class="col-sm-3"><strong>Progression :</strong></div>
+                            <div class="col-sm-9">
+                                <div class="progress mb-2">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                         th:style="'width: ' + ${fidelite.pourcentageVersProchainNiveau} + '%'"
+                                         th:text="${#numbers.formatDecimal(fidelite.pourcentageVersProchainNiveau, 0, 1)} + '%'">
+                                    </div>
+                                </div>
+                                <small class="text-muted" 
+                                       th:text="${fidelite.pointsJusquProchainNiveau} + ' points jusqu\\'au prochain niveau'"></small>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-sm-3"><strong>Date de création :</strong></div>
+                            <div class="col-sm-9" th:text="${#temporals.format(fidelite.dateCreation, 'dd/MM/yyyy HH:mm')}"></div>
+                        </div>
+                        
+                        <div class="row mb-3" th:if="${fidelite.dateDerniereModification != null}">
+                            <div class="col-sm-3"><strong>Dernière modification :</strong></div>
+                            <div class="col-sm-9" th:text="${#temporals.format(fidelite.dateDerniereModification, 'dd/MM/yyyy HH:mm')}"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-footer">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                    <i class="fas fa-trash"></i> Supprimer la carte
+                                </button>
+                            </div>
+                            <div>
+                                <a href="/fidelite" class="btn btn-secondary">
+                                    <i class="fas fa-list"></i> Retour à la liste
+                                </a>
+                                <a th:href="@{/fidelite/{id}/modifier(id=${fidelite.id})}" class="btn btn-primary">
+                                    <i class="fas fa-edit"></i> Modifier
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmation de suppression -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Confirmer la suppression</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Êtes-vous sûr de vouloir supprimer cette carte de fidélité ? 
+                    Tous les points seront perdus et cette action est irréversible.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <form th:action="@{/fidelite/{id}/supprimer(id=${fidelite.id})}" method="post" style="display: inline;">
+                        <button type="submit" class="btn btn-danger">Supprimer définitivement</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

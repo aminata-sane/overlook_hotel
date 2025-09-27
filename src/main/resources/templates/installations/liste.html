@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Installations - Overlook Hotel</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; text-align: center; }
+        .stats { display: flex; justify-content: space-around; margin: 20px 0; }
+        .stat-card { background-color: #3498db; color: white; padding: 15px; border-radius: 5px; text-align: center; flex: 1; margin: 0 5px; }
+        .stat-card.success { background-color: #27ae60; }
+        .stat-card.warning { background-color: #f39c12; }
+        .stat-card.info { background-color: #17a2b8; }
+        .actions { margin: 20px 0; text-align: center; }
+        .btn { padding: 10px 20px; margin: 5px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; }
+        .btn-primary { background-color: #3498db; color: white; }
+        .btn-success { background-color: #27ae60; color: white; }
+        .btn-warning { background-color: #f39c12; color: white; }
+        .btn-danger { background-color: #e74c3c; color: white; }
+        .btn:hover { opacity: 0.8; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f8f9fa; font-weight: bold; }
+        tr:hover { background-color: #f5f5f5; }
+        .disponible { color: #27ae60; font-weight: bold; }
+        .indisponible { color: #e74c3c; font-weight: bold; }
+        .alert { padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .alert-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert-error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .nav-links { margin: 20px 0; text-align: center; }
+        .nav-links a { margin: 0 10px; }
+        .type-badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+        .type-salle-conference { background-color: #3498db; color: white; }
+        .type-salle-reunion { background-color: #9b59b6; color: white; }
+        .type-restaurant { background-color: #e67e22; color: white; }
+        .type-bar { background-color: #34495e; color: white; }
+        .type-spa { background-color: #1abc9c; color: white; }
+        .type-piscine { background-color: #3498db; color: white; }
+        .type-autre { background-color: #95a5a6; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏢 Gestion des Installations</h1>
+        
+        <!-- Messages d'alerte -->
+        <div th:if="${succes}" class="alert alert-success" th:text="${succes}"></div>
+        <div th:if="${erreur}" class="alert alert-error" th:text="${erreur}"></div>
+        
+        <!-- Statistiques -->
+        <div class="stats">
+            <div class="stat-card">
+                <h3 th:text="${nombreInstallations}">0</h3>
+                <p>Total Installations</p>
+            </div>
+            <div class="stat-card success">
+                <h3 th:text="${nombreDisponibles}">0</h3>
+                <p>Disponibles</p>
+            </div>
+            <div class="stat-card warning">
+                <h3 th:text="${nombreSallesConference}">0</h3>
+                <p>Salles de Conférence</p>
+            </div>
+            <div class="stat-card info">
+                <h3 th:text="${nombreRestaurants}">0</h3>
+                <p>Restaurants</p>
+            </div>
+        </div>
+        
+        <!-- Actions -->
+        <div class="actions">
+            <a href="/installations/nouvelle" class="btn btn-primary">➕ Nouvelle Installation</a>
+            <a href="/installations/rechercher" class="btn btn-success">🔍 Rechercher</a>
+            <a href="/installations/disponibles" class="btn btn-warning">✅ Disponibles Seulement</a>
+            <a href="/evenements" class="btn btn-primary">🎉 Voir les Événements</a>
+        </div>
+        
+        <!-- Liste des installations -->
+        <h2>📋 Toutes les Installations</h2>
+        <div th:if="${installations != null and !installations.empty}">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Type</th>
+                        <th>Capacité</th>
+                        <th>Description</th>
+                        <th>Disponibilité</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="installation : ${installations}">
+                        <td th:text="${installation.id}">1</td>
+                        <td th:text="${installation.nom}">Nom</td>
+                        <td>
+                            <span th:if="${installation.type}" 
+                                  th:class="'type-badge type-' + ${installation.type.name().toLowerCase().replace('_', '-')}"
+                                  th:text="${installation.type.libelle}">Type</span>
+                        </td>
+                        <td th:text="${installation.capacite != null ? installation.capacite + ' personnes' : 'Non définie'}">Capacité</td>
+                        <td th:text="${installation.description != null ? (installation.description.length() > 50 ? installation.description.substring(0, 50) + '...' : installation.description) : 'Aucune'}">Description</td>
+                        <td>
+                            <span th:class="${installation.estDisponible() ? 'disponible' : 'indisponible'}"
+                                  th:text="${installation.estDisponible() ? '✅ Disponible' : '❌ Indisponible'}">Statut</span>
+                        </td>
+                        <td>
+                            <a th:href="@{'/installations/' + ${installation.id}}" class="btn btn-primary">👁️ Voir</a>
+                            <a th:href="@{'/installations/' + ${installation.id} + '/modifier'}" class="btn btn-warning">✏️ Modifier</a>
+                            
+                            <!-- Bouton de changement de disponibilité -->
+                            <form style="display:inline;" th:action="@{'/installations/' + ${installation.id} + '/changer-disponibilite'}" method="post">
+                                <input type="hidden" name="disponible" th:value="${!installation.estDisponible()}">
+                                <button type="submit" 
+                                        th:class="${installation.estDisponible() ? 'btn btn-warning' : 'btn btn-success'}"
+                                        th:text="${installation.estDisponible() ? '🚫 Désactiver' : '✅ Activer'}">
+                                    Changer
+                                </button>
+                            </form>
+                            
+                            <form style="display:inline;" th:action="@{'/installations/' + ${installation.id} + '/supprimer'}" method="post" 
+                                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette installation ?')">
+                                <button type="submit" class="btn btn-danger">🗑️ Supprimer</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div th:if="${installations == null or installations.empty}">
+            <p style="text-align: center; color: #7f8c8d; font-style: italic;">
+                Aucune installation trouvée. <a href="/installations/nouvelle">Créer la première installation</a>
+            </p>
+        </div>
+        
+        <!-- Navigation -->
+        <div class="nav-links">
+            <a href="/" class="btn btn-primary">🏠 Accueil</a>
+            <a href="/clients" class="btn btn-success">👥 Clients</a>
+            <a href="/chambres" class="btn btn-warning">🏠 Chambres</a>
+            <a href="/employes" class="btn btn-primary">👨‍💼 Employés</a>
+            <a href="/evenements" class="btn btn-success">🎉 Événements</a>
+        </div>
+    </div>
+</body>
+</html>

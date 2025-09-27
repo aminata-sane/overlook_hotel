@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détails du feedback - Overlook Hotel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-10 offset-md-1">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">Détails du feedback</h4>
+                        <div>
+                            <a th:href="@{/feedbacks/{id}/modifier(id=${feedback.id})}" class="btn btn-warning btn-sm">
+                                <i class="fas fa-edit"></i> Modifier
+                            </a>
+                            <a href="/feedbacks" class="btn btn-secondary btn-sm">
+                                <i class="fas fa-arrow-left"></i> Retour
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-sm-3"><strong>ID :</strong></div>
+                            <div class="col-sm-9" th:text="${feedback.id}"></div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-sm-3"><strong>Client :</strong></div>
+                            <div class="col-sm-9">
+                                <a th:href="@{/clients/{id}(id=${feedback.client.id})}" 
+                                   th:text="${feedback.client.prenom + ' ' + feedback.client.nom}"></a>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-sm-3"><strong>Type :</strong></div>
+                            <div class="col-sm-9">
+                                <span class="badge bg-primary" th:text="${feedback.type.libelle}"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-sm-3"><strong>Note :</strong></div>
+                            <div class="col-sm-9">
+                                <div th:if="${feedback.note != null}">
+                                    <span th:each="i : ${#numbers.sequence(1, feedback.note)}" class="text-warning">
+                                        <i class="fas fa-star"></i>
+                                    </span>
+                                    <span th:each="i : ${#numbers.sequence(feedback.note + 1, 5)}" class="text-muted">
+                                        <i class="far fa-star"></i>
+                                    </span>
+                                    <span class="ms-2" th:text="${feedback.note + '/5'}"></span>
+                                </div>
+                                <span th:if="${feedback.note == null}" class="text-muted">Aucune note</span>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-sm-3"><strong>Statut :</strong></div>
+                            <div class="col-sm-9">
+                                <span class="badge" 
+                                      th:class="${feedback.statut.name() == 'EN_ATTENTE'} ? 'badge bg-warning' : 
+                                                ${feedback.statut.name() == 'EN_COURS'} ? 'badge bg-info' : 
+                                                ${feedback.statut.name() == 'RESOLU'} ? 'badge bg-success' : 
+                                                'badge bg-secondary'"
+                                      th:text="${feedback.statut.libelle}">
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-sm-3"><strong>Date de création :</strong></div>
+                            <div class="col-sm-9" th:text="${#temporals.format(feedback.dateCreation, 'dd/MM/yyyy HH:mm')}"></div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-sm-3"><strong>Employé assigné :</strong></div>
+                            <div class="col-sm-9">
+                                <span th:if="${feedback.employe != null}">
+                                    <a th:href="@{/employes/{id}(id=${feedback.employe.id})}" 
+                                       th:text="${feedback.employe.prenom + ' ' + feedback.employe.nom}"></a>
+                                    <small class="text-muted" th:text="'(' + ${feedback.employe.poste.libelle} + ')'"></small>
+                                </span>
+                                <span th:if="${feedback.employe == null}" class="text-muted">Aucun employé assigné</span>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-sm-3"><strong>Commentaire :</strong></div>
+                            <div class="col-sm-9">
+                                <div class="p-3 bg-light rounded">
+                                    <p th:text="${feedback.commentaire}" style="white-space: pre-wrap;"></p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3" th:if="${feedback.reponse != null}">
+                            <div class="col-sm-3"><strong>Réponse :</strong></div>
+                            <div class="col-sm-9">
+                                <div class="p-3 bg-success bg-opacity-10 border border-success rounded">
+                                    <p th:text="${feedback.reponse}" style="white-space: pre-wrap;"></p>
+                                    <small class="text-muted" th:if="${feedback.dateReponse != null}" 
+                                           th:text="'Répondu le ' + ${#temporals.format(feedback.dateReponse, 'dd/MM/yyyy HH:mm')}"></small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-footer">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                    <i class="fas fa-trash"></i> Supprimer
+                                </button>
+                            </div>
+                            <div>
+                                <a th:href="@{/feedbacks/{id}/modifier(id=${feedback.id})}" class="btn btn-warning">
+                                    <i class="fas fa-edit"></i> Modifier
+                                </a>
+                                <a href="/feedbacks" class="btn btn-primary">
+                                    <i class="fas fa-list"></i> Liste des feedbacks
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmation de suppression -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Confirmer la suppression</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Êtes-vous sûr de vouloir supprimer ce feedback ? Cette action est irréversible.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <form th:action="@{/feedbacks/{id}/supprimer(id=${feedback.id})}" method="post" style="display: inline;">
+                        <button type="submit" class="btn btn-danger">Supprimer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+</body>
+</html>

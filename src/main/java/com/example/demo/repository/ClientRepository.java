@@ -19,4 +19,10 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     List<Client> findByNomContaining(String nom);
     Optional<Client> findByEmailAndMotDePasse(String email, String motDePasse);
     
+    // Méthodes de comptage
+    long countByStatut(StatutClient statut);
+    
+    // Méthodes de recherche avancée
+    List<Client> findByNomContainingOrPrenomContainingOrEmailContaining(String nom, String prenom, String email);
+    
 }

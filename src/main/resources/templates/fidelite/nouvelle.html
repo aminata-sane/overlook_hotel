@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nouvelle Carte de Fidélité - Overlook Hotel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="mb-0">Créer une nouvelle carte de fidélité</h4>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/fidelite/nouvelle}" th:object="${fidelite}" method="post">
+                            <div class="mb-3">
+                                <label for="clientId" class="form-label">Client <span class="text-danger">*</span></label>
+                                <select class="form-select" id="clientId" name="clientId" required>
+                                    <option value="">-- Sélectionner un client --</option>
+                                    <option th:each="client : ${clients}" 
+                                            th:value="${client.id}" 
+                                            th:text="${client.prenom + ' ' + client.nom + ' (' + client.email + ')'}"></option>
+                                </select>
+                                <div class="form-text">Sélectionnez le client pour cette carte de fidélité</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="points" class="form-label">Points initiaux</label>
+                                <input type="number" class="form-control" id="points" th:field="*{points}" min="0" value="0">
+                                <div class="form-text">Nombre de points à attribuer lors de la création (optionnel)</div>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('points')}" th:errors="*{points}"></div>
+                            </div>
+                            
+                            <div class="alert alert-info">
+                                <h6><i class="fas fa-info-circle"></i> Niveaux de fidélité :</h6>
+                                <ul class="mb-0">
+                                    <li><strong>Bronze :</strong> 0 - 999 points</li>
+                                    <li><strong>Argent :</strong> 1000 - 2499 points</li>
+                                    <li><strong>Or :</strong> 2500 - 4999 points</li>
+                                    <li><strong>Platine :</strong> 5000 - 9999 points</li>
+                                    <li><strong>Diamant :</strong> 10000+ points</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between">
+                                <a href="/fidelite" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left"></i> Annuler
+                                </a>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-save"></i> Créer la carte
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+</body>
+</html>

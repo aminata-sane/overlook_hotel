@@ -1,19 +1,58 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Overlook Hotel - Accueil</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+        .user-info { background-color: #e8f5e8; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+        .success { color: green; margin-bottom: 15px; font-weight: bold; }
+        .error { color: red; margin-bottom: 15px; font-weight: bold; }
+        nav ul { list-style: none; padding: 0; }
+        nav li { margin: 10px 0; }
+        nav a { text-decoration: none; color: #007bff; font-size: 18px; }
+        nav a:hover { text-decoration: underline; }
+        .logout-btn { background-color: #dc3545; color: white; padding: 5px 10px; text-decoration: none; border-radius: 3px; font-size: 14px; }
+    </style>
 </head>
 <body>
     <h1>🏨 Bienvenue à l'Overlook Hotel</h1>
-    <p>Votre application Spring Boot fonctionne parfaitement !</p>
+    
+    <!-- Messages de succès/erreur -->
+    <div th:if="${succes}" class="success" th:text="${succes}"></div>
+    <div th:if="${erreur}" class="error" th:text="${erreur}"></div>
+    
+    <!-- Informations utilisateur connecté -->
+    <div th:if="${session.nomClient}" class="user-info">
+        <p>👤 <strong>Connecté en tant que :</strong> <span th:text="${session.nomClient}"></span></p>
+        <a href="/deconnexion" class="logout-btn">🚪 Se déconnecter</a>
+    </div>
+    
+    <!-- Message si non connecté -->
+    <div th:unless="${session.nomClient}">
+        <p>Votre application Spring Boot fonctionne parfaitement ! 🎉</p>
+        <p><em>Vous n'êtes pas connecté.</em></p>
+    </div>
     
     <nav>
         <ul>
+            <!-- Navigation pour tous -->
             <li><a href="/inscription">📝 S'inscrire</a></li>
-            <li><a href="/clients">👥 Liste des clients</a></li>
-            <li><a href="/h2-console">🗄️ Console H2</a></li>
+            <li><a href="/connexion">🔐 Se connecter</a></li>
+            
+            <!-- Navigation pour les connectés -->
+            <li th:if="${session.nomClient}"><a href="/clients">👥 Liste des clients</a></li>
+            <li><a href="/chambres">🏠 Gestion des chambres</a></li>
+            <li><a href="/employes">👨‍💼 Gestion des employés</a></li>
+            <li><a href="/gestionnaires">🎯 Gestion des gestionnaires</a></li>
+            <li><a href="/evenements">🎉 Gestion des événements</a></li>
+            <li><a href="/installations">🏢 Gestion des installations</a></li>
+            <li><a href="/feedbacks">💬 Gestion des avis clients</a></li>
+            <li><a href="/fidelite">🏆 Programme de fidélité</a></li>
+            
+            <!-- Navigation admin/développeur -->
+            <li><a href="/h2-console">🗄️ Console H2 (Dev)</a></li>
         </ul>
     </nav>
 </body>

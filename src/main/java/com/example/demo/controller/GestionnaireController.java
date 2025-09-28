@@ -19,9 +19,6 @@ public class GestionnaireController {
 
     @Autowired
     private GestionnaireService gestionnaireService;
-    
-    @Autowired
-    private com.example.demo.service.EmployeService employeService;
 
     // Liste des gestionnaires
     @GetMapping
@@ -54,38 +51,7 @@ public class GestionnaireController {
         }
     }
 
-    // Formulaire nouveau gestionnaire
-    @GetMapping("/nouveau")
-    public String nouveauGestionnaireForm(Model model) {
-        model.addAttribute("gestionnaire", new Gestionnaire());
-        return "gestionnaires/nouveau";
-    }
 
-    // Créer un nouveau gestionnaire
-    @PostMapping("/nouveau")
-    public String creerGestionnaire(@Valid @ModelAttribute Gestionnaire gestionnaire, 
-                                   BindingResult result, 
-                                   RedirectAttributes redirectAttributes) {
-        
-        // Vérifier si l'email existe déjà
-        if (gestionnaireService.emailExiste(gestionnaire.getEmail())) {
-            result.rejectValue("email", "error.gestionnaire", "Un gestionnaire avec cet email existe déjà");
-        }
-        
-        if (result.hasErrors()) {
-            return "gestionnaires/nouveau";
-        }
-        
-        try {
-            Gestionnaire nouveauGestionnaire = gestionnaireService.creerGestionnaire(gestionnaire);
-            redirectAttributes.addFlashAttribute("success", 
-                "Gestionnaire " + nouveauGestionnaire.getNomComplet() + " créé avec succès");
-            return "redirect:/gestionnaires/" + nouveauGestionnaire.getId();
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Erreur lors de la création du gestionnaire: " + e.getMessage());
-            return "redirect:/gestionnaires/nouveau";
-        }
-    }
 
     // Formulaire modification gestionnaire
     @GetMapping("/{id}/modifier")
@@ -188,38 +154,44 @@ public class GestionnaireController {
         return "gestionnaires/statistiques";
     }
     
-    // Formulaire de création d'employé par les gestionnaires
-    @GetMapping("/employes/nouveau")
-    public String formulaireNouvelEmploye(Model model) {
-        model.addAttribute("employe", new com.example.demo.model.Employe());
-        model.addAttribute("roles", com.example.demo.model.Employe.RoleEmploye.values());
-        model.addAttribute("statuts", com.example.demo.model.Employe.StatutEmploye.values());
-        return "gestionnaires/employe-form";
+    // Formulaire de création de gestionnaire
+    @GetMapping("/nouveau")
+    public String formulaireNouveauGestionnaire(Model model) {
+        model.addAttribute("gestionnaire", new Gestionnaire());
+        return "gestionnaires/nouveau";
     }
     
-    // Traitement de la création d'employé par les gestionnaires  
-    @PostMapping("/employes/nouveau")
-    public String creerNouvelEmploye(@ModelAttribute com.example.demo.model.Employe employe,
-                                   RedirectAttributes redirectAttributes,
-                                   Model model) {
+    // Traitement de la création de gestionnaire  
+    @PostMapping("/nouveau")
+    public String creerNouveauGestionnaire(@Valid @ModelAttribute Gestionnaire gestionnaire,
+                                         BindingResult result,
+                                         RedirectAttributes redirectAttributes,
+                                         Model model) {
+        
+        // Vérifier si l'email existe déjà
+        if (gestionnaireService.emailExistePourAutreGestionnaire(gestionnaire.getEmail(), null)) {
+            result.rejectValue("email", "error.gestionnaire", "Un gestionnaire avec cet email existe déjà");
+        }
+        
+        if (result.hasErrors()) {
+            model.addAttribute("gestionnaire", gestionnaire);
+            return "gestionnaires/nouveau";
+        }
+        
         try {
-            employeService.createEmploye(employe);
-            redirectAttributes.addFlashAttribute("succes", 
-                "Employé " + employe.getNomComplet() + " créé avec succès !");
+            Gestionnaire nouveauGestionnaire = gestionnaireService.creerGestionnaire(gestionnaire);
+            redirectAttributes.addFlashAttribute("success", 
+                "Gestionnaire " + nouveauGestionnaire.getNomComplet() + " créé avec succès !");
             
-            return "redirect:/gestionnaires/employes/nouveau?success=true";
+            return "redirect:/gestionnaires";
         } catch (RuntimeException e) {
-            model.addAttribute("erreur", e.getMessage());
-            model.addAttribute("employe", employe);
-            model.addAttribute("roles", com.example.demo.model.Employe.RoleEmploye.values());
-            model.addAttribute("statuts", com.example.demo.model.Employe.StatutEmploye.values());
-            return "gestionnaires/employe-form";
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("gestionnaire", gestionnaire);
+            return "gestionnaires/nouveau";
         } catch (Exception e) {
-            model.addAttribute("erreur", "Erreur lors de la création de l'employé : " + e.getMessage());
-            model.addAttribute("employe", employe);
-            model.addAttribute("roles", com.example.demo.model.Employe.RoleEmploye.values());
-            model.addAttribute("statuts", com.example.demo.model.Employe.StatutEmploye.values());
-            return "gestionnaires/employe-form";
+            model.addAttribute("error", "Erreur lors de la création du gestionnaire : " + e.getMessage());
+            model.addAttribute("gestionnaire", gestionnaire);
+            return "gestionnaires/nouveau";
         }
     }
 }

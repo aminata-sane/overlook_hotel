@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="'Horaires - ' + ${employe.nomComplet}">Gestion des horaires</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6366F1;
+            --secondary-color: #8B5CF6;
+            --success-color: #10B981;
+            --warning-color: #F59E0B;
+            --danger-color: #EF4444;
+            --glassmorphism: rgba(255, 255, 255, 0.25);
+            --glassmorphism-border: rgba(255, 255, 255, 0.18);
+            --card-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            min-height: 100vh;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            padding-top: 2rem;
+        }
+
+        .employee-header {
+            background: var(--glassmorphism);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--glassmorphism-border);
+            color: white;
+            text-align: center;
+        }
+
+        .schedule-card {
+            background: var(--glassmorphism);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--glassmorphism-border);
+        }
+
+        .schedule-form {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .schedule-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .schedule-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(10px);
+        }
+
+        .btn-modern {
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary-modern {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .btn-success-modern {
+            background: linear-gradient(135deg, var(--success-color), #059669);
+            color: white;
+        }
+
+        .btn-warning-modern {
+            background: linear-gradient(135deg, var(--warning-color), #D97706);
+            color: white;
+        }
+
+        .btn-secondary-modern {
+            background: linear-gradient(135deg, #6B7280, #4B5563);
+            color: white;
+        }
+
+        .btn-modern:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            color: white;
+            text-decoration: none;
+        }
+
+        .form-control {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: white;
+            padding: 0.75rem 1rem;
+        }
+
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+            color: white;
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .form-label {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .alert-modern {
+            border: none;
+            border-radius: 16px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .alert-success-modern {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2));
+            color: #10B981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .alert-danger-modern {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.2));
+            color: #EF4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.6;
+        }
+
+        .breadcrumb-modern {
+            background: transparent;
+            padding: 0;
+            margin-bottom: 2rem;
+        }
+
+        .breadcrumb-modern .breadcrumb-item a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+        }
+
+        .breadcrumb-modern .breadcrumb-item.active {
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="breadcrumb-modern">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="/employes">
+                        <i class="fas fa-users"></i> Employés
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a th:href="@{/employes/{id}(id=${employe.id})}">
+                        <span th:text="${employe.nomComplet}">Employé</span>
+                    </a>
+                </li>
+                <li class="breadcrumb-item active">Horaires</li>
+            </ol>
+        </nav>
+
+        <!-- Header -->
+        <div class="employee-header">
+            <h1>
+                <i class="fas fa-clock"></i>
+                Gestion des horaires
+            </h1>
+            <h2 th:text="${employe.nomComplet}">Nom de l'employé</h2>
+            <p class="mb-0">
+                <span class="badge bg-info me-2" th:text="${employe.role.libelle}">Rôle</span>
+                <span class="badge bg-success" th:text="${employe.statut.libelle}">Statut</span>
+            </p>
+        </div>
+
+        <!-- Messages -->
+        <div th:if="${succes}" class="alert-modern alert-success-modern">
+            <i class="fas fa-check-circle me-2"></i>
+            <span th:text="${succes}"></span>
+        </div>
+        <div th:if="${erreur}" class="alert-modern alert-danger-modern">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <span th:text="${erreur}"></span>
+        </div>
+
+        <!-- Formulaire d'ajout d'horaire -->
+        <div class="schedule-card">
+            <h3 class="text-white mb-4">
+                <i class="fas fa-plus-circle me-2"></i>
+                Ajouter un horaire
+            </h3>
+            
+            <form class="schedule-form" th:action="@{/employes/{id}/horaires/ajouter(id=${employe.id})}" method="post">
+                <div class="row">
+                    <div class="col-md-8">
+                        <label for="horaire" class="form-label">
+                            <i class="fas fa-calendar-alt me-1"></i>
+                            Horaire (ex: Lundi 08:00-16:00, Mardi 14:00-22:00)
+                        </label>
+                        <input type="text" 
+                               class="form-control" 
+                               id="horaire" 
+                               name="horaire" 
+                               placeholder="Ex: Lundi 08:00-16:00"
+                               required>
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="submit" class="btn btn-success-modern w-100">
+                            <i class="fas fa-plus me-1"></i>
+                            Ajouter
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Liste des horaires -->
+        <div class="schedule-card">
+            <h3 class="text-white mb-4">
+                <i class="fas fa-calendar-check me-2"></i>
+                Horaires actuels
+            </h3>
+
+            <div th:if="${#lists.isEmpty(employe.horaires)}" class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="fas fa-calendar-times"></i>
+                </div>
+                <h4>Aucun horaire défini</h4>
+                <p>Commencez par ajouter les premiers horaires de travail pour cet employé.</p>
+            </div>
+
+            <div th:unless="${#lists.isEmpty(employe.horaires)}">
+                <div th:each="horaire, iterStat : ${employe.horaires}" class="schedule-item">
+                    <div>
+                        <i class="fas fa-clock me-2"></i>
+                        <span th:text="${horaire}">Lundi 08:00-16:00</span>
+                    </div>
+                    <div>
+                        <small class="text-white-50">
+                            Horaire #<span th:text="${iterStat.count}">1</span>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gestion des congés -->
+        <div class="schedule-card">
+            <h3 class="text-white mb-4">
+                <i class="fas fa-umbrella-beach me-2"></i>
+                Gestion des congés
+            </h3>
+
+            <form class="schedule-form" th:action="@{/employes/{id}/conges/ajouter(id=${employe.id})}" method="post">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="dateDebut" class="form-label">
+                            <i class="fas fa-calendar-alt me-1"></i>
+                            Date de début
+                        </label>
+                        <input type="date" class="form-control" id="dateDebut" name="dateDebut" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="dateFin" class="form-label">
+                            <i class="fas fa-calendar-alt me-1"></i>
+                            Date de fin
+                        </label>
+                        <input type="date" class="form-control" id="dateFin" name="dateFin" required>
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="submit" class="btn btn-warning-modern w-100">
+                            <i class="fas fa-plus me-1"></i>
+                            Ajouter congé
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Liste des congés -->
+            <div class="mt-4">
+                <h5 class="text-white mb-3">Congés programmés</h5>
+                
+                <div th:if="${#lists.isEmpty(employe.conges)}" class="empty-state">
+                    <div class="empty-state-icon">
+                        <i class="fas fa-calendar-minus"></i>
+                    </div>
+                    <h5>Aucun congé programmé</h5>
+                    <p>Les congés ajoutés apparaîtront ici.</p>
+                </div>
+
+                <div th:unless="${#lists.isEmpty(employe.conges)}">
+                    <div th:each="conge : ${employe.conges}" class="schedule-item">
+                        <div>
+                            <i class="fas fa-umbrella-beach me-2"></i>
+                            <span th:text="${conge}">Congé du 15/06 au 30/06</span>
+                        </div>
+                        <div>
+                            <span class="badge bg-warning">En attente</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="text-center mb-5">
+            <a th:href="@{/employes/{id}(id=${employe.id})}" class="btn btn-primary-modern me-2">
+                <i class="fas fa-user me-1"></i>
+                Voir profil
+            </a>
+            <a th:href="@{/employes/{id}/modifier(id=${employe.id})}" class="btn btn-warning-modern me-2">
+                <i class="fas fa-edit me-1"></i>
+                Modifier
+            </a>
+            <a href="/employes" class="btn btn-secondary-modern">
+                <i class="fas fa-arrow-left me-1"></i>
+                Retour à la liste
+            </a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

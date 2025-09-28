@@ -19,10 +19,8 @@ public interface EmployeRepository extends JpaRepository<Employe, Long> {
     // Recherche par statut
     List<Employe> findByStatut(Employe.StatutEmploye statut);
 
-    // Employés actifs (méthode utilitaire)
-    default List<Employe> findEmployesActifs() {
-        return findByStatut(Employe.StatutEmploye.ACTIF);
-    }
+    // Employés actifs (méthode JPA)
+    List<Employe> findByStatutOrderByNomAsc(Employe.StatutEmploye statut);
 
     // Recherche par nom ou prénom
     List<Employe> findByNomContainingOrPrenomContaining(String nom, String prenom);

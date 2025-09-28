@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Optional;
 
@@ -81,6 +82,26 @@ public class EmployeController {
             model.addAttribute("statuts", Employe.StatutEmploye.values());
             return "employes/nouveau";
         }
+    }
+
+    // Route pour gestionnaire - doit être avant /{id} pour éviter les conflits
+    @GetMapping("/liste-gestionnaire")
+    public String listeEmployesGestionnaire(Model model) {
+        List<Employe> employes = employeService.getAllEmployes();
+        List<Employe> employesActifs = employeService.getEmployesActifs();
+        
+        model.addAttribute("employes", employes);
+        model.addAttribute("employesActifs", employesActifs);
+        model.addAttribute("nombreEmployes", employeService.getNombreEmployes());
+        model.addAttribute("nombreActifs", employeService.getNombreEmployesActifs());
+        
+        // Statistiques par rôle
+        model.addAttribute("nombreReceptionnistes", employeService.getNombreEmployesParRole(Employe.RoleEmploye.RECEPTIONNISTE));
+        model.addAttribute("nombreFemmesMenage", employeService.getNombreEmployesParRole(Employe.RoleEmploye.FEMME_DE_MENAGE));
+        model.addAttribute("nombreMaintenance", employeService.getNombreEmployesParRole(Employe.RoleEmploye.MAINTENANCE));
+        model.addAttribute("nombreGestionnaires", employeService.getNombreEmployesParRole(Employe.RoleEmploye.GESTIONNAIRE));
+        
+        return "employes/liste"; // templates/employes/liste.html
     }
 
     // Voir les détails d'un employé
@@ -211,6 +232,30 @@ public class EmployeController {
         return "redirect:/employes/" + id + "/horaires";
     }
 
+    // Ajouter un congé
+    @PostMapping("/{id}/conges/ajouter")
+    public String ajouterConge(@PathVariable Long id, 
+                              @RequestParam String dateDebut,
+                              @RequestParam String dateFin,
+                              RedirectAttributes redirectAttributes) {
+        try {
+            Optional<Employe> employeOpt = employeService.getEmployeById(id);
+            if (employeOpt.isPresent()) {
+                Employe employe = employeOpt.get();
+                String conge = "Du " + dateDebut + " au " + dateFin;
+                employe.addConge(conge);
+                employeService.saveEmploye(employe);
+                redirectAttributes.addFlashAttribute("succes", "Congé ajouté avec succès !");
+            } else {
+                redirectAttributes.addFlashAttribute("erreur", "Employé non trouvé !");
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("erreur", "Erreur : " + e.getMessage());
+        }
+        
+        return "redirect:/employes/" + id + "/horaires";
+    }
+
     // Page de recherche d'employés
     @GetMapping("/rechercher")
     public String rechercherEmployes(@RequestParam(required = false) String terme, Model model) {
@@ -231,9 +276,74 @@ public class EmployeController {
     @Autowired
     private com.example.demo.service.ChambreService chambreService;
     
+    // Page de connexion employé
+    @GetMapping("/connexion")
+    public String connexionEmploye(Model model) {
+        return "employes/connexion"; // templates/employes/connexion.html
+    }
+    
+    // Traiter la connexion employé
+    @PostMapping("/connexion")
+    public String traiterConnexionEmploye(@RequestParam String email, 
+                                         @RequestParam String motDePasse,
+                                         HttpSession session,
+                                         RedirectAttributes redirectAttributes) {
+        try {
+            Optional<Employe> employeOpt = employeService.getEmployeByEmail(email);
+            
+            if (employeOpt.isPresent()) {
+                Employe employe = employeOpt.get();
+                
+                // Vérifier le mot de passe et le statut
+                if (employe.getMotDePasse().equals(motDePasse)) {
+                    if (employe.getStatut() == Employe.StatutEmploye.ACTIF) {
+                        // Connexion réussie
+                        session.setAttribute("employeConnecte", employe);
+                        redirectAttributes.addFlashAttribute("success", 
+                            "Connexion réussie ! Bienvenue " + employe.getPrenom() + " !");
+                        
+                        // Rediriger selon le rôle
+                        if (employe.getRole() == Employe.RoleEmploye.GESTIONNAIRE) {
+                            return "redirect:/gestionnaire";
+                        } else {
+                            return "redirect:/employes/dashboard";
+                        }
+                    } else {
+                        redirectAttributes.addFlashAttribute("erreur", 
+                            "Votre compte n'est pas actif. Contactez votre gestionnaire.");
+                    }
+                } else {
+                    redirectAttributes.addFlashAttribute("erreur", "Email ou mot de passe incorrect.");
+                }
+            } else {
+                redirectAttributes.addFlashAttribute("erreur", "Email ou mot de passe incorrect.");
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("erreur", 
+                "Erreur lors de la connexion : " + e.getMessage());
+        }
+        
+        return "redirect:/employes/connexion";
+    }
+    
+    // Déconnexion employé
+    @GetMapping("/deconnexion")
+    public String deconnexionEmploye(HttpSession session, RedirectAttributes redirectAttributes) {
+        session.removeAttribute("employeConnecte");
+        redirectAttributes.addFlashAttribute("success", "Vous avez été déconnecté avec succès.");
+        return "redirect:/employes/connexion";
+    }
+    
     // Page de dashboard employé
     @GetMapping("/dashboard")
-    public String dashboardEmploye(Model model) {
+    public String dashboardEmploye(Model model, HttpSession session) {
+        // Vérifier si l'employé est connecté
+        Employe employeConnecte = (Employe) session.getAttribute("employeConnecte");
+        if (employeConnecte == null) {
+            return "redirect:/employes/connexion";
+        }
+        
+        model.addAttribute("employeConnecte", employeConnecte);
         List<com.example.demo.model.Chambre> chambres = chambreService.getAllChambres();
         
         // Grouper les chambres par statut

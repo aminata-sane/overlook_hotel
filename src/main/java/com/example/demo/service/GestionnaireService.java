@@ -1,20 +1,9 @@
 package com.example.demo.service;
 
+import com.example.demo.model.Employe;
 import com.example.demo.model.Gestionnaire;
-import com.example.demo.model.Employe;
-import com.example.demo.repository.GestionnaireRepository;
 import com.example.demo.repository.EmployeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import com.example.demo.model.Employe;
 import com.example.demo.repository.GestionnaireRepository;
-import com.example.demo.repository.EmployeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,10 +25,22 @@ public class GestionnaireService {
 
     // Créer un nouveau gestionnaire
     public Gestionnaire creerGestionnaire(Gestionnaire gestionnaire) {
+        if (gestionnaire == null) {
+            throw new IllegalArgumentException("Le gestionnaire ne peut pas être null");
+        }
+        
+        if (gestionnaire.getEmail() == null || gestionnaire.getEmail().trim().isEmpty()) {
+            throw new IllegalArgumentException("L'email du gestionnaire est obligatoire");
+        }
+        
         // Vérifier que l'email n'existe pas déjà
-        if (gestionnaireRepository.existsByEmail(gestionnaire.getEmail())) {
+        if (gestionnaireRepository.existsByEmail(gestionnaire.getEmail().trim())) {
             throw new IllegalArgumentException("Un gestionnaire avec cet email existe déjà");
         }
+        
+        // Normaliser l'email
+        gestionnaire.setEmail(gestionnaire.getEmail().trim().toLowerCase());
+        
         return gestionnaireRepository.save(gestionnaire);
     }
 
@@ -197,8 +198,52 @@ public class GestionnaireService {
 
     @Transactional(readOnly = true)
     public List<Employe> obtenirEmployesRecents(int limite) {
+        if (limite <= 0) {
+            throw new IllegalArgumentException("La limite doit être supérieure à 0");
+        }
         return employeRepository.findTop10ByOrderByDateEmbaucheDesc().stream()
                 .limit(limite)
                 .collect(Collectors.toList());
+    }
+
+    // Créer un nouveau employé (depuis l'interface gestionnaire)
+    public Employe creerEmploye(Employe employe) {
+        if (employe == null) {
+            throw new IllegalArgumentException("L'employé ne peut pas être null");
+        }
+        
+        if (employe.getEmail() == null || employe.getEmail().trim().isEmpty()) {
+            throw new IllegalArgumentException("L'email de l'employé est obligatoire");
+        }
+        
+        // Normaliser l'email
+        employe.setEmail(employe.getEmail().trim().toLowerCase());
+        
+        return employeRepository.save(employe);
+    }
+
+    // Obtenir les statistiques générales pour le dashboard gestionnaire
+    @Transactional(readOnly = true)
+    public Map<String, Object> obtenirStatistiquesGenerales() {
+        Map<String, Object> stats = new java.util.HashMap<>();
+        
+        stats.put("totalGestionnaires", compterGestionnairesActifs());
+        stats.put("totalEmployes", employeRepository.countByStatut(Employe.StatutEmploye.ACTIF));
+        stats.put("employesEnConge", employeRepository.countByStatut(Employe.StatutEmploye.EN_CONGE));
+        stats.put("repartitionRoles", obtenirRepartitionParRole());
+        stats.put("repartitionStatuts", obtenirRepartitionParStatut());
+        
+        return stats;
+    }
+
+    // Vérifier si un gestionnaire peut être supprimé (pas de chambres assignées)
+    @Transactional(readOnly = true)
+    public boolean peutEtreSupprime(Long gestionnaireId) {
+        Optional<Gestionnaire> gestionnaire = gestionnaireRepository.findById(gestionnaireId);
+        if (gestionnaire.isPresent()) {
+            // Vérifier s'il a des chambres assignées
+            return gestionnaire.get().getChambres() == null || gestionnaire.get().getChambres().isEmpty();
+        }
+        return false;
     }
 }

@@ -42,7 +42,7 @@ public class EmployeService {
 
     // Récupérer les employés actifs
     public List<Employe> getEmployesActifs() {
-        return employeRepository.findEmployesActifs();
+        return employeRepository.findByStatutOrderByNomAsc(Employe.StatutEmploye.ACTIF);
     }
 
     // Créer un nouvel employé

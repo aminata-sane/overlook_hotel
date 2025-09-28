@@ -190,4 +190,72 @@ public class ClientReservationController {
             return "reservation-form";
         }
     }
+
+    // Route pour l'espace employé - Nouvelle réservation
+    @GetMapping("/reservations/nouvelles")
+    public String nouvelleReservationEmploye(Model model) {
+        // Récupérer toutes les chambres disponibles
+        model.addAttribute("chambres", chambreService.getChambresDisponibles());
+        
+        // Créer un objet réservation vide
+        Reservation reservation = new Reservation();
+        reservation.setDateArrivee(LocalDate.now().plusDays(1));
+        reservation.setDateDepart(LocalDate.now().plusDays(2));
+        reservation.setNombreAdultes(1);
+        reservation.setNombreEnfants(0);
+        model.addAttribute("reservation", reservation);
+        
+        // Récupérer tous les clients pour la sélection
+        model.addAttribute("clients", clientService.getAllClients());
+        
+        return "reservation-employe-form"; // templates/reservation-employe-form.html
+    }
+
+    // Traiter la nouvelle réservation depuis l'espace employé
+    @PostMapping("/reservations/nouvelles")
+    public String traiterNouvelleReservationEmploye(@ModelAttribute Reservation reservation,
+                                                   @RequestParam Long chambreId,
+                                                   @RequestParam Long clientId,
+                                                   Model model) {
+        try {
+            // Récupérer la chambre et le client
+            Optional<Chambre> chambreOpt = chambreService.getChambreById(chambreId);
+            Optional<Client> clientOpt = clientService.getClientById(clientId);
+            
+            if (chambreOpt.isEmpty()) {
+                model.addAttribute("erreur", "Chambre non trouvée");
+                return "redirect:/reservations/nouvelles";
+            }
+            
+            if (clientOpt.isEmpty()) {
+                model.addAttribute("erreur", "Client non trouvé");
+                return "redirect:/reservations/nouvelles";
+            }
+            
+            Chambre chambre = chambreOpt.get();
+            Client client = clientOpt.get();
+            
+            // Configurer la réservation
+            reservation.setChambre(chambre);
+            reservation.setClient(client);
+            
+            // Calculer le prix total
+            long nombreJours = java.time.temporal.ChronoUnit.DAYS.between(
+                reservation.getDateArrivee(), reservation.getDateDepart());
+            double prixTotal = nombreJours * chambre.getPrix();
+            reservation.setPrixTotal(prixTotal);
+            
+            // Sauvegarder la réservation
+            reservationService.creerReservation(client, chambreId, 
+                reservation.getDateArrivee(), reservation.getDateDepart(),
+                reservation.getNombreAdultes(), reservation.getNombreEnfants());
+            
+            model.addAttribute("succes", "Réservation créée avec succès !");
+            return "redirect:/employe"; // Retour au dashboard employé
+            
+        } catch (Exception e) {
+            model.addAttribute("erreur", "Erreur lors de la création de la réservation : " + e.getMessage());
+            return "redirect:/reservations/nouvelles";
+        }
+    }
 }

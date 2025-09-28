@@ -225,5 +225,60 @@ public class EmployeController {
         
         return "employes/recherche"; // templates/employes/recherche.html
     }
+
+    // === GESTION DES STATUTS DES CHAMBRES ===
+    
+    @Autowired
+    private com.example.demo.service.ChambreService chambreService;
+    
+    // Page de dashboard employé
+    @GetMapping("/dashboard")
+    public String dashboardEmploye(Model model) {
+        List<com.example.demo.model.Chambre> chambres = chambreService.getAllChambres();
+        
+        // Grouper les chambres par statut
+        java.util.Map<com.example.demo.model.Chambre.StatutChambre, Long> chambresParStatut = 
+            chambres.stream().collect(java.util.stream.Collectors.groupingBy(
+                com.example.demo.model.Chambre::getStatut, java.util.stream.Collectors.counting()));
+        
+        model.addAttribute("chambres", chambres);
+        model.addAttribute("chambresParStatut", chambresParStatut);
+        model.addAttribute("statuts", com.example.demo.model.Chambre.StatutChambre.values());
+        
+        return "dashboard-employe"; // templates/dashboard-employe.html
+    }
+    
+    // Mettre à jour le statut d'une chambre
+    @PostMapping("/chambres/{id}/statut")
+    public String changerStatutChambre(@PathVariable Long id, 
+                                      @RequestParam com.example.demo.model.Chambre.StatutChambre statut,
+                                      RedirectAttributes redirectAttributes) {
+        try {
+            Optional<com.example.demo.model.Chambre> optionalChambre = chambreService.getChambreById(id);
+            if (optionalChambre.isPresent()) {
+                com.example.demo.model.Chambre chambre = optionalChambre.get();
+                com.example.demo.model.Chambre.StatutChambre ancienStatut = chambre.getStatut();
+                
+                chambre.setStatut(statut);
+                
+                // Mettre à jour la disponibilité selon le statut
+                chambre.setDisponible(statut == com.example.demo.model.Chambre.StatutChambre.DISPONIBLE);
+                
+                chambreService.updateChambre(id, chambre);
+                
+                redirectAttributes.addFlashAttribute("success", 
+                    "Statut de la chambre " + chambre.getNumero() + " changé de " + 
+                    ancienStatut.getLibelle() + " à " + statut.getLibelle());
+            } else {
+                redirectAttributes.addFlashAttribute("error", "Chambre non trouvée");
+            }
+                
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", 
+                "Erreur lors du changement de statut : " + e.getMessage());
+        }
+        
+        return "redirect:/employes/dashboard";
+    }
 }
 

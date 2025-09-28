@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nos Chambres - Overlook Hotel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #e74c3c;
+            --accent-color: #f39c12;
+            --light-bg: #ecf0f1;
+            --dark-bg: #34495e;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: #f8f9fa;
+        }
+
+        .page-header {
+            background: linear-gradient(rgba(44, 62, 80, 0.8), rgba(44, 62, 80, 0.8)), 
+                        url('https://images.unsplash.com/photo-1566665797739-1674de7a421a?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 100px 0 50px;
+            margin-bottom: 50px;
+        }
+
+        .page-title {
+            font-size: 3rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .page-subtitle {
+            font-size: 1.2rem;
+            text-align: center;
+            opacity: 0.9;
+        }
+
+        .navbar-custom {
+            background: rgba(44, 62, 80, 0.95) !important;
+            backdrop-filter: blur(10px);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .room-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+        }
+
+        .room-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .room-image {
+            height: 300px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .room-price {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--secondary-color);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .room-status {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .status-available {
+            background: rgba(39, 174, 96, 0.9);
+            color: white;
+        }
+
+        .status-unavailable {
+            background: rgba(231, 76, 60, 0.9);
+            color: white;
+        }
+
+        .room-content {
+            padding: 25px;
+        }
+
+        .room-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .room-type-badge {
+            background: linear-gradient(45deg, var(--accent-color), #f1c40f);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+
+        .room-basic-info {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .room-feature {
+            color: #666;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .room-feature i {
+            color: var(--accent-color);
+            width: 16px;
+        }
+
+        .room-description {
+            background: rgba(243, 156, 18, 0.05);
+            border-left: 4px solid var(--accent-color);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #555;
+            text-align: justify;
+        }
+
+        .room-amenities {
+            margin: 20px 0;
+        }
+
+        .amenities-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .room-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .room-features .room-feature {
+            background: rgba(44, 62, 80, 0.05);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            color: var(--primary-color);
+            border: 1px solid rgba(44, 62, 80, 0.1);
+        }
+
+        .btn-reserve {
+            background: linear-gradient(45deg, var(--secondary-color), var(--accent-color));
+            border: none;
+            border-radius: 10px;
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+            width: 100%;
+        }
+
+        .btn-reserve:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+            color: white;
+        }
+
+        .btn-reserve:disabled {
+            background: #6c757d;
+            transform: none;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        .back-to-home {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+
+        .btn-back {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 15px 20px;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(44, 62, 80, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .btn-back:hover {
+            background: var(--dark-bg);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(44, 62, 80, 0.4);
+            color: white;
+        }
+
+        .chambers-stats {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+
+        .stats-text {
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-hotel"></i> Overlook Hotel
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/chambres">Chambres</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/panier">
+                            <i class="fas fa-shopping-cart"></i> Panier
+                        </a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/connexion">
+                            <i class="fas fa-sign-in-alt"></i> Connexion
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="proDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-cog"></i> Espace Professionnel
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/portail">
+                                <i class="fas fa-hotel"></i> Portail Professionnel
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/employe">
+                                <i class="fas fa-user-tie"></i> Accès Employé
+                            </a></li>
+                            <li><a class="dropdown-item" href="/gestionnaire">
+                                <i class="fas fa-user-cog"></i> Accès Gestionnaire
+                            </a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- En-tête de page -->
+    <div class="page-header">
+        <div class="container">
+            <h1 class="page-title">Toutes nos Chambres</h1>
+            <p class="page-subtitle">Découvrez l'ensemble de nos hébergements d'exception</p>
+        </div>
+    </div>
+
+    <!-- Contenu principal -->
+    <div class="container">
+        <!-- Statistiques des chambres -->
+        <div class="chambers-stats">
+            <div class="stats-number" th:text="${nombreChambres}">0</div>
+            <div class="stats-text">chambres disponibles pour votre séjour</div>
+        </div>
+
+        <!-- Liste des chambres -->
+        <div class="row g-4">
+            <div class="col-lg-6 col-xl-4" th:each="chambre : ${chambres}">
+                <div class="room-card">
+                    <div class="room-image" th:style="'background-image: url(' + ${chambre.imageUrl != null ? chambre.imageUrl : (chambre.type.name() == 'SIMPLE' ? 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?ixlib=rb-4.0.3&amp;auto=format&amp;fit=crop&amp;w=1000&amp;q=80' : chambre.type.name() == 'DOUBLE' ? 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&amp;auto=format&amp;fit=crop&amp;w=1000&amp;q=80' : chambre.type.name() == 'SUITE' ? 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&amp;auto=format&amp;fit=crop&amp;w=1000&amp;q=80' : chambre.type.name() == 'FAMILIALE' ? 'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?ixlib=rb-4.0.3&amp;auto=format&amp;fit=crop&amp;w=1000&amp;q=80' : chambre.type.name() == 'DELUXE' ? 'https://images.unsplash.com/photo-1591088398332-8a7791972843?ixlib=rb-4.0.3&amp;auto=format&amp;fit=crop&amp;w=1000&amp;q=80' : 'https://images.unsplash.com/photo-1566665797739-1674de7a421a?ixlib=rb-4.0.3&amp;auto=format&amp;fit=crop&amp;w=1000&amp;q=80')} + ')'">
+                        <div class="room-price" th:text="${chambre.prix} + '€/nuit'"></div>
+                        <div class="room-status" th:class="${chambre.disponible} ? 'status-available' : 'status-unavailable'"
+                             th:text="${chambre.disponible} ? 'Disponible' : 'Occupée'"></div>
+                    </div>
+                    <div class="room-content">
+                        <!-- Type de chambre -->
+                        <div class="room-type-badge" th:text="${chambre.type.libelle}"></div>
+                        
+                        <!-- Titre -->
+                        <h5 class="room-title" th:text="${chambre.description != null and chambre.description.contains(' - ') ? chambre.description.substring(0, chambre.description.indexOf(' - ')) : 'Chambre ' + chambre.type.libelle + ' - ' + chambre.numero}"></h5>
+                        
+                        <!-- Informations de base -->
+                        <div class="room-basic-info">
+                            <div class="room-feature">
+                                <i class="fas fa-users"></i> 
+                                <span th:text="${chambre.capacite} + ' personnes'"></span>
+                            </div>
+                            <div class="room-feature">
+                                <i class="fas fa-door-open"></i> 
+                                <span th:text="'N° ' + ${chambre.numero}"></span>
+                            </div>
+                        </div>
+                        
+                        <!-- Description complète -->
+                        <div class="room-description" 
+                             th:text="${chambre.description != null ? chambre.description : 'Cette chambre spacieuse offre tout le confort moderne dans un cadre élégant. Elle dispose d''une décoration soignée, d''un mobilier de qualité et d''une ambiance chaleureuse. Profitez d''un séjour relaxant avec vue panoramique, literie premium et services personnalisés pour une expérience inoubliable à l''Overlook Hotel.'}"></div>
+                        
+                        <!-- Équipements -->
+                        <div class="room-amenities">
+                            <h6 class="amenities-title">
+                                <i class="fas fa-star"></i> Équipements inclus
+                            </h6>
+                            <div class="room-features">
+                                <div class="room-feature" th:each="equipement : ${chambre.equipements}" th:text="${equipement.libelle}"></div>
+                                <div class="room-feature" th:if="${chambre.equipements.isEmpty()}">
+                                    <i class="fas fa-wifi"></i> WiFi gratuit
+                                </div>
+                                <div class="room-feature" th:if="${chambre.equipements.isEmpty()}">
+                                    <i class="fas fa-tv"></i> Télévision
+                                </div>
+                                <div class="room-feature" th:if="${chambre.equipements.isEmpty()}">
+                                    <i class="fas fa-bath"></i> Salle de bain privée
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Bouton de réservation -->
+                        <div class="d-grid">
+                            <button class="btn btn-reserve" 
+                                    th:disabled="${!chambre.disponible}"
+                                    th:attr="onclick=${chambre.disponible} ? 'window.location.href=\'/reservation/chambre/' + ${chambre.id} + '\';' : ''"
+                                    th:text="${chambre.disponible} ? 'Réserver maintenant - ' + ${chambre.prix} + '€/nuit' : 'Chambre non disponible'">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Message si aucune chambre -->
+        <div th:if="${chambres.isEmpty()}" class="text-center py-5">
+            <i class="fas fa-bed fa-4x text-muted mb-3"></i>
+            <h3 class="text-muted">Aucune chambre disponible</h3>
+            <p class="text-muted">Veuillez réessayer plus tard ou contactez notre équipe.</p>
+        </div>
+    </div>
+
+    <!-- Bouton retour à l'accueil -->
+    <div class="back-to-home">
+        <a href="/" class="btn btn-back" title="Retour à l'accueil">
+            <i class="fas fa-home"></i>
+        </a>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5><i class="fas fa-hotel"></i> Overlook Hotel</h5>
+                    <p>Un hôtel d'exception pour des moments inoubliables.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Contact</h5>
+                    <p><i class="fas fa-phone"></i> +33 1 23 45 67 89</p>
+                    <p><i class="fas fa-envelope"></i> contact@overlook-hotel.com</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Suivez-nous</h5>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="text-white"><i class="fab fa-facebook fa-2x"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-instagram fa-2x"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-twitter fa-2x"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Animation du navbar au scroll
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar-custom');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(44, 62, 80, 0.98)';
+            } else {
+                navbar.style.background = 'rgba(44, 62, 80, 0.95)';
+            }
+        });
+    </script>
+</body>
+</html>

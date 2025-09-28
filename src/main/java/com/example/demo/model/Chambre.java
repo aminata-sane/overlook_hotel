@@ -53,6 +53,38 @@ public class Chambre {
         }
     }
 
+    // Enum pour les statuts de chambres
+    public enum StatutChambre {
+        DISPONIBLE("Disponible"),
+        OCCUPEE("Occupée"),
+        NETTOYAGE("En nettoyage"),
+        MAINTENANCE("En maintenance"),
+        HORS_SERVICE("Hors service"),
+        INSPECTION("En inspection");
+
+        private final String libelle;
+
+        StatutChambre(String libelle) {
+            this.libelle = libelle;
+        }
+
+        public String getLibelle() {
+            return libelle;
+        }
+
+        public String getCssClass() {
+            switch (this) {
+                case DISPONIBLE: return "success";
+                case OCCUPEE: return "primary";
+                case NETTOYAGE: return "warning";
+                case MAINTENANCE: return "danger";
+                case HORS_SERVICE: return "dark";
+                case INSPECTION: return "info";
+                default: return "secondary";
+            }
+        }
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -69,6 +101,10 @@ public class Chambre {
 
     @Column(nullable = false)
     private Boolean disponible = true;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = true)
+    private StatutChambre statut = StatutChambre.DISPONIBLE;
 
     @Column(nullable = false)
     private Integer capacite;
@@ -131,6 +167,9 @@ public class Chambre {
 
     public Boolean getDisponible() { return disponible; }
     public void setDisponible(Boolean disponible) { this.disponible = disponible; }
+
+    public StatutChambre getStatut() { return statut; }
+    public void setStatut(StatutChambre statut) { this.statut = statut; }
 
     public Integer getCapacite() { return capacite; }
     public void setCapacite(Integer capacite) { this.capacite = capacite; }

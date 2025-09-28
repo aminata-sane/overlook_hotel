@@ -18,18 +18,26 @@ public class ChambreController {
     @Autowired
     private ChambreService chambreService;
 
-    // Page d'accueil des chambres - Liste toutes les chambres
+    // Page d'accueil des chambres - Liste toutes les chambres pour les clients
     @GetMapping
     public String listChambres(Model model) {
         List<Chambre> chambres = chambreService.getAllChambres();
-        List<Chambre> chambresDisponibles = chambreService.getChambresDisponibles();
         
-        model.addAttribute("chambres", chambres);
-        model.addAttribute("chambresDisponibles", chambresDisponibles);
-        model.addAttribute("nombreChambres", chambreService.getNombreChambres());
-        model.addAttribute("nombreDisponibles", chambreService.getNombreChambresDisponibles());
+        // Trier les chambres : disponibles en premier, puis par type
+        List<Chambre> chambresTriees = chambres.stream()
+                .sorted((c1, c2) -> {
+                    // Disponibles en premier
+                    if (c1.getDisponible() && !c2.getDisponible()) return -1;
+                    if (!c1.getDisponible() && c2.getDisponible()) return 1;
+                    // Puis par type
+                    return c1.getType().compareTo(c2.getType());
+                })
+                .collect(java.util.stream.Collectors.toList());
         
-        return "chambres/liste"; // templates/chambres/liste.html
+        model.addAttribute("chambres", chambresTriees);
+        model.addAttribute("nombreChambres", chambresTriees.size());
+        
+        return "chambres"; // Notre template chambres.html pour les clients
     }
 
     // Page de création d'une nouvelle chambre
@@ -153,6 +161,20 @@ public class ChambreController {
         }
         
         return "redirect:/chambres";
+    }
+
+    // Page de gestion des chambres pour les administrateurs
+    @GetMapping("/gestion")
+    public String gestionChambres(Model model) {
+        List<Chambre> chambres = chambreService.getAllChambres();
+        List<Chambre> chambresDisponibles = chambreService.getChambresDisponibles();
+        
+        model.addAttribute("chambres", chambres);
+        model.addAttribute("chambresDisponibles", chambresDisponibles);
+        model.addAttribute("nombreChambres", chambreService.getNombreChambres());
+        model.addAttribute("nombreDisponibles", chambreService.getNombreChambresDisponibles());
+        
+        return "chambres/liste"; // templates/chambres/liste.html pour la gestion
     }
 }
 

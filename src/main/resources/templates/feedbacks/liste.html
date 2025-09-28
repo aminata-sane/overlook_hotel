@@ -4,115 +4,1017 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestion des Avis Clients - Overlook Hotel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }
-        .container { max-width: 1200px; margin: 0 auto; background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        h1 { color: #2c3e50; text-align: center; }
-        .stats { display: flex; justify-content: space-around; margin: 20px 0; }
-        .stat-card { background-color: #3498db; color: white; padding: 15px; border-radius: 5px; text-align: center; flex: 1; margin: 0 5px; }
-        .stat-card.success { background-color: #27ae60; }
-        .stat-card.warning { background-color: #f39c12; }
-        .actions { margin: 20px 0; text-align: center; }
-        .btn { padding: 10px 20px; margin: 5px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; }
-        .btn-primary { background-color: #3498db; color: white; }
-        .btn-success { background-color: #27ae60; color: white; }
-        .btn-warning { background-color: #f39c12; color: white; }
-        .btn-danger { background-color: #e74c3c; color: white; }
-        .btn:hover { opacity: 0.8; }
-        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
-        th { background-color: #f8f9fa; font-weight: bold; }
-        tr:hover { background-color: #f5f5f5; }
-        .note { font-size: 18px; }
-        .alert { padding: 15px; margin: 10px 0; border-radius: 5px; }
-        .alert-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .alert-error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-        .nav-links { margin: 20px 0; text-align: center; }
-        .nav-links a { margin: 0 10px; }
-        .commentaire { max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --purple-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gold-gradient: linear-gradient(135deg, #ffd700 0%, #ffb347 100%);
+            --sentiment-positive: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            --sentiment-negative: linear-gradient(135deg, #fc466b 0%, #3f5efb 100%);
+            --card-shadow: 0 10px 30px rgba(102, 126, 234, 0.1);
+            --feedback-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="feedbackPattern" width="30" height="30" patternUnits="userSpaceOnUse"><circle cx="15" cy="15" r="2" fill="rgba(102,126,234,0.05)"/><path d="M10,10 Q15,5 20,10 Q15,15 10,10" fill="rgba(255,215,0,0.03)"/></pattern></defs><rect width="100" height="100" fill="url(%23feedbackPattern)"/></svg>');
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .navbar-custom {
+            background: var(--purple-gradient);
+            box-shadow: 0 2px 20px rgba(102, 126, 234, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .page-header {
+            background: var(--purple-gradient);
+            color: white;
+            padding: 4rem 0;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: headerPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes headerPulse {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.5; }
+            50% { transform: scale(1.1) rotate(180deg); opacity: 0.8; }
+        }
+
+        .page-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 2;
+        }
+
+        .page-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 2;
+        }
+
+        .breadcrumb-custom {
+            background: transparent;
+            padding: 0;
+            margin-bottom: 1rem;
+        }
+
+        .breadcrumb-custom .breadcrumb-item a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .breadcrumb-custom .breadcrumb-item a:hover {
+            color: white;
+        }
+
+        .breadcrumb-custom .breadcrumb-item.active {
+            color: white;
+            font-weight: 600;
+        }
+
+        .stats-container {
+            margin-bottom: 3rem;
+        }
+
+        .stats-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stats-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            transition: height 0.3s ease;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+        }
+
+        .stats-card:hover::before {
+            height: 100%;
+            opacity: 0.05;
+        }
+
+        .stats-card.total::before { background: var(--purple-gradient); }
+        .stats-card.average::before { background: var(--gold-gradient); }
+        .stats-card.satisfaction::before { background: var(--sentiment-positive); }
+        .stats-card.pending::before { background: var(--sentiment-negative); }
+
+        .stats-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            transition: transform 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .stats-card:hover .stats-icon {
+            transform: scale(1.2) rotate(5deg);
+        }
+
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .stats-label {
+            font-size: 1rem;
+            color: var(--dark-color);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .rating-stars {
+            display: flex;
+            justify-content: center;
+            gap: 0.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .star {
+            color: #ffd700;
+            font-size: 1.5rem;
+            transition: transform 0.2s ease;
+        }
+
+        .star:hover {
+            transform: scale(1.2);
+        }
+
+        .actions-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 3rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-modern {
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            border: none;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0.5rem;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-modern::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-modern:hover::before {
+            left: 100%;
+        }
+
+        .btn-modern:hover {
+            transform: translateY(-3px);
+            text-decoration: none;
+        }
+
+        .btn-create {
+            background: var(--purple-gradient);
+            color: white;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-search {
+            background: var(--sentiment-positive);
+            color: white;
+            box-shadow: 0 5px 15px rgba(17, 153, 142, 0.3);
+        }
+
+        .btn-analytics {
+            background: var(--gold-gradient);
+            color: var(--dark-color);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .feedbacks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .feedback-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--feedback-shadow);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .feedback-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .feedback-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .feedback-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .client-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .client-avatar {
+            width: 50px;
+            height: 50px;
+            background: var(--purple-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .client-details h5 {
+            margin: 0;
+            font-weight: 700;
+            color: var(--dark-color);
+        }
+
+        .feedback-id {
+            color: var(--secondary-color);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .feedback-date {
+            text-align: right;
+            color: var(--dark-color);
+            font-weight: 500;
+        }
+
+        .feedback-date i {
+            color: var(--primary-color);
+            margin-right: 0.5rem;
+        }
+
+        .feedback-content {
+            padding: 2rem;
+        }
+
+        .feedback-rating {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 15px;
+            border-left: 4px solid #ffd700;
+        }
+
+        .stars-display {
+            display: flex;
+            gap: 0.3rem;
+        }
+
+        .star-filled {
+            color: #ffd700;
+            font-size: 1.5rem;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .star-empty {
+            color: #e0e0e0;
+            font-size: 1.5rem;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .rating-value {
+            font-size: 1.5rem;
+        }
+
+        .rating-number {
+            font-weight: 800;
+            color: var(--warning-color);
+        }
+
+        .rating-total {
+            color: var(--dark-color);
+            opacity: 0.7;
+        }
+
+        .feedback-comment {
+            margin-bottom: 1.5rem;
+        }
+
+        .feedback-comment p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: var(--dark-color);
+            margin: 0;
+            font-style: italic;
+            position: relative;
+            padding: 1rem;
+            background: rgba(248, 249, 250, 0.8);
+            border-radius: 15px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .feedback-comment p::before {
+            content: '"';
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            font-size: 3rem;
+            color: var(--primary-color);
+            opacity: 0.3;
+            font-family: Georgia, serif;
+        }
+
+        .feedback-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.5rem 1rem;
+            background: var(--purple-gradient);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .tag:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .feedback-actions {
+            display: flex;
+            gap: 0.5rem;
+            padding: 1rem 1.5rem 1.5rem;
+            background: rgba(248, 249, 250, 0.5);
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .btn-action {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-action::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-action:hover::before {
+            left: 100%;
+        }
+
+        .btn-view {
+            background: var(--info-color);
+            color: white;
+            box-shadow: 0 3px 10px rgba(23, 162, 184, 0.3);
+        }
+
+        .btn-view:hover {
+            background: #138496;
+            transform: translateY(-2px);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-edit {
+            background: var(--warning-color);
+            color: var(--dark-color);
+            box-shadow: 0 3px 10px rgba(255, 193, 7, 0.3);
+        }
+
+        .btn-edit:hover {
+            background: #e0a800;
+            transform: translateY(-2px);
+            color: var(--dark-color);
+            text-decoration: none;
+        }
+
+        .btn-delete {
+            background: var(--danger-color);
+            color: white;
+            box-shadow: 0 3px 10px rgba(220, 53, 69, 0.3);
+        }
+
+        .btn-delete:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+
+        .delete-form {
+            flex: 1;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            margin: 2rem 0;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            opacity: 0.7;
+        }
+
+        .empty-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin-bottom: 1rem;
+        }
+
+        .empty-subtitle {
+            font-size: 1.1rem;
+            color: var(--dark-color);
+            opacity: 0.8;
+            margin-bottom: 2rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: var(--dark-color);
+            opacity: 0.8;
+        }
+
+        .alert-modern {
+            padding: 1rem 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .alert-success-modern {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        .alert-error-modern {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+
+
+
+
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .stats-card {
+                padding: 1.5rem;
+            }
+            
+            .feedbacks-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .feedback-actions {
+                flex-direction: column;
+            }
+            
+            .floating-add-btn {
+                bottom: 1rem;
+                right: 1rem;
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .feedback-content {
+                padding: 1rem;
+            }
+
+            .btn-modern {
+                width: 100%;
+                justify-content: center;
+                margin: 0.25rem 0;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-hotel"></i> Overlook Hotel
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/employe">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/evenements">
+                            <i class="fas fa-calendar-alt"></i> Événements
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/installations">
+                            <i class="fas fa-building"></i> Installations
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/feedbacks">
+                            <i class="fas fa-comments"></i> Avis Clients
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/clients">
+                            <i class="fas fa-users"></i> Clients
+                        </a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-home"></i> Accueil
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb breadcrumb-custom">
+                    <li class="breadcrumb-item"><a href="/">Accueil</a></li>
+                    <li class="breadcrumb-item"><a href="/employe">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Gestion des Avis Clients</li>
+                </ol>
+            </nav>
+            <h1 class="page-title">
+                <i class="fas fa-star"></i> Avis Clients Premium
+            </h1>
+            <p class="page-subtitle">
+                Gérez les retours et la satisfaction de vos clients avec intelligence
+            </p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
     <div class="container">
-        <h1>💬 Gestion des Avis Clients</h1>
-        
         <!-- Messages d'alerte -->
-        <div th:if="${succes}" class="alert alert-success" th:text="${succes}"></div>
-        <div th:if="${erreur}" class="alert alert-error" th:text="${erreur}"></div>
+        <div th:if="${succes}" class="alert-modern alert-success-modern" data-aos="fade-down">
+            <i class="fas fa-check-circle"></i>
+            <span th:text="${succes}"></span>
+        </div>
+        <div th:if="${erreur}" class="alert-modern alert-error-modern" data-aos="fade-down">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span th:text="${erreur}"></span>
+        </div>
         
         <!-- Statistiques -->
-        <div class="stats">
-            <div class="stat-card">
-                <h3 th:text="${nombreFeedbacks}">0</h3>
-                <p>Total Avis</p>
-            </div>
-            <div class="stat-card success">
-                <h3 th:text="${noteMoyenne}">0.0</h3>
-                <p>Note Moyenne</p>
-            </div>
-            <div class="stat-card warning">
-                <h3>★★★★☆</h3>
-                <p>Satisfaction</p>
+        <div class="stats-container" data-aos="fade-up">
+            <div class="row">
+                <div class="col-lg-3 col-md-6">
+                    <div class="stats-card total">
+                        <div class="stats-icon text-primary">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <div class="stats-number text-primary" th:text="${nombreFeedbacks ?: 0}">0</div>
+                        <div class="stats-label">Total Avis</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stats-card average">
+                        <div class="stats-icon text-warning">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="stats-number text-warning" th:text="${noteMoyenne ?: '0.0'}">0.0</div>
+                        <div class="stats-label">Note Moyenne</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stats-card satisfaction">
+                        <div class="rating-stars">
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="far fa-star star"></i>
+                        </div>
+                        <div class="stats-number text-success">4.2</div>
+                        <div class="stats-label">Satisfaction</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stats-card pending">
+                        <div class="stats-icon text-info">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stats-number text-info" th:text="${nombreEnAttente ?: 0}">0</div>
+                        <div class="stats-label">En Attente</div>
+                    </div>
+                </div>
             </div>
         </div>
         
         <!-- Actions -->
-        <div class="actions">
-            <a href="/feedbacks/nouveau" class="btn btn-primary">➕ Nouvel Avis</a>
-            <a href="/feedbacks/rechercher" class="btn btn-success">🔍 Rechercher</a>
+        <div class="actions-section" data-aos="fade-up" data-aos-delay="200">
+            <h5 class="mb-3">
+                <i class="fas fa-rocket text-primary"></i> Actions Rapides
+            </h5>
+            <a href="/feedbacks/nouveau" class="btn-modern btn-create">
+                <i class="fas fa-plus"></i> Nouvel Avis
+            </a>
+            <a href="/feedbacks/rechercher" class="btn-modern btn-search">
+                <i class="fas fa-search"></i> Rechercher
+            </a>
+            <a href="/feedbacks/analytics" class="btn-modern btn-analytics">
+                <i class="fas fa-chart-line"></i> Analytics
+            </a>
         </div>
         
         <!-- Liste de tous les feedbacks -->
-        <h2>📋 Tous les Avis Clients</h2>
-        <div th:if="${feedbacks != null and !feedbacks.empty}">
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Client</th>
-                        <th>Note</th>
-                        <th>Commentaire</th>
-                        <th>Date</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="feedback : ${feedbacks}">
-                        <td th:text="${feedback.id}">1</td>
-                        <td th:text="${feedback.nomClient}">Client</td>
-                        <td class="note">
-                            <span th:text="${feedback.noteEtoiles}">⭐⭐⭐⭐⭐</span>
-                            <small th:text="'(' + ${feedback.note} + '/5)'"> (5/5)</small>
-                        </td>
-                        <td class="commentaire" th:text="${feedback.commentaire}" th:title="${feedback.commentaire}">Commentaire...</td>
-                        <td th:text="${#temporals.format(feedback.dateCreation, 'dd/MM/yyyy HH:mm')}">01/01/2024 12:00</td>
-                        <td>
-                            <a th:href="@{'/feedbacks/' + ${feedback.id}}" class="btn btn-primary">👁️ Voir</a>
-                            <form style="display:inline;" th:action="@{'/feedbacks/' + ${feedback.id} + '/supprimer'}" method="post" 
-                                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet avis ?')">
-                                <button type="submit" class="btn btn-danger">🗑️ Supprimer</button>
-                            </form>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="section-header" data-aos="fade-up" data-aos-delay="400">
+            <h2 class="section-title">
+                <i class="fas fa-star text-warning"></i> Tous les Avis Clients
+            </h2>
+            <p class="section-subtitle">Consultez et gérez tous les retours de vos clients</p>
         </div>
         
-        <div th:if="${feedbacks == null or feedbacks.empty}">
-            <p style="text-align: center; color: #7f8c8d; font-style: italic;">
-                Aucun avis client trouvé. <a href="/feedbacks/nouveau">Créer le premier avis</a>
+        <!-- Feedbacks Grid -->
+        <div th:if="${feedbacks != null and !feedbacks.empty}" class="feedbacks-grid" data-aos="fade-up" data-aos-delay="600">
+            <div th:each="feedback, iterStat : ${feedbacks}" class="feedback-card" 
+                 th:data-aos-delay="${600 + (iterStat.index * 100)}">
+                
+                <!-- Sentiment Indicator -->
+                <div class="sentiment-indicator" 
+                     th:classappend="${feedback.note >= 4} ? 'sentiment-positive' : 
+                                   (${feedback.note >= 3} ? 'sentiment-neutral' : 'sentiment-negative')">
+                    <i th:class="${feedback.note >= 4} ? 'fas fa-smile' : 
+                                (${feedback.note >= 3} ? 'fas fa-meh' : 'fas fa-frown')"></i>
+                </div>
+                
+                <!-- Feedback Header -->
+                <div class="feedback-header">
+                    <div class="feedback-meta">
+                        <div class="client-info">
+                            <div class="client-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="client-details">
+                                <h5 class="client-name" th:text="${feedback.nomClient}">Client</h5>
+                                <small class="feedback-id">Avis #<span th:text="${feedback.id}">1</span></small>
+                            </div>
+                        </div>
+                        <div class="feedback-date">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span th:text="${#temporals.format(feedback.dateCreation, 'dd/MM/yyyy')}">01/01/2024</span>
+                            <br>
+                            <small th:text="${#temporals.format(feedback.dateCreation, 'HH:mm')}">12:00</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Feedback Content -->
+                <div class="feedback-content">
+                    <!-- Rating -->
+                    <div class="feedback-rating">
+                        <div class="stars-display">
+                            <i th:each="star : ${#numbers.sequence(1, 5)}" 
+                               th:class="${star <= feedback.note} ? 'fas fa-star star-filled' : 'far fa-star star-empty'"></i>
+                        </div>
+                        <div class="rating-value">
+                            <span class="rating-number" th:text="${feedback.note}">5</span>
+                            <span class="rating-total">/5</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Comment -->
+                    <div class="feedback-comment">
+                        <p th:text="${feedback.commentaire}">Un excellent séjour dans votre hôtel ! Le service était impeccable et les installations magnifiques.</p>
+                    </div>
+                    
+                    <!-- Tags -->
+                    <div class="feedback-tags">
+                        <span class="tag" th:if="${feedback.note >= 4}">
+                            <i class="fas fa-thumbs-up"></i> Recommandé
+                        </span>
+                        <span class="tag" th:if="${feedback.note >= 4}">
+                            <i class="fas fa-heart"></i> Client Satisfait
+                        </span>
+                        <span class="tag" th:if="${feedback.note < 3}">
+                            <i class="fas fa-exclamation-triangle"></i> À Améliorer
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- Feedback Actions -->
+                <div class="feedback-actions">
+                    <a th:href="@{'/feedbacks/' + ${feedback.id}}" class="btn-action btn-view">
+                        <i class="fas fa-eye"></i> Détails
+                    </a>
+                    <a th:href="@{'/feedbacks/' + ${feedback.id} + '/modifier'}" class="btn-action btn-edit">
+                        <i class="fas fa-edit"></i> Modifier
+                    </a>
+                    <form class="delete-form" th:action="@{'/feedbacks/' + ${feedback.id} + '/supprimer'}" method="post">
+                        <button type="submit" class="btn-action btn-delete" onclick="return confirmDelete(this)">
+                            <i class="fas fa-trash-alt"></i> Supprimer
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Empty State -->
+        <div th:if="${feedbacks == null or feedbacks.empty}" class="empty-state" data-aos="fade-up" data-aos-delay="400">
+            <div class="empty-icon">
+                <i class="fas fa-comment-slash"></i>
+            </div>
+            <h3 class="empty-title">Aucun avis client</h3>
+            <p class="empty-subtitle">
+                Commencez à collecter des avis de vos clients pour améliorer votre service
             </p>
+            <a href="/feedbacks/nouveau" class="btn-modern btn-create">
+                <i class="fas fa-plus"></i> Créer le premier avis
+            </a>
         </div>
         
-        <!-- Navigation -->
-        <div class="nav-links">
-            <a href="/" class="btn btn-primary">🏠 Accueil</a>
-            <a href="/clients" class="btn btn-success">👥 Clients</a>
-            <a href="/chambres" class="btn btn-warning">🏠 Chambres</a>
-            <a href="/employes" class="btn btn-primary">👨‍💼 Employés</a>
-            <a href="/evenements" class="btn btn-success">🎉 Événements</a>
-            <a href="/installations" class="btn btn-warning">🏢 Installations</a>
-        </div>
     </div>
+
+    <!-- Floating Action Button -->
+    <a href="/feedbacks/nouveau" class="floating-add-btn" title="Créer un nouvel avis">
+        <i class="fas fa-plus"></i>
+    </a>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true,
+            offset: 100
+        });
+
+        // Auto-hide alerts
+        document.addEventListener('DOMContentLoaded', function() {
+            const alerts = document.querySelectorAll('.alert-modern');
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    alert.style.opacity = '0';
+                    alert.style.transform = 'translateY(-20px)';
+                    setTimeout(() => alert.remove(), 300);
+                }, 5000);
+            });
+        });
+
+        // Animate counters
+        function animateCounter(element) {
+            const target = parseInt(element.textContent);
+            const increment = target / 50;
+            let current = 0;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                element.textContent = Math.ceil(current);
+                
+                if (current >= target) {
+                    element.textContent = target;
+                    clearInterval(timer);
+                }
+            }, 20);
+        }
+
+        // Animate stats numbers on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const statsNumbers = document.querySelectorAll('.stats-number');
+            statsNumbers.forEach(stat => {
+                if (!isNaN(parseInt(stat.textContent))) {
+                    animateCounter(stat);
+                }
+            });
+        });
+
+        // Enhanced delete confirmation
+        function confirmDelete(button) {
+            const clientName = button.closest('.feedback-card').querySelector('.client-name').textContent;
+            return confirm(`Êtes-vous sûr de vouloir supprimer l'avis de ${clientName} ?\n\nCette action est irréversible.`);
+        }
+
+        // Interactive stars hover effect
+        document.addEventListener('DOMContentLoaded', function() {
+            const starContainers = document.querySelectorAll('.stars-display');
+            starContainers.forEach(container => {
+                container.addEventListener('mouseenter', function() {
+                    this.querySelectorAll('.star-filled').forEach(star => {
+                        star.style.transform = 'scale(1.2)';
+                    });
+                });
+                
+                container.addEventListener('mouseleave', function() {
+                    this.querySelectorAll('.star-filled').forEach(star => {
+                        star.style.transform = 'scale(1)';
+                    });
+                });
+            });
+        });
+
+        // Smooth scroll for floating button
+        document.querySelector('.floating-add-btn').addEventListener('click', function(e) {
+            this.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 150);
+        });
+
+        // Card hover effects
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.feedback-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.querySelector('.sentiment-indicator').style.transform = 'scale(1.1) rotate(5deg)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.querySelector('.sentiment-indicator').style.transform = 'scale(1) rotate(0deg)';
+                });
+            });
+        });
+
+        // Feedback submission success animation
+        if (window.location.search.includes('success')) {
+            setTimeout(() => {
+                const cards = document.querySelectorAll('.feedback-card');
+                cards.forEach((card, index) => {
+                    setTimeout(() => {
+                        card.style.animation = 'pulse 0.6s ease-in-out';
+                    }, index * 100);
+                });
+            }, 500);
+        }
+    </script>
 </body>
 </html>

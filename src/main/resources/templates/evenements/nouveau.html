@@ -4,130 +4,823 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nouvel Événement - Overlook Hotel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }
-        .container { max-width: 800px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        h1 { color: #2c3e50; text-align: center; margin-bottom: 30px; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; color: #34495e; }
-        input, textarea, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; box-sizing: border-box; }
-        textarea { height: 100px; resize: vertical; }
-        .btn { padding: 12px 25px; margin: 10px 5px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; text-decoration: none; display: inline-block; }
-        .btn-primary { background-color: #3498db; color: white; }
-        .btn-success { background-color: #27ae60; color: white; }
-        .btn-secondary { background-color: #6c757d; color: white; }
-        .btn:hover { opacity: 0.8; }
-        .form-actions { text-align: center; margin-top: 30px; }
-        .alert { padding: 15px; margin: 10px 0; border-radius: 5px; }
-        .alert-error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-        .required { color: #e74c3c; }
-        .form-help { font-size: 12px; color: #6c757d; margin-top: 5px; }
-        .form-row { display: flex; gap: 15px; }
-        .form-row .form-group { flex: 1; }
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --purple-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --success-gradient: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            --card-shadow: 0 10px 30px rgba(102, 126, 234, 0.1);
+            --form-shadow: 0 15px 35px rgba(102, 126, 234, 0.12);
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="eventPattern" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="rgba(102,126,234,0.08)"/></pattern></defs><rect width="100" height="100" fill="url(%23eventPattern)"/></svg>');
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .navbar-custom {
+            background: var(--purple-gradient);
+            box-shadow: 0 2px 20px rgba(102, 126, 234, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .page-header {
+            background: var(--purple-gradient);
+            color: white;
+            padding: 4rem 0 3rem;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: headerPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes headerPulse {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.5; }
+            50% { transform: scale(1.1) rotate(180deg); opacity: 0.8; }
+        }
+
+        .page-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 2;
+        }
+
+        .page-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 2;
+        }
+
+        .breadcrumb-custom {
+            background: transparent;
+            padding: 0;
+            margin-bottom: 1rem;
+        }
+
+        .breadcrumb-custom .breadcrumb-item a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .breadcrumb-custom .breadcrumb-item a:hover {
+            color: white;
+        }
+
+        .breadcrumb-custom .breadcrumb-item.active {
+            color: white;
+            font-weight: 600;
+        }
+
+        .form-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 3rem;
+            box-shadow: var(--form-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--purple-gradient);
+        }
+
+        .form-title {
+            text-align: center;
+            color: var(--dark-color);
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .form-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--purple-gradient);
+            border-radius: 2px;
+        }
+
+        .form-section {
+            background: rgba(248, 249, 250, 0.5);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(0,0,0,0.05);
+            position: relative;
+        }
+
+        .form-section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-section-title i {
+            color: var(--primary-color);
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .form-label i {
+            color: var(--primary-color);
+            font-size: 0.9rem;
+        }
+
+        .required {
+            color: var(--danger-color);
+            font-weight: 700;
+        }
+
+        .form-control, .form-select {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 0.8rem 1rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.15);
+            background: white;
+            transform: translateY(-2px);
+        }
+
+        .form-control:hover, .form-select:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-1px);
+        }
+
+        .form-help {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .form-help i {
+            color: var(--info-color);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .btn-modern {
+            padding: 1rem 2.5rem;
+            border-radius: 15px;
+            border: none;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin: 0.5rem;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            font-size: 1rem;
+        }
+
+        .btn-modern::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-modern:hover::before {
+            left: 100%;
+        }
+
+        .btn-modern:hover {
+            transform: translateY(-3px);
+            text-decoration: none;
+            color: white;
+        }
+
+        .btn-success-modern {
+            background: var(--success-gradient);
+            color: white;
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-success-modern:hover {
+            box-shadow: 0 12px 35px rgba(40, 167, 69, 0.4);
+        }
+
+        .btn-secondary-modern {
+            background: linear-gradient(135deg, #6c757d, #495057);
+            color: white;
+            box-shadow: 0 8px 25px rgba(108, 117, 125, 0.3);
+        }
+
+        .btn-primary-modern {
+            background: var(--purple-gradient);
+            color: white;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .form-actions {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .navigation-section {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .alert-modern {
+            border-radius: 15px;
+            border: none;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .alert-error-modern {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            color: #721c24;
+        }
+
+        .floating-help {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--info-color);
+            color: white;
+            border: none;
+            box-shadow: 0 5px 20px rgba(23, 162, 184, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .floating-help:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(23, 162, 184, 0.5);
+        }
+
+        /* Animations */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-section {
+            animation: slideInUp 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .form-section:nth-child(1) { animation-delay: 0.1s; }
+        .form-section:nth-child(2) { animation-delay: 0.2s; }
+        .form-section:nth-child(3) { animation-delay: 0.3s; }
+        .form-section:nth-child(4) { animation-delay: 0.4s; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .form-container {
+                margin: 1rem;
+                padding: 2rem 1.5rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .btn-modern {
+                width: 100%;
+                justify-content: center;
+                margin: 0.5rem 0;
+            }
+
+            .floating-help {
+                bottom: 1rem;
+                right: 1rem;
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .form-title {
+                font-size: 2rem;
+            }
+
+            .form-section {
+                padding: 1.5rem;
+            }
+
+            .form-container {
+                border-radius: 15px;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🎉 Créer un Nouvel Événement</h1>
-        
-        <!-- Messages d'erreur -->
-        <div th:if="${erreur}" class="alert alert-error" th:text="${erreur}"></div>
-        
-        <form th:action="@{/evenements/nouveau}" method="post" th:object="${evenement}">
-            
-            <div class="form-group">
-                <label for="titre">Titre de l'événement <span class="required">*</span></label>
-                <input type="text" id="titre" th:field="*{titre}" required 
-                       placeholder="Nom de l'événement" maxlength="100">
-                <div class="form-help">Maximum 100 caractères</div>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-hotel"></i> Overlook Hotel
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/employe">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/evenements">
+                            <i class="fas fa-calendar-alt"></i> Événements
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/clients">
+                            <i class="fas fa-users"></i> Clients
+                        </a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-home"></i> Accueil
+                        </a>
+                    </li>
+                </ul>
             </div>
-            
-            <div class="form-group">
-                <label for="description">Description</label>
-                <textarea id="description" th:field="*{description}" 
-                          placeholder="Description détaillée de l'événement..." maxlength="1000"></textarea>
-                <div class="form-help">Maximum 1000 caractères</div>
-            </div>
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="dateDebut">Date de début <span class="required">*</span></label>
-                    <input type="date" id="dateDebut" th:field="*{dateDebut}" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="dateFin">Date de fin</label>
-                    <input type="date" id="dateFin" th:field="*{dateFin}">
-                    <div class="form-help">Optionnel - laquer vide pour un événement d'une journée</div>
-                </div>
-            </div>
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="maxParticipants">Nombre maximum de participants</label>
-                    <input type="number" id="maxParticipants" th:field="*{maxParticipants}" 
-                           min="1" placeholder="Ex: 50">
-                    <div class="form-help">Laisser vide pour un nombre illimité</div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="statut">Statut</label>
-                    <select id="statut" th:field="*{statut}">
-                        <option th:each="statut : ${statuts}" 
-                                th:value="${statut.name()}" 
-                                th:text="${statut.libelle}"
-                                th:selected="${statut.name() == 'PLANIFIE'}">
-                            Statut
-                        </option>
-                    </select>
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label for="installation">Installation</label>
-                <select id="installation" th:field="*{installation}">
-                    <option value="">-- Aucune installation --</option>
-                    <option th:each="installation : ${installations}" 
-                            th:value="${installation.id}" 
-                            th:text="${installation.nomComplet + ' (Capacité: ' + (installation.capacite != null ? installation.capacite : 'Non définie') + ')'}">
-                        Installation
-                    </option>
-                </select>
-                <div class="form-help">Choisir une installation pour l'événement (optionnel)</div>
-            </div>
-            
-            <div class="form-actions">
-                <button type="submit" class="btn btn-success">✅ Créer l'Événement</button>
-                <a href="/evenements" class="btn btn-secondary">❌ Annuler</a>
-            </div>
-        </form>
-        
-        <div style="text-align: center; margin-top: 30px;">
-            <a href="/evenements" class="btn btn-primary">📋 Retour à la liste</a>
-            <a href="/installations/nouvelle" class="btn btn-primary">🏢 Créer une installation</a>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb breadcrumb-custom">
+                    <li class="breadcrumb-item"><a href="/">Accueil</a></li>
+                    <li class="breadcrumb-item"><a href="/employe">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="/evenements">Événements</a></li>
+                    <li class="breadcrumb-item active">Nouvel Événement</li>
+                </ol>
+            </nav>
+            <h1 class="page-title">
+                <i class="fas fa-plus-circle"></i> Nouvel Événement
+            </h1>
+            <p class="page-subtitle">
+                Créez un nouvel événement pour l'hôtel
+            </p>
         </div>
     </div>
 
+    <!-- Main Content -->
+    <div class="container">
+        <div class="form-container" data-aos="fade-up">
+            <h2 class="form-title">
+                <i class="fas fa-calendar-plus"></i> Créer un Événement
+            </h2>
+            
+            <!-- Messages d'erreur -->
+            <div th:if="${erreur}" class="alert-modern alert-error-modern" data-aos="shake">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span th:text="${erreur}"></span>
+            </div>
+            
+            <form th:action="@{/evenements/nouveau}" method="post" th:object="${evenement}" id="eventForm">
+                
+                <!-- Section Informations principales -->
+                <div class="form-section" data-aos="fade-right" data-aos-delay="100">
+                    <h3 class="form-section-title">
+                        <i class="fas fa-info-circle"></i> Informations Principales
+                    </h3>
+                    
+                    <div class="form-group">
+                        <label for="titre" class="form-label">
+                            <i class="fas fa-tag"></i> Titre de l'événement <span class="required">*</span>
+                        </label>
+                        <input type="text" id="titre" th:field="*{titre}" required 
+                               class="form-control" placeholder="Nom de l'événement" maxlength="100">
+                        <div class="form-help">
+                            <i class="fas fa-info-circle"></i> Maximum 100 caractères
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description" class="form-label">
+                            <i class="fas fa-align-left"></i> Description
+                        </label>
+                        <textarea id="description" th:field="*{description}" class="form-control" rows="4"
+                                  placeholder="Description détaillée de l'événement..." maxlength="1000"></textarea>
+                        <div class="form-help">
+                            <i class="fas fa-info-circle"></i> Maximum 1000 caractères (optionnel)
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Section Dates -->
+                <div class="form-section" data-aos="fade-left" data-aos-delay="200">
+                    <h3 class="form-section-title">
+                        <i class="fas fa-calendar"></i> Planning
+                    </h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="dateDebut" class="form-label">
+                                <i class="fas fa-play"></i> Date de début <span class="required">*</span>
+                            </label>
+                            <input type="date" id="dateDebut" th:field="*{dateDebut}" required class="form-control">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="dateFin" class="form-label">
+                                <i class="fas fa-stop"></i> Date de fin
+                            </label>
+                            <input type="date" id="dateFin" th:field="*{dateFin}" class="form-control">
+                            <div class="form-help">
+                                <i class="fas fa-info-circle"></i> Optionnel - laisser vide pour un événement d'une journée
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Section Configuration -->
+                <div class="form-section" data-aos="fade-right" data-aos-delay="300">
+                    <h3 class="form-section-title">
+                        <i class="fas fa-cogs"></i> Configuration
+                    </h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="maxParticipants" class="form-label">
+                                <i class="fas fa-users"></i> Nombre maximum de participants
+                            </label>
+                            <input type="number" id="maxParticipants" th:field="*{maxParticipants}" 
+                                   min="1" max="1000" class="form-control" placeholder="Ex: 50">
+                            <div class="form-help">
+                                <i class="fas fa-info-circle"></i> Laisser vide pour un nombre illimité
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="statut" class="form-label">
+                                <i class="fas fa-flag"></i> Statut initial
+                            </label>
+                            <select id="statut" th:field="*{statut}" class="form-select">
+                                <option th:each="statut : ${statuts}" 
+                                        th:value="${statut.name()}" 
+                                        th:text="${statut.libelle}"
+                                        th:selected="${statut.name() == 'PLANIFIE'}">
+                                    Statut
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Section Installation -->
+                <div class="form-section" data-aos="fade-left" data-aos-delay="400">
+                    <h3 class="form-section-title">
+                        <i class="fas fa-building"></i> Lieu et Installation
+                    </h3>
+                    
+                    <div class="form-group">
+                        <label for="installation" class="form-label">
+                            <i class="fas fa-map-marker-alt"></i> Installation
+                        </label>
+                        <select id="installation" th:field="*{installation}" class="form-select">
+                            <option value="">-- Aucune installation spécifique --</option>
+                            <option th:each="installation : ${installations}" 
+                                    th:value="${installation.id}" 
+                                    th:text="${installation.nomComplet + ' (Capacité: ' + (installation.capacite != null ? installation.capacite : 'Non définie') + ')'}">
+                                Installation
+                            </option>
+                        </select>
+                        <div class="form-help">
+                            <i class="fas fa-info-circle"></i> Choisir une installation pour l'événement (optionnel)
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Actions principales -->
+                <div class="form-actions" data-aos="fade-up" data-aos-delay="500">
+                    <button type="submit" class="btn-modern btn-success-modern">
+                        <i class="fas fa-plus-circle"></i> Créer l'Événement
+                    </button>
+                    <a href="/evenements" class="btn-modern btn-secondary-modern">
+                        <i class="fas fa-times"></i> Annuler
+                    </a>
+                </div>
+            </form>
+            
+            <!-- Navigation rapide -->
+            <div class="navigation-section" data-aos="fade-up" data-aos-delay="600">
+                <h5 class="mb-3 text-muted">
+                    <i class="fas fa-rocket"></i> Actions Rapides
+                </h5>
+                <a href="/evenements" class="btn-modern btn-primary-modern">
+                    <i class="fas fa-list"></i> Liste des Événements
+                </a>
+                <a href="/installations/nouvelle" class="btn-modern btn-primary-modern">
+                    <i class="fas fa-plus"></i> Créer une Installation
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bouton d'aide flottant -->
+    <button class="floating-help" onclick="showHelp()" title="Aide">
+        <i class="fas fa-question"></i>
+    </button>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <script>
-        // Validation côté client
-        document.querySelector('form').addEventListener('submit', function(e) {
+        // Initialisation AOS
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true,
+            offset: 100
+        });
+
+        // Validation côté client améliorée
+        document.getElementById('eventForm').addEventListener('submit', function(e) {
             const dateDebut = document.getElementById('dateDebut').value;
             const dateFin = document.getElementById('dateFin').value;
+            const titre = document.getElementById('titre').value.trim();
+            const maxParticipants = document.getElementById('maxParticipants').value;
             
+            // Validation des dates
             if (dateFin && dateFin < dateDebut) {
                 e.preventDefault();
-                alert('La date de fin ne peut pas être antérieure à la date de début !');
+                showError('La date de fin ne peut pas être antérieure à la date de début !');
                 return false;
             }
+            
+            // Validation de la date passée
+            const today = new Date().toISOString().split('T')[0];
+            if (dateDebut < today) {
+                e.preventDefault();
+                showError('La date de début ne peut pas être dans le passé !');
+                return false;
+            }
+            
+            // Validation du titre
+            if (!titre || titre.length < 3) {
+                e.preventDefault();
+                showError('Le titre doit contenir au moins 3 caractères !');
+                document.getElementById('titre').focus();
+                return false;
+            }
+            
+            // Validation du nombre de participants
+            if (maxParticipants && (maxParticipants < 1 || maxParticipants > 1000)) {
+                e.preventDefault();
+                showError('Le nombre de participants doit être entre 1 et 1000 !');
+                return false;
+            }
+            
+            // Animation de soumission
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Création en cours...';
+            submitBtn.disabled = true;
         });
         
         // Suggestion de la date de début à aujourd'hui par défaut
         document.addEventListener('DOMContentLoaded', function() {
             const dateDebut = document.getElementById('dateDebut');
             if (!dateDebut.value) {
-                const aujourd = new Date().toISOString().split('T')[0];
-                dateDebut.value = aujourd;
+                const today = new Date();
+                today.setDate(today.getDate() + 1); // Demain par défaut
+                dateDebut.value = today.toISOString().split('T')[0];
             }
+            
+            // Mise à jour automatique de la date de fin
+            dateDebut.addEventListener('change', function() {
+                const dateFin = document.getElementById('dateFin');
+                if (!dateFin.value && this.value) {
+                    dateFin.value = this.value;
+                }
+            });
+        });
+
+        // Fonction d'affichage d'erreur
+        function showError(message) {
+            // Supprimer les anciennes alertes
+            const existingAlerts = document.querySelectorAll('.alert-error-modern');
+            existingAlerts.forEach(alert => alert.remove());
+            
+            // Créer une nouvelle alerte
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert-modern alert-error-modern';
+            alertDiv.innerHTML = `
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>${message}</span>
+            `;
+            
+            // Insérer l'alerte
+            const formTitle = document.querySelector('.form-title');
+            formTitle.insertAdjacentElement('afterend', alertDiv);
+            
+            // Faire défiler vers l'alerte
+            alertDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // Animation d'attention
+            alertDiv.style.animation = 'shake 0.5s ease-in-out';
+            
+            // Auto-suppression après 5 secondes
+            setTimeout(() => {
+                alertDiv.style.transition = 'all 0.5s ease';
+                alertDiv.style.transform = 'translateY(-20px)';
+                alertDiv.style.opacity = '0';
+                setTimeout(() => alertDiv.remove(), 500);
+            }, 5000);
+        }
+
+        // Fonction d'aide
+        function showHelp() {
+            const helpMessage = 'Conseils pour créer un événement :\n\n' +
+                '• Choisissez un titre accrocheur et descriptif\n' +
+                '• Ajoutez une description détaillée pour informer les participants\n' +
+                '• Sélectionnez une installation appropriée selon la capacité\n' +
+                '• Fixez une limite de participants si nécessaire\n' +
+                '• Planifiez au moins 24h à l\'avance';
+            
+            alert(helpMessage);
+        }
+
+        // Animation des champs au focus
+        document.querySelectorAll('.form-control, .form-select').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'scale(1.02)';
+                this.parentElement.style.transition = 'transform 0.2s ease';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'scale(1)';
+            });
+        });
+
+        // Compteur de caractères pour les champs avec limite
+        const titreField = document.getElementById('titre');
+        const descriptionField = document.getElementById('description');
+        
+        function addCharacterCounter(field, maxLength) {
+            const counter = document.createElement('div');
+            counter.className = 'character-counter';
+            counter.style.cssText = 'font-size: 0.75rem; color: #6c757d; text-align: right; margin-top: 0.25rem;';
+            
+            field.parentElement.appendChild(counter);
+            
+            function updateCounter() {
+                const remaining = maxLength - field.value.length;
+                counter.textContent = `${field.value.length}/${maxLength} caractères`;
+                counter.style.color = remaining < 20 ? '#dc3545' : '#6c757d';
+            }
+            
+            field.addEventListener('input', updateCounter);
+            updateCounter();
+        }
+        
+        addCharacterCounter(titreField, 100);
+        addCharacterCounter(descriptionField, 1000);
+
+        // Effet parallaxe léger sur le header
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const header = document.querySelector('.page-header');
+            if (header) {
+                const speed = scrolled * 0.5;
+                header.style.transform = `translateY(${speed}px)`;
+            }
+        });
+
+        // Animation d'entrée pour les éléments du formulaire
+        const formElements = document.querySelectorAll('.form-group input, .form-group textarea, .form-group select');
+        formElements.forEach((element, index) => {
+            element.style.opacity = '0';
+            element.style.transform = 'translateY(20px)';
+            element.style.transition = 'all 0.6s ease';
+            
+            setTimeout(() => {
+                element.style.opacity = '1';
+                element.style.transform = 'translateY(0)';
+            }, 100 * index);
         });
     </script>
 </body>

@@ -1,13 +1,28 @@
 package com.example.demo.service;
 
 import com.example.demo.model.Gestionnaire;
+import com.example.demo.model.Employe;
 import com.example.demo.repository.GestionnaireRepository;
+import com.example.demo.repository.EmployeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import com.example.demo.model.Employe;
+import com.example.demo.repository.GestionnaireRepository;
+import com.example.demo.repository.EmployeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -15,6 +30,9 @@ public class GestionnaireService {
 
     @Autowired
     private GestionnaireRepository gestionnaireRepository;
+    
+    @Autowired
+    private EmployeRepository employeRepository;
 
     // Créer un nouveau gestionnaire
     public Gestionnaire creerGestionnaire(Gestionnaire gestionnaire) {
@@ -139,5 +157,48 @@ public class GestionnaireService {
     public boolean emailExistePourAutreGestionnaire(String email, Long gestionnaireId) {
         Optional<Gestionnaire> gestionnaire = gestionnaireRepository.findByEmail(email);
         return gestionnaire.isPresent() && !gestionnaire.get().getId().equals(gestionnaireId);
+    }
+
+    // Nouvelles méthodes pour la gestion des employés
+    @Transactional(readOnly = true)
+    public List<Employe> obtenirTousLesEmployes() {
+        return employeRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Employe> obtenirEmployesActifs() {
+        return employeRepository.findByStatut(Employe.StatutEmploye.ACTIF);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Employe> obtenirEmployesEnConge() {
+        return employeRepository.findByStatut(Employe.StatutEmploye.EN_CONGE);
+    }
+
+    @Transactional(readOnly = true)
+    public Map<Employe.RoleEmploye, Long> obtenirRepartitionParRole() {
+        List<Employe> employes = employeRepository.findAll();
+        return employes.stream()
+                .collect(Collectors.groupingBy(
+                    Employe::getRole,
+                    Collectors.counting()
+                ));
+    }
+
+    @Transactional(readOnly = true)
+    public Map<Employe.StatutEmploye, Long> obtenirRepartitionParStatut() {
+        List<Employe> employes = employeRepository.findAll();
+        return employes.stream()
+                .collect(Collectors.groupingBy(
+                    Employe::getStatut,
+                    Collectors.counting()
+                ));
+    }
+
+    @Transactional(readOnly = true)
+    public List<Employe> obtenirEmployesRecents(int limite) {
+        return employeRepository.findTop10ByOrderByDateEmbaucheDesc().stream()
+                .limit(limite)
+                .collect(Collectors.toList());
     }
 }

@@ -4,120 +4,1181 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nouvelle Installation - Overlook Hotel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }
-        .container { max-width: 800px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        h1 { color: #2c3e50; text-align: center; margin-bottom: 30px; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; color: #34495e; }
-        input, textarea, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; box-sizing: border-box; }
-        textarea { height: 100px; resize: vertical; }
-        .btn { padding: 12px 25px; margin: 10px 5px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; text-decoration: none; display: inline-block; }
-        .btn-primary { background-color: #3498db; color: white; }
-        .btn-success { background-color: #27ae60; color: white; }
-        .btn-secondary { background-color: #6c757d; color: white; }
-        .btn:hover { opacity: 0.8; }
-        .form-actions { text-align: center; margin-top: 30px; }
-        .alert { padding: 15px; margin: 10px 0; border-radius: 5px; }
-        .alert-error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-        .required { color: #e74c3c; }
-        .form-help { font-size: 12px; color: #6c757d; margin-top: 5px; }
-        .form-row { display: flex; gap: 15px; }
-        .form-row .form-group { flex: 1; }
-        .checkbox-group { display: flex; align-items: center; gap: 10px; }
-        .checkbox-group input[type="checkbox"] { width: auto; }
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --purple-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --success-gradient: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            --gold-gradient: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
+            --card-shadow: 0 10px 30px rgba(102, 126, 234, 0.1);
+            --form-shadow: 0 15px 35px rgba(102, 126, 234, 0.12);
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="installationPattern" width="25" height="25" patternUnits="userSpaceOnUse"><rect width="25" height="25" fill="none"/><circle cx="12.5" cy="12.5" r="1.5" fill="rgba(102,126,234,0.06)"/></pattern></defs><rect width="100" height="100" fill="url(%23installationPattern)"/></svg>');
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .navbar-custom {
+            background: var(--purple-gradient);
+            box-shadow: 0 2px 20px rgba(102, 126, 234, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .page-header {
+            background: var(--purple-gradient);
+            color: white;
+            padding: 4rem 0 3rem;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: headerPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes headerPulse {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.5; }
+            50% { transform: scale(1.1) rotate(180deg); opacity: 0.8; }
+        }
+
+        .page-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 2;
+        }
+
+        .page-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 2;
+        }
+
+        .breadcrumb-custom {
+            background: transparent;
+            padding: 0;
+            margin-bottom: 1rem;
+        }
+
+        .breadcrumb-custom .breadcrumb-item a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .breadcrumb-custom .breadcrumb-item a:hover {
+            color: white;
+        }
+
+        .breadcrumb-custom .breadcrumb-item.active {
+            color: white;
+            font-weight: 600;
+        }
+
+        .form-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 3rem;
+            box-shadow: var(--form-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--purple-gradient);
+        }
+
+        .form-title {
+            text-align: center;
+            color: var(--dark-color);
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .form-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--purple-gradient);
+            border-radius: 2px;
+        }
+
+        .form-section {
+            background: rgba(248, 249, 250, 0.5);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(0,0,0,0.05);
+            position: relative;
+        }
+
+        .form-section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-section-title i {
+            color: var(--primary-color);
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .form-label i {
+            color: var(--primary-color);
+            font-size: 0.9rem;
+        }
+
+        .required {
+            color: var(--danger-color);
+            font-weight: 700;
+        }
+
+        .form-control, .form-select {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 0.8rem 1rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.15);
+            background: white;
+            transform: translateY(-2px);
+        }
+
+        .form-control:hover, .form-select:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-1px);
+        }
+
+        .form-help {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .form-help i {
+            color: var(--info-color);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .checkbox-container {
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 2px solid rgba(102, 126, 234, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-container:hover {
+            border-color: rgba(102, 126, 234, 0.3);
+            background: rgba(102, 126, 234, 0.08);
+        }
+
+        .form-check {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .form-check-input {
+            width: 1.5rem;
+            height: 1.5rem;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .form-check-label {
+            font-weight: 600;
+            color: var(--dark-color);
+            cursor: pointer;
+            margin: 0;
+        }
+
+        .type-preview {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0,0,0,0.1);
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+
+        .type-preview.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .type-preview-image {
+            width: 100%;
+            height: 150px;
+            border-radius: 8px;
+            background-size: cover;
+            background-position: center;
+            margin-bottom: 1rem;
+        }
+
+        .type-preview-description {
+            font-size: 0.9rem;
+            color: #6c757d;
+            line-height: 1.4;
+        }
+
+        .btn-modern {
+            padding: 1rem 2.5rem;
+            border-radius: 15px;
+            border: none;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin: 0.5rem;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            font-size: 1rem;
+        }
+
+        .btn-modern::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-modern:hover::before {
+            left: 100%;
+        }
+
+        .btn-modern:hover {
+            transform: translateY(-3px);
+            text-decoration: none;
+            color: white;
+        }
+
+        .btn-success-modern {
+            background: var(--success-gradient);
+            color: white;
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-success-modern:hover {
+            box-shadow: 0 12px 35px rgba(40, 167, 69, 0.4);
+        }
+
+        .btn-secondary-modern {
+            background: linear-gradient(135deg, #6c757d, #495057);
+            color: white;
+            box-shadow: 0 8px 25px rgba(108, 117, 125, 0.3);
+        }
+
+        .btn-primary-modern {
+            background: var(--purple-gradient);
+            color: white;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .form-actions {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .navigation-section {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .alert-modern {
+            border-radius: 15px;
+            border: none;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .alert-error-modern {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            color: #721c24;
+        }
+
+        .floating-help {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--info-color);
+            color: white;
+            border: none;
+            box-shadow: 0 5px 20px rgba(23, 162, 184, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .floating-help:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(23, 162, 184, 0.5);
+        }
+
+        /* Images pour aperçu des types */
+        .type-salle-conference { background-image: url('https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'); }
+        .type-salle-reunion { background-image: url('https://images.unsplash.com/photo-1560439514-4e9645039924?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'); }
+        .type-restaurant { background-image: url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'); }
+        .type-bar { background-image: url('https://images.unsplash.com/photo-1544148103-0773bf10d330?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'); }
+        .type-spa { background-image: url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'); }
+        .type-piscine { background-image: url('https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'); }
+        .type-salle-sport { background-image: url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'); }
+        .type-jardin { background-image: url('https://images.unsplash.com/photo-1416879595882-3373a0480b5b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'); }
+        .type-terrasse { background-image: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'); }
+        .type-autre { background-image: url('https://images.unsplash.com/photo-1497366754035-f200968a6e72?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'); }
+
+        /* Animations */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-section {
+            animation: slideInUp 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .form-section:nth-child(1) { animation-delay: 0.1s; }
+        .form-section:nth-child(2) { animation-delay: 0.2s; }
+        .form-section:nth-child(3) { animation-delay: 0.3s; }
+        .form-section:nth-child(4) { animation-delay: 0.4s; }
+
+        /* Styles pour le preview et les nouvelles fonctionnalités */
+        .type-preview {
+            display: none;
+            margin-top: 2rem;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            background: white;
+        }
+
+        .type-preview-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .type-preview-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(102, 126, 234, 0.8), rgba(118, 75, 162, 0.8));
+            opacity: 0.7;
+        }
+
+        .type-preview-description {
+            padding: 1.5rem;
+        }
+
+        .type-preview-description h5 {
+            color: var(--dark-color);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .type-preview-description p {
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+
+        .features-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .feature-badge {
+            background: linear-gradient(135deg, var(--success-color), #20c997);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .feature-badge i {
+            font-size: 0.7rem;
+        }
+
+        /* Validation en temps réel */
+        .form-control.is-valid, .form-select.is-valid {
+            border-color: var(--success-color);
+            box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.15);
+        }
+
+        .form-control.is-invalid, .form-select.is-invalid {
+            border-color: var(--danger-color);
+            box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.15);
+        }
+
+        .validation-feedback {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        .invalid-feedback {
+            color: var(--danger-color);
+        }
+
+        .valid-feedback {
+            color: var(--success-color);
+        }
+
+        /* Compteur de caractères */
+        .character-counter {
+            font-size: 0.8rem;
+            text-align: right;
+            margin-top: 0.3rem;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.3rem;
+        }
+
+        /* Toast notifications */
+        .toast {
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            border: none;
+        }
+
+        .toast-body {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Animation des champs lors du focus */
+        .form-control:focus, .form-select:focus {
+            animation: fieldFocus 0.3s ease;
+        }
+
+        @keyframes fieldFocus {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        /* Amélioration du modal d'aide */
+        .modal-content {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .modal-header {
+            border-radius: 20px 20px 0 0;
+            border-bottom: none;
+        }
+
+        .modal-body ul li {
+            padding: 0.3rem 0;
+            color: #6c757d;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .form-container {
+                margin: 1rem;
+                padding: 2rem 1.5rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .btn-modern {
+                width: 100%;
+                justify-content: center;
+                margin: 0.5rem 0;
+            }
+
+            .floating-help {
+                bottom: 1rem;
+                right: 1rem;
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+
+            .type-preview-image {
+                height: 150px;
+            }
+
+            .features-list {
+                justify-content: center;
+            }
+
+            .feature-badge {
+                font-size: 0.8rem;
+                padding: 0.25rem 0.6rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .form-title {
+                font-size: 2rem;
+            }
+
+            .form-section {
+                padding: 1.5rem;
+            }
+
+            .form-container {
+                border-radius: 15px;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🏢 Créer une Nouvelle Installation</h1>
-        
-        <!-- Messages d'erreur -->
-        <div th:if="${erreur}" class="alert alert-error" th:text="${erreur}"></div>
-        
-        <form th:action="@{/installations/nouvelle}" method="post" th:object="${installation}">
-            
-            <div class="form-group">
-                <label for="nom">Nom de l'installation <span class="required">*</span></label>
-                <input type="text" id="nom" th:field="*{nom}" required 
-                       placeholder="Ex: Salle de conférence principale" maxlength="100">
-                <div class="form-help">Maximum 100 caractères</div>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-hotel"></i> Overlook Hotel
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/employe">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/evenements">
+                            <i class="fas fa-calendar-alt"></i> Événements
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/installations">
+                            <i class="fas fa-building"></i> Installations
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/clients">
+                            <i class="fas fa-users"></i> Clients
+                        </a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-home"></i> Accueil
+                        </a>
+                    </li>
+                </ul>
             </div>
-            
-            <div class="form-group">
-                <label for="description">Description</label>
-                <textarea id="description" th:field="*{description}" 
-                          placeholder="Description détaillée de l'installation..." maxlength="500"></textarea>
-                <div class="form-help">Maximum 500 caractères</div>
-            </div>
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="type">Type d'installation <span class="required">*</span></label>
-                    <select id="type" th:field="*{type}" required>
-                        <option value="">-- Choisir un type --</option>
-                        <option th:each="type : ${types}" 
-                                th:value="${type.name()}" 
-                                th:text="${type.libelle}">
-                            Type
-                        </option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="capacite">Capacité (nombre de personnes)</label>
-                    <input type="number" id="capacite" th:field="*{capacite}" 
-                           min="1" placeholder="Ex: 50">
-                    <div class="form-help">Laisser vide si non applicable</div>
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <div class="checkbox-group">
-                    <input type="checkbox" id="disponible" th:field="*{disponible}" checked>
-                    <label for="disponible">Installation disponible dès maintenant</label>
-                </div>
-                <div class="form-help">Décocher si l'installation n'est pas encore prête à l'utilisation</div>
-            </div>
-            
-            <div class="form-actions">
-                <button type="submit" class="btn btn-success">✅ Créer l'Installation</button>
-                <a href="/installations" class="btn btn-secondary">❌ Annuler</a>
-            </div>
-        </form>
-        
-        <div style="text-align: center; margin-top: 30px;">
-            <a href="/installations" class="btn btn-primary">📋 Retour à la liste</a>
-            <a href="/evenements/nouveau" class="btn btn-primary">🎉 Créer un événement</a>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb breadcrumb-custom">
+                    <li class="breadcrumb-item"><a href="/">Accueil</a></li>
+                    <li class="breadcrumb-item"><a href="/employe">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="/installations">Installations</a></li>
+                    <li class="breadcrumb-item active">Nouvelle Installation</li>
+                </ol>
+            </nav>
+            <h1 class="page-title">
+                <i class="fas fa-plus-circle"></i> Nouvelle Installation
+            </h1>
+            <p class="page-subtitle">
+                Créez une nouvelle installation premium pour l'hôtel
+            </p>
         </div>
     </div>
 
+    <!-- Main Content -->
+    <div class="container">
+        <div class="form-container" data-aos="fade-up">
+            <h2 class="form-title">
+                <i class="fas fa-building-user"></i> Créer une Installation
+            </h2>
+            
+            <!-- Messages d'erreur -->
+            <div th:if="${erreur}" class="alert-modern alert-error-modern" data-aos="shake">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span th:text="${erreur}"></span>
+            </div>
+            
+            <form th:action="@{/installations/nouvelle}" method="post" th:object="${installation}" id="installationForm">
+                
+                <!-- Section Informations principales -->
+                <div class="form-section" data-aos="fade-right" data-aos-delay="100">
+                    <h3 class="form-section-title">
+                        <i class="fas fa-info-circle"></i> Informations Principales
+                    </h3>
+                    
+                    <div class="form-group">
+                        <label for="nom" class="form-label">
+                            <i class="fas fa-tag"></i> Nom de l'installation <span class="required">*</span>
+                        </label>
+                        <input type="text" id="nom" th:field="*{nom}" required 
+                               class="form-control" placeholder="Ex: Salle de conférence principale" maxlength="100">
+                        <div class="form-help">
+                            <i class="fas fa-info-circle"></i> Maximum 100 caractères - Soyez descriptif et précis
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description" class="form-label">
+                            <i class="fas fa-align-left"></i> Description détaillée
+                        </label>
+                        <textarea id="description" th:field="*{description}" class="form-control" rows="4"
+                                  placeholder="Décrivez les équipements, l'ambiance, les spécificités de cette installation..." maxlength="500"></textarea>
+                        <div class="form-help">
+                            <i class="fas fa-info-circle"></i> Maximum 500 caractères - Cette description sera visible par les clients
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Section Type et Capacité -->
+                <div class="form-section" data-aos="fade-left" data-aos-delay="200">
+                    <h3 class="form-section-title">
+                        <i class="fas fa-cogs"></i> Configuration
+                    </h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="type" class="form-label">
+                                <i class="fas fa-building-columns"></i> Type d'installation <span class="required">*</span>
+                            </label>
+                            <select id="type" th:field="*{type}" required class="form-select">
+                                <option value="">-- Sélectionnez un type --</option>
+                                <option th:each="type : ${types}" 
+                                        th:value="${type.name()}" 
+                                        th:text="${type.libelle}">
+                                    Type
+                                </option>
+                            </select>
+                            <div class="form-help">
+                                <i class="fas fa-info-circle"></i> Le type détermine les fonctionnalités et l'affichage
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="capacite" class="form-label">
+                                <i class="fas fa-users"></i> Capacité maximale
+                            </label>
+                            <input type="number" id="capacite" th:field="*{capacite}" 
+                                   min="1" max="1000" class="form-control" placeholder="Ex: 50">
+                            <div class="form-help">
+                                <i class="fas fa-info-circle"></i> Nombre de personnes que peut accueillir l'installation
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Aperçu du type sélectionné -->
+                    <div id="typePreview" class="type-preview">
+                        <div id="typePreviewImage" class="type-preview-image"></div>
+                        <div id="typePreviewDescription" class="type-preview-description"></div>
+                    </div>
+                </div>
+                
+                <!-- Section Disponibilité -->
+                <div class="form-section" data-aos="fade-right" data-aos-delay="300">
+                    <h3 class="form-section-title">
+                        <i class="fas fa-toggle-on"></i> Statut et Disponibilité
+                    </h3>
+                    
+                    <div class="checkbox-container">
+                        <div class="form-check">
+                            <input type="checkbox" id="disponible" th:field="*{disponible}" checked class="form-check-input">
+                            <label for="disponible" class="form-check-label">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Installation disponible dès maintenant
+                            </label>
+                        </div>
+                        <div class="form-help mt-2">
+                            <i class="fas fa-info-circle"></i> Décochez si l'installation nécessite encore des travaux ou préparatifs
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Actions principales -->
+                <div class="form-actions" data-aos="fade-up" data-aos-delay="400">
+                    <button type="submit" class="btn-modern btn-success-modern">
+                        <i class="fas fa-plus-circle"></i> Créer l'Installation
+                    </button>
+                    <a href="/installations" class="btn-modern btn-secondary-modern">
+                        <i class="fas fa-times"></i> Annuler
+                    </a>
+                </div>
+            </form>
+            
+            <!-- Navigation rapide -->
+            <div class="navigation-section" data-aos="fade-up" data-aos-delay="500">
+                <h5 class="mb-3 text-muted">
+                    <i class="fas fa-rocket"></i> Actions Rapides
+                </h5>
+                <a href="/installations" class="btn-modern btn-primary-modern">
+                    <i class="fas fa-list"></i> Liste des Installations
+                </a>
+                <a href="/evenements/nouveau" class="btn-modern btn-primary-modern">
+                    <i class="fas fa-calendar-plus"></i> Créer un Événement
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bouton d'aide flottant -->
+    <button class="floating-help" onclick="showHelp()" title="Aide pour créer une installation">
+        <i class="fas fa-question"></i>
+    </button>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <script>
-        // Suggestions automatiques selon le type
+        // Initialisation AOS
+        AOS.init({
+            duration: 800,
+            easing: 'ease-out-cubic',
+            once: true,
+            offset: 100
+        });
+
+        // Configuration des types d'installations
+        const installationConfig = {
+            'SALLE_CONFERENCE': { 
+                capacite: 100, 
+                description: 'Salle équipée pour les grandes présentations avec écran de projection, système audio professionnel et équipements de visioconférence.',
+                image: 'type-salle-conference',
+                features: ['Écran de projection', 'Système audio', 'Visioconférence', 'Éclairage modulable']
+            },
+            'SALLE_REUNION': { 
+                capacite: 20, 
+                description: 'Espace intime pour les réunions d\'équipe avec table modulaire et équipements de présentation.',
+                image: 'type-salle-reunion',
+                features: ['Table modulaire', 'Tableau blanc', 'Wifi haut débit', 'Service café']
+            },
+            'RESTAURANT': { 
+                capacite: 80, 
+                description: 'Service de restauration avec cuisine complète, chef professionnel et ambiance raffinée.',
+                image: 'type-restaurant',
+                features: ['Cuisine équipée', 'Chef professionnel', 'Service complet', 'Carte des vins']
+            },
+            'BAR': { 
+                capacite: 40, 
+                description: 'Espace de détente avec service de boissons, ambiance lounge et terrasse.',
+                image: 'type-bar',
+                features: ['Cocktails signature', 'Ambiance lounge', 'Musique live', 'Terrasse']
+            },
+            'SPA': { 
+                capacite: 10, 
+                description: 'Espace de bien-être et de relaxation avec soins professionnels et équipements de détente.',
+                image: 'type-spa',
+                features: ['Soins professionnels', 'Jacuzzi', 'Sauna', 'Massages']
+            },
+            'PISCINE': { 
+                capacite: 30, 
+                description: 'Bassin de natation et espace aquatique avec maître-nageur et équipements de sécurité.',
+                image: 'type-piscine',
+                features: ['Bassin chauffé', 'Maître-nageur', 'Équipements sécurité', 'Solarium']
+            },
+            'SALLE_SPORT': { 
+                capacite: 25, 
+                description: 'Équipement sportif et espace d\'entraînement avec matériel professionnel et coach.',
+                image: 'type-salle-sport',
+                features: ['Équipement professionnel', 'Coach personnel', 'Vestiaires', 'Douches']
+            },
+            'JARDIN': { 
+                capacite: 150, 
+                description: 'Espace extérieur verdoyant pour événements en plein air et cérémonies.',
+                image: 'type-jardin',
+                features: ['Espace vert', 'Pergola', 'Éclairage extérieur', 'Sonorisation']
+            },
+            'TERRASSE': { 
+                capacite: 60, 
+                description: 'Terrasse panoramique avec vue imprenable et mobilier de qualité.',
+                image: 'type-terrasse',
+                features: ['Vue panoramique', 'Mobilier design', 'Protection solaire', 'Chauffage']
+            }
+        };
+
+        // Gestion du changement de type avec animation
         document.getElementById('type').addEventListener('change', function() {
             const type = this.value;
             const capaciteField = document.getElementById('capacite');
             const descriptionField = document.getElementById('description');
+            const previewContainer = document.getElementById('typePreview');
+            const previewImage = document.getElementById('typePreviewImage');
+            const previewDescription = document.getElementById('typePreviewDescription');
             
-            // Suggestions de capacité selon le type
-            const suggestions = {
-                'SALLE_CONFERENCE': { capacite: 100, description: 'Salle équipée pour les grandes présentations avec écran de projection.' },
-                'SALLE_REUNION': { capacite: 20, description: 'Espace intime pour les réunions d\'équipe.' },
-                'RESTAURANT': { capacite: 80, description: 'Service de restauration avec cuisine complète.' },
-                'BAR': { capacite: 40, description: 'Espace de détente avec service de boissons.' },
-                'SPA': { capacite: 10, description: 'Espace de bien-être et de relaxation.' },
-                'PISCINE': { capacite: 30, description: 'Bassin de natation et espace aquatique.' },
-                'SALLE_SPORT': { capacite: 25, description: 'Équipement sportif et espace d\'entraînement.' }
-            };
-            
-            if (suggestions[type]) {
+            if (type && installationConfig[type]) {
+                const config = installationConfig[type];
+                
+                // Animation de suggestion des valeurs
                 if (!capaciteField.value) {
-                    capaciteField.value = suggestions[type].capacite;
+                    animateFieldValue(capaciteField, config.capacite);
                 }
+                
                 if (!descriptionField.value) {
-                    descriptionField.value = suggestions[type].description;
+                    animateFieldValue(descriptionField, config.description);
                 }
+                
+                // Mise à jour du preview avec animation
+                previewImage.className = `type-preview-image ${config.image}`;
+                previewDescription.innerHTML = `
+                    <h5><i class="fas fa-info-circle text-primary"></i> ${type.replace('_', ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase())}</h5>
+                    <p>${config.description}</p>
+                    <div class="features-list">
+                        ${config.features.map(feature => `<span class="feature-badge"><i class="fas fa-check"></i> ${feature}</span>`).join('')}
+                    </div>
+                `;
+                
+                // Animation d'apparition du preview
+                previewContainer.style.display = 'block';
+                previewContainer.style.opacity = '0';
+                previewContainer.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    previewContainer.style.transition = 'all 0.5s ease';
+                    previewContainer.style.opacity = '1';
+                    previewContainer.style.transform = 'translateY(0)';
+                }, 100);
+                
+            } else {
+                // Masquer le preview si aucun type sélectionné
+                previewContainer.style.opacity = '0';
+                setTimeout(() => {
+                    if (previewContainer.style.opacity === '0') {
+                        previewContainer.style.display = 'none';
+                    }
+                }, 300);
             }
+        });
+
+        // Animation pour remplir les champs
+        function animateFieldValue(field, value) {
+            field.style.transform = 'scale(1.02)';
+            field.style.boxShadow = '0 0 15px rgba(102, 126, 234, 0.3)';
+            
+            setTimeout(() => {
+                field.value = value;
+                field.style.transition = 'all 0.3s ease';
+                field.style.transform = 'scale(1)';
+                field.style.boxShadow = '0 0 0 0.25rem rgba(102, 126, 234, 0.15)';
+                
+                setTimeout(() => {
+                    field.style.boxShadow = '';
+                }, 1000);
+            }, 200);
+        }
+
+        // Validation en temps réel
+        function setupRealTimeValidation() {
+            const form = document.getElementById('installationForm');
+            const nomField = document.getElementById('nom');
+            const capaciteField = document.getElementById('capacite');
+            const descriptionField = document.getElementById('description');
+
+            // Validation du nom
+            nomField.addEventListener('input', function() {
+                validateField(this, this.value.length >= 3, 'Le nom doit contenir au moins 3 caractères');
+            });
+
+            // Validation de la capacité
+            capaciteField.addEventListener('input', function() {
+                const value = parseInt(this.value);
+                validateField(this, value >= 1 && value <= 1000, 'La capacité doit être entre 1 et 1000 personnes');
+            });
+
+            // Compteur de caractères pour la description
+            descriptionField.addEventListener('input', function() {
+                updateCharacterCount(this, 500);
+            });
+        }
+
+        // Validation d'un champ avec feedback visuel
+        function validateField(field, isValid, errorMessage) {
+            const existingFeedback = field.parentNode.querySelector('.validation-feedback');
+            if (existingFeedback) {
+                existingFeedback.remove();
+            }
+
+            if (field.value.length === 0) {
+                field.classList.remove('is-valid', 'is-invalid');
+                return;
+            }
+
+            if (isValid) {
+                field.classList.remove('is-invalid');
+                field.classList.add('is-valid');
+            } else {
+                field.classList.remove('is-valid');
+                field.classList.add('is-invalid');
+                
+                const feedback = document.createElement('div');
+                feedback.className = 'validation-feedback invalid-feedback d-block';
+                feedback.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${errorMessage}`;
+                field.parentNode.appendChild(feedback);
+            }
+        }
+
+        // Compteur de caractères
+        function updateCharacterCount(field, maxLength) {
+            const currentLength = field.value.length;
+            let counter = field.parentNode.querySelector('.character-counter');
+            
+            if (!counter) {
+                counter = document.createElement('div');
+                counter.className = 'character-counter';
+                field.parentNode.appendChild(counter);
+            }
+            
+            counter.innerHTML = `<i class="fas fa-edit"></i> ${currentLength}/${maxLength} caractères`;
+            counter.style.color = currentLength > maxLength * 0.8 ? '#dc3545' : '#6c757d';
+        }
+
+        // Fonction d'aide
+        function showHelp() {
+            const helpModal = `
+                <div class="modal fade" id="helpModal" tabindex="-1">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header bg-primary text-white">
+                                <h5 class="modal-title"><i class="fas fa-question-circle"></i> Aide - Création d'installation</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6><i class="fas fa-info-circle text-primary"></i> Informations générales</h6>
+                                        <ul class="list-unstyled">
+                                            <li>• Le nom doit être unique et descriptif</li>
+                                            <li>• La description apparaîtra sur les réservations</li>
+                                            <li>• Tous les champs marqués d'un * sont obligatoires</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6><i class="fas fa-cogs text-success"></i> Configuration</h6>
+                                        <ul class="list-unstyled">
+                                            <li>• Le type détermine les fonctionnalités</li>
+                                            <li>• La capacité limite les réservations</li>
+                                            <li>• Le statut contrôle la disponibilité</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <hr>
+                                <h6><i class="fas fa-lightbulb text-warning"></i> Conseils</h6>
+                                <p>Utilisez des noms clairs comme "Salle de conférence A" plutôt que "Salle 1". 
+                                Décrivez les équipements disponibles pour aider les clients dans leur choix.</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                                    <i class="fas fa-check"></i> Compris
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Ajouter le modal au DOM s'il n'existe pas
+            if (!document.getElementById('helpModal')) {
+                document.body.insertAdjacentHTML('beforeend', helpModal);
+            }
+            
+            // Afficher le modal
+            const modal = new bootstrap.Modal(document.getElementById('helpModal'));
+            modal.show();
+        }
+
+        // Notification toast
+        function showToast(message, type = 'success') {
+            const toastContainer = document.getElementById('toastContainer') || createToastContainer();
+            const toastId = 'toast-' + Date.now();
+            
+            const toastHTML = `
+                <div id="${toastId}" class="toast align-items-center text-white bg-${type}" role="alert">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
+                            ${message}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                    </div>
+                </div>
+            `;
+            
+            toastContainer.insertAdjacentHTML('beforeend', toastHTML);
+            const toast = new bootstrap.Toast(document.getElementById(toastId));
+            toast.show();
+            
+            // Nettoyer après disparition
+            setTimeout(() => {
+                const element = document.getElementById(toastId);
+                if (element) element.remove();
+            }, 5000);
+        }
+
+        function createToastContainer() {
+            const container = document.createElement('div');
+            container.id = 'toastContainer';
+            container.className = 'toast-container position-fixed top-0 end-0 p-3';
+            container.style.zIndex = '9999';
+            document.body.appendChild(container);
+            return container;
+        }
+
+        // Initialisation au chargement
+        document.addEventListener('DOMContentLoaded', function() {
+            setupRealTimeValidation();
+            
+            // Animation d'entrée des éléments
+            const formSections = document.querySelectorAll('.form-section');
+            formSections.forEach((section, index) => {
+                section.style.opacity = '0';
+                section.style.transform = 'translateY(30px)';
+                
+                setTimeout(() => {
+                    section.style.transition = 'all 0.6s ease';
+                    section.style.opacity = '1';
+                    section.style.transform = 'translateY(0)';
+                }, 100 * (index + 1));
+            });
+        });
+
+        // Gestion de la soumission avec feedback
+        document.getElementById('installationForm').addEventListener('submit', function(e) {
+            showToast('Création de l\'installation en cours...', 'info');
         });
     </script>
 </body>

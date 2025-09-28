@@ -27,7 +27,13 @@ public class MainController {
     // Redirection vers l'espace employé
     @GetMapping("/employe")
     public String espaceEmploye() {
-        return "dashboard-employe";
+        return "redirect:/employes/dashboard";
+    }
+
+    // Route directe vers le dashboard employé
+    @GetMapping("/dashboard-employe")
+    public String dashboardEmploye() {
+        return "redirect:/employes/dashboard";
     }
 
     // Redirection vers l'espace gestionnaire

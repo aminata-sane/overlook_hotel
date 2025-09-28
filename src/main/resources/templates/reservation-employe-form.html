@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nouvelle Réservation - Espace Employé - Overlook Hotel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #17a2b8;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        .navbar-custom {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #0f7489 100%);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #0f7489 100%);
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .breadcrumb-custom {
+            background: transparent;
+            padding: 0;
+            margin-bottom: 1rem;
+        }
+
+        .breadcrumb-custom .breadcrumb-item a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+        }
+
+        .breadcrumb-custom .breadcrumb-item.active {
+            color: white;
+        }
+
+        .reservation-form {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .form-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-section h5 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(23, 162, 184, 0.25);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), #0f7489);
+            border: none;
+            border-radius: 10px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(23, 162, 184, 0.3);
+        }
+
+        .btn-secondary {
+            border-radius: 10px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+        }
+
+        .chambre-card {
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .chambre-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .chambre-card.selected {
+            border-color: var(--primary-color);
+            background: rgba(23, 162, 184, 0.05);
+        }
+
+        .chambre-info {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+
+        .chambre-details h6 {
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+            font-weight: 600;
+        }
+
+        .chambre-type {
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+        }
+
+        .chambre-prix {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .alert {
+            border-radius: 10px;
+            border: none;
+        }
+
+        .client-select {
+            position: relative;
+        }
+
+        .client-info {
+            font-size: 0.9rem;
+            color: var(--secondary-color);
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-hotel"></i> Overlook Hotel
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/employe">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/reservations/nouvelles">
+                            <i class="fas fa-calendar-plus"></i> Nouvelle Réservation
+                        </a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-home"></i> Accueil
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb breadcrumb-custom">
+                    <li class="breadcrumb-item"><a href="/">Accueil</a></li>
+                    <li class="breadcrumb-item"><a href="/employe">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Nouvelle Réservation</li>
+                </ol>
+            </nav>
+            <h1 class="page-title">
+                <i class="fas fa-calendar-plus"></i> Nouvelle Réservation
+            </h1>
+            <p class="page-subtitle">
+                Créer une réservation pour un client depuis l'espace employé
+            </p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Messages d'erreur/succès -->
+        <div th:if="${erreur}" class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <span th:text="${erreur}"></span>
+        </div>
+
+        <div th:if="${succes}" class="alert alert-success" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            <span th:text="${succes}"></span>
+        </div>
+
+        <!-- Formulaire de réservation -->
+        <form th:action="@{/reservations/nouvelles}" method="post" th:object="${reservation}" class="reservation-form">
+            
+            <!-- Section Client -->
+            <div class="form-section">
+                <h5><i class="fas fa-user me-2"></i>Sélection du Client</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="clientId" class="form-label">Client</label>
+                        <select name="clientId" id="clientId" class="form-select" required>
+                            <option value="">Sélectionner un client...</option>
+                            <option th:each="client : ${clients}" 
+                                    th:value="${client.id}" 
+                                    th:text="${client.prenom + ' ' + client.nom + ' (' + client.email + ')'}">
+                                John Doe (john@email.com)
+                            </option>
+                        </select>
+                        <div class="client-info mt-2" id="clientInfo" style="display: none;">
+                            <i class="fas fa-info-circle me-1"></i>
+                            <span id="clientDetails"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-end h-100">
+                            <a href="/inscription" class="btn btn-outline-primary">
+                                <i class="fas fa-user-plus me-2"></i>Nouveau Client
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section Chambre -->
+            <div class="form-section">
+                <h5><i class="fas fa-bed me-2"></i>Sélection de la Chambre</h5>
+                <div class="row">
+                    <div th:each="chambre : ${chambres}" class="col-md-6 col-lg-4 mb-3">
+                        <div class="chambre-card" th:onclick="'selectChambre(this, ' + ${chambre.id} + ')'"
+                            <div class="chambre-info">
+                                <div class="chambre-details flex-grow-1">
+                                    <h6 th:text="'Chambre ' + ${chambre.numero}">Chambre 101</h6>
+                                    <div class="chambre-type" th:text="${chambre.type.libelle}">Suite</div>
+                                    <div class="mt-2">
+                                        <small class="text-muted">
+                                            <i class="fas fa-users me-1"></i>
+                                            <span th:text="${chambre.capacite} + ' pers.'">2 pers.</span>
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="chambre-prix" th:text="${chambre.prix} + '€/nuit'">150€/nuit</div>
+                            </div>
+                            <input type="radio" name="chambreId" th:value="${chambre.id}" style="display: none;" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section Dates et Détails -->
+            <div class="form-section">
+                <h5><i class="fas fa-calendar me-2"></i>Dates et Détails de la Réservation</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="dateArrivee" class="form-label">Date d'arrivée</label>
+                        <input type="date" th:field="*{dateArrivee}" class="form-control" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="dateDepart" class="form-label">Date de départ</label>
+                        <input type="date" th:field="*{dateDepart}" class="form-control" required>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <label for="nombreAdultes" class="form-label">Nombre d'adultes</label>
+                        <select th:field="*{nombreAdultes}" class="form-select" required>
+                            <option value="1">1 adulte</option>
+                            <option value="2">2 adultes</option>
+                            <option value="3">3 adultes</option>
+                            <option value="4">4 adultes</option>
+                            <option value="5">5 adultes</option>
+                            <option value="6">6 adultes</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="nombreEnfants" class="form-label">Nombre d'enfants</label>
+                        <select th:field="*{nombreEnfants}" class="form-select">
+                            <option value="0">0 enfant</option>
+                            <option value="1">1 enfant</option>
+                            <option value="2">2 enfants</option>
+                            <option value="3">3 enfants</option>
+                            <option value="4">4 enfants</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <label for="commentaires" class="form-label">Commentaires (optionnel)</label>
+                        <textarea th:field="*{commentaires}" class="form-control" rows="3" 
+                                  placeholder="Demandes spéciales, allergies, préférences..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Résumé et Actions -->
+            <div class="form-section">
+                <h5><i class="fas fa-receipt me-2"></i>Résumé</h5>
+                <div id="reservationSummary">
+                    <p class="text-muted">Sélectionnez un client et une chambre pour voir le résumé.</p>
+                </div>
+            </div>
+
+            <!-- Boutons d'action -->
+            <div class="d-flex justify-content-between">
+                <a href="/employe" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Retour au Dashboard
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-check me-2"></i>Créer la Réservation
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Sélection de chambre
+        function selectChambre(card, chambreId) {
+            // Désélectionner toutes les autres cartes
+            document.querySelectorAll('.chambre-card').forEach(c => c.classList.remove('selected'));
+            
+            // Sélectionner la carte cliquée
+            card.classList.add('selected');
+            
+            // Cocher le radio button correspondant
+            card.querySelector('input[type="radio"]').checked = true;
+            
+            updateSummary();
+        }
+
+        // Mise à jour du résumé
+        function updateSummary() {
+            const clientSelect = document.getElementById('clientId');
+            const selectedChambre = document.querySelector('.chambre-card.selected');
+            const dateArrivee = document.querySelector('input[name="dateArrivee"]').value;
+            const dateDepart = document.querySelector('input[name="dateDepart"]').value;
+            
+            const summaryDiv = document.getElementById('reservationSummary');
+            
+            if (clientSelect.value && selectedChambre && dateArrivee && dateDepart) {
+                const clientText = clientSelect.options[clientSelect.selectedIndex].text;
+                const chambreNumero = selectedChambre.querySelector('h6').textContent;
+                const chambrePrix = selectedChambre.querySelector('.chambre-prix').textContent;
+                
+                // Calculer le nombre de nuits
+                const debut = new Date(dateArrivee);
+                const fin = new Date(dateDepart);
+                const nuits = Math.max(1, Math.ceil((fin - debut) / (1000 * 60 * 60 * 24)));
+                const prixNuit = parseFloat(chambrePrix.replace('€/nuit', ''));
+                const total = nuits * prixNuit;
+                
+                summaryDiv.innerHTML = `
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>Client:</strong> ${clientText}<br>
+                            <strong>Chambre:</strong> ${chambreNumero}<br>
+                            <strong>Période:</strong> ${dateArrivee} au ${dateDepart}
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <strong>Nombre de nuits:</strong> ${nuits}<br>
+                            <strong>Prix par nuit:</strong> ${prixNuit}€<br>
+                            <strong class="text-primary fs-5">Total: ${total}€</strong>
+                        </div>
+                    </div>
+                `;
+            } else {
+                summaryDiv.innerHTML = '<p class="text-muted">Sélectionnez un client et une chambre pour voir le résumé.</p>';
+            }
+        }
+
+        // Écouteurs d'événements
+        document.getElementById('clientId').addEventListener('change', updateSummary);
+        document.querySelector('input[name="dateArrivee"]').addEventListener('change', updateSummary);
+        document.querySelector('input[name="dateDepart"]').addEventListener('change', updateSummary);
+
+        // Validation des dates
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.querySelector('input[name="dateArrivee"]').min = today;
+            
+            document.querySelector('input[name="dateArrivee"]').addEventListener('change', function() {
+                const arrivalDate = this.value;
+                const departureInput = document.querySelector('input[name="dateDepart"]');
+                departureInput.min = arrivalDate;
+                
+                if (departureInput.value && departureInput.value <= arrivalDate) {
+                    const nextDay = new Date(arrivalDate);
+                    nextDay.setDate(nextDay.getDate() + 1);
+                    departureInput.value = nextDay.toISOString().split('T')[0];
+                }
+                updateSummary();
+            });
+        });
+    </script>
+</body>
+</html>

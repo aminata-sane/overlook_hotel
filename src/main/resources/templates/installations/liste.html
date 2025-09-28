@@ -4,147 +4,1021 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestion des Installations - Overlook Hotel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }
-        .container { max-width: 1200px; margin: 0 auto; background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        h1 { color: #2c3e50; text-align: center; }
-        .stats { display: flex; justify-content: space-around; margin: 20px 0; }
-        .stat-card { background-color: #3498db; color: white; padding: 15px; border-radius: 5px; text-align: center; flex: 1; margin: 0 5px; }
-        .stat-card.success { background-color: #27ae60; }
-        .stat-card.warning { background-color: #f39c12; }
-        .stat-card.info { background-color: #17a2b8; }
-        .actions { margin: 20px 0; text-align: center; }
-        .btn { padding: 10px 20px; margin: 5px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; }
-        .btn-primary { background-color: #3498db; color: white; }
-        .btn-success { background-color: #27ae60; color: white; }
-        .btn-warning { background-color: #f39c12; color: white; }
-        .btn-danger { background-color: #e74c3c; color: white; }
-        .btn:hover { opacity: 0.8; }
-        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
-        th { background-color: #f8f9fa; font-weight: bold; }
-        tr:hover { background-color: #f5f5f5; }
-        .disponible { color: #27ae60; font-weight: bold; }
-        .indisponible { color: #e74c3c; font-weight: bold; }
-        .alert { padding: 15px; margin: 10px 0; border-radius: 5px; }
-        .alert-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .alert-error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-        .nav-links { margin: 20px 0; text-align: center; }
-        .nav-links a { margin: 0 10px; }
-        .type-badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
-        .type-salle-conference { background-color: #3498db; color: white; }
-        .type-salle-reunion { background-color: #9b59b6; color: white; }
-        .type-restaurant { background-color: #e67e22; color: white; }
-        .type-bar { background-color: #34495e; color: white; }
-        .type-spa { background-color: #1abc9c; color: white; }
-        .type-piscine { background-color: #3498db; color: white; }
-        .type-autre { background-color: #95a5a6; color: white; }
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --purple-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gold-gradient: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
+            --teal-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            --card-shadow: 0 10px 30px rgba(102, 126, 234, 0.1);
+            --installation-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="installationPattern" width="25" height="25" patternUnits="userSpaceOnUse"><rect width="25" height="25" fill="none"/><circle cx="12.5" cy="12.5" r="1.5" fill="rgba(102,126,234,0.06)"/></pattern></defs><rect width="100" height="100" fill="url(%23installationPattern)"/></svg>');
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .navbar-custom {
+            background: var(--purple-gradient);
+            box-shadow: 0 2px 20px rgba(102, 126, 234, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .page-header {
+            background: var(--purple-gradient);
+            color: white;
+            padding: 4rem 0;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: headerPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes headerPulse {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.5; }
+            50% { transform: scale(1.1) rotate(180deg); opacity: 0.8; }
+        }
+
+        .page-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 2;
+        }
+
+        .page-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 2;
+        }
+
+        .breadcrumb-custom {
+            background: transparent;
+            padding: 0;
+            margin-bottom: 1rem;
+        }
+
+        .breadcrumb-custom .breadcrumb-item a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .breadcrumb-custom .breadcrumb-item a:hover {
+            color: white;
+        }
+
+        .breadcrumb-custom .breadcrumb-item.active {
+            color: white;
+            font-weight: 600;
+        }
+
+        .stats-container {
+            margin-bottom: 3rem;
+        }
+
+        .stats-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stats-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            transition: height 0.3s ease;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+        }
+
+        .stats-card:hover::before {
+            height: 100%;
+            opacity: 0.05;
+        }
+
+        .stats-card.total::before { background: var(--purple-gradient); }
+        .stats-card.disponibles::before { background: var(--teal-gradient); }
+        .stats-card.conferences::before { background: var(--gold-gradient); }
+        .stats-card.restaurants::before { background: linear-gradient(135deg, #ff6b6b, #ee5a24); }
+
+        .stats-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            transition: transform 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .stats-card:hover .stats-icon {
+            transform: scale(1.2) rotate(5deg);
+        }
+
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .stats-label {
+            font-size: 1rem;
+            color: var(--dark-color);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .actions-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 3rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-modern {
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            border: none;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0.5rem;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-modern::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-modern:hover::before {
+            left: 100%;
+        }
+
+        .btn-modern:hover {
+            transform: translateY(-3px);
+            text-decoration: none;
+        }
+
+        .btn-create {
+            background: var(--purple-gradient);
+            color: white;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-search {
+            background: var(--teal-gradient);
+            color: white;
+            box-shadow: 0 5px 15px rgba(17, 153, 142, 0.3);
+        }
+
+        .btn-filter {
+            background: var(--gold-gradient);
+            color: var(--dark-color);
+            box-shadow: 0 5px 15px rgba(247, 151, 30, 0.3);
+        }
+
+        .btn-events {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .installations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .installation-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--installation-shadow);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .installation-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .installation-image {
+            width: 100%;
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .installation-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.8), rgba(118, 75, 162, 0.8));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .installation-card:hover .installation-image::before {
+            opacity: 1;
+        }
+
+        .installation-overlay {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            z-index: 3;
+        }
+
+        .availability-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            backdrop-filter: blur(10px);
+        }
+
+        .badge-available {
+            background: rgba(40, 167, 69, 0.9);
+            color: white;
+        }
+
+        .badge-unavailable {
+            background: rgba(220, 53, 69, 0.9);
+            color: white;
+        }
+
+        .installation-content {
+            padding: 2rem;
+        }
+
+        .installation-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .installation-type {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+        }
+
+        .type-salle-conference {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .type-salle-reunion {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+        }
+
+        .type-restaurant {
+            background: linear-gradient(135deg, #e67e22, #d35400);
+            color: white;
+        }
+
+        .type-bar {
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            color: white;
+        }
+
+        .type-spa {
+            background: linear-gradient(135deg, #1abc9c, #16a085);
+            color: white;
+        }
+
+        .type-piscine {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .type-salle-sport {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .type-jardin {
+            background: linear-gradient(135deg, #27ae60, #229954);
+            color: white;
+        }
+
+        .type-terrasse {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+        }
+
+        .type-autre {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            color: white;
+        }
+
+        .installation-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        .capacity-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .installation-description {
+            color: #6c757d;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .installation-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            border: none;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            transition: all 0.3s ease;
+            flex: 1;
+            justify-content: center;
+            min-width: 0;
+        }
+
+        .btn-view {
+            background: rgba(102, 126, 234, 0.1);
+            color: var(--primary-color);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .btn-edit {
+            background: rgba(255, 193, 7, 0.1);
+            color: #e0a800;
+            border: 1px solid rgba(255, 193, 7, 0.2);
+        }
+
+        .btn-toggle {
+            background: rgba(40, 167, 69, 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(40, 167, 69, 0.2);
+        }
+
+        .btn-toggle.deactivate {
+            background: rgba(255, 193, 7, 0.1);
+            color: #e0a800;
+            border: 1px solid rgba(255, 193, 7, 0.2);
+        }
+
+        .btn-delete {
+            background: rgba(220, 53, 69, 0.1);
+            color: var(--danger-color);
+            border: 1px solid rgba(220, 53, 69, 0.2);
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            text-decoration: none;
+            color: white;
+        }
+
+        .btn-view:hover { background: var(--primary-color); }
+        .btn-edit:hover { background: #e0a800; }
+        .btn-toggle:hover { background: var(--success-color); }
+        .btn-toggle.deactivate:hover { background: #e0a800; }
+        .btn-delete:hover { background: var(--danger-color); }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #6c757d;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .alert-modern {
+            border-radius: 15px;
+            border: none;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .alert-success-modern {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            color: #155724;
+        }
+
+        .alert-error-modern {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            color: #721c24;
+        }
+
+        .floating-add-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--purple-gradient);
+            color: white;
+            border: none;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            font-size: 1.5rem;
+        }
+
+        .floating-add-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+
+        /* Images par défaut pour chaque type d'installation */
+        .installation-image.salle-conference {
+            background-image: url('https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');
+        }
+
+        .installation-image.salle-reunion {
+            background-image: url('https://images.unsplash.com/photo-1560439514-4e9645039924?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');
+        }
+
+        .installation-image.restaurant {
+            background-image: url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');
+        }
+
+        .installation-image.bar {
+            background-image: url('https://images.unsplash.com/photo-1544148103-0773bf10d330?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');
+        }
+
+        .installation-image.spa {
+            background-image: url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');
+        }
+
+        .installation-image.piscine {
+            background-image: url('https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');
+        }
+
+        .installation-image.salle-sport {
+            background-image: url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');
+        }
+
+        .installation-image.jardin {
+            background-image: url('https://images.unsplash.com/photo-1416879595882-3373a0480b5b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');
+        }
+
+        .installation-image.terrasse {
+            background-image: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');
+        }
+
+        .installation-image.autre {
+            background-image: url('https://images.unsplash.com/photo-1497366754035-f200968a6e72?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .stats-card {
+                padding: 1.5rem;
+            }
+            
+            .installations-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .installation-actions {
+                flex-direction: column;
+            }
+            
+            .floating-add-btn {
+                bottom: 1rem;
+                right: 1rem;
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .installation-content {
+                padding: 1.5rem;
+            }
+
+            .btn-modern {
+                width: 100%;
+                justify-content: center;
+                margin: 0.25rem 0;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-hotel"></i> Overlook Hotel
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/employe">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/evenements">
+                            <i class="fas fa-calendar-alt"></i> Événements
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/installations">
+                            <i class="fas fa-building"></i> Installations
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/clients">
+                            <i class="fas fa-users"></i> Clients
+                        </a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-home"></i> Accueil
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb breadcrumb-custom">
+                    <li class="breadcrumb-item"><a href="/">Accueil</a></li>
+                    <li class="breadcrumb-item"><a href="/employe">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Gestion des Installations</li>
+                </ol>
+            </nav>
+            <h1 class="page-title">
+                <i class="fas fa-building-columns"></i> Installations Premium
+            </h1>
+            <p class="page-subtitle">
+                Gérez toutes les installations de l'hôtel avec style et efficacité
+            </p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
     <div class="container">
-        <h1>🏢 Gestion des Installations</h1>
-        
         <!-- Messages d'alerte -->
-        <div th:if="${succes}" class="alert alert-success" th:text="${succes}"></div>
-        <div th:if="${erreur}" class="alert alert-error" th:text="${erreur}"></div>
+        <div th:if="${succes}" class="alert-modern alert-success-modern" data-aos="fade-down">
+            <i class="fas fa-check-circle"></i>
+            <span th:text="${succes}"></span>
+        </div>
+        <div th:if="${erreur}" class="alert-modern alert-error-modern" data-aos="fade-down">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span th:text="${erreur}"></span>
+        </div>
         
         <!-- Statistiques -->
-        <div class="stats">
-            <div class="stat-card">
-                <h3 th:text="${nombreInstallations}">0</h3>
-                <p>Total Installations</p>
-            </div>
-            <div class="stat-card success">
-                <h3 th:text="${nombreDisponibles}">0</h3>
-                <p>Disponibles</p>
-            </div>
-            <div class="stat-card warning">
-                <h3 th:text="${nombreSallesConference}">0</h3>
-                <p>Salles de Conférence</p>
-            </div>
-            <div class="stat-card info">
-                <h3 th:text="${nombreRestaurants}">0</h3>
-                <p>Restaurants</p>
+        <div class="stats-container" data-aos="fade-up">
+            <div class="row">
+                <div class="col-lg-3 col-md-6">
+                    <div class="stats-card total">
+                        <div class="stats-icon text-primary">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <div class="stats-number text-primary" th:text="${nombreInstallations ?: 0}">0</div>
+                        <div class="stats-label">Total Installations</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stats-card disponibles">
+                        <div class="stats-icon text-success">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stats-number text-success" th:text="${nombreDisponibles ?: 0}">0</div>
+                        <div class="stats-label">Disponibles</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stats-card conferences">
+                        <div class="stats-icon text-warning">
+                            <i class="fas fa-presentation-screen"></i>
+                        </div>
+                        <div class="stats-number text-warning" th:text="${nombreSallesConference ?: 0}">0</div>
+                        <div class="stats-label">Salles Conférence</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stats-card restaurants">
+                        <div class="stats-icon text-danger">
+                            <i class="fas fa-utensils"></i>
+                        </div>
+                        <div class="stats-number text-danger" th:text="${nombreRestaurants ?: 0}">0</div>
+                        <div class="stats-label">Restaurants</div>
+                    </div>
+                </div>
             </div>
         </div>
         
         <!-- Actions -->
-        <div class="actions">
-            <a href="/installations/nouvelle" class="btn btn-primary">➕ Nouvelle Installation</a>
-            <a href="/installations/rechercher" class="btn btn-success">🔍 Rechercher</a>
-            <a href="/installations/disponibles" class="btn btn-warning">✅ Disponibles Seulement</a>
-            <a href="/evenements" class="btn btn-primary">🎉 Voir les Événements</a>
+        <div class="actions-section" data-aos="fade-up" data-aos-delay="200">
+            <h5 class="mb-3">
+                <i class="fas fa-rocket text-primary"></i> Actions Rapides
+            </h5>
+            <a href="/installations/nouvelle" class="btn-modern btn-create">
+                <i class="fas fa-plus"></i> Nouvelle Installation
+            </a>
+            <a href="/installations/rechercher" class="btn-modern btn-search">
+                <i class="fas fa-search"></i> Rechercher
+            </a>
+            <a href="/installations/disponibles" class="btn-modern btn-filter">
+                <i class="fas fa-filter"></i> Disponibles Seulement
+            </a>
+            <a href="/evenements" class="btn-modern btn-events">
+                <i class="fas fa-calendar-check"></i> Voir les Événements
+            </a>
         </div>
         
         <!-- Liste des installations -->
-        <h2>📋 Toutes les Installations</h2>
-        <div th:if="${installations != null and !installations.empty}">
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nom</th>
-                        <th>Type</th>
-                        <th>Capacité</th>
-                        <th>Description</th>
-                        <th>Disponibilité</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="installation : ${installations}">
-                        <td th:text="${installation.id}">1</td>
-                        <td th:text="${installation.nom}">Nom</td>
-                        <td>
-                            <span th:if="${installation.type}" 
-                                  th:class="'type-badge type-' + ${installation.type.name().toLowerCase().replace('_', '-')}"
-                                  th:text="${installation.type.libelle}">Type</span>
-                        </td>
-                        <td th:text="${installation.capacite != null ? installation.capacite + ' personnes' : 'Non définie'}">Capacité</td>
-                        <td th:text="${installation.description != null ? (installation.description.length() > 50 ? installation.description.substring(0, 50) + '...' : installation.description) : 'Aucune'}">Description</td>
-                        <td>
-                            <span th:class="${installation.estDisponible() ? 'disponible' : 'indisponible'}"
-                                  th:text="${installation.estDisponible() ? '✅ Disponible' : '❌ Indisponible'}">Statut</span>
-                        </td>
-                        <td>
-                            <a th:href="@{'/installations/' + ${installation.id}}" class="btn btn-primary">👁️ Voir</a>
-                            <a th:href="@{'/installations/' + ${installation.id} + '/modifier'}" class="btn btn-warning">✏️ Modifier</a>
-                            
-                            <!-- Bouton de changement de disponibilité -->
-                            <form style="display:inline;" th:action="@{'/installations/' + ${installation.id} + '/changer-disponibilite'}" method="post">
-                                <input type="hidden" name="disponible" th:value="${!installation.estDisponible()}">
-                                <button type="submit" 
-                                        th:class="${installation.estDisponible() ? 'btn btn-warning' : 'btn btn-success'}"
-                                        th:text="${installation.estDisponible() ? '🚫 Désactiver' : '✅ Activer'}">
-                                    Changer
-                                </button>
-                            </form>
-                            
-                            <form style="display:inline;" th:action="@{'/installations/' + ${installation.id} + '/supprimer'}" method="post" 
-                                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette installation ?')">
-                                <button type="submit" class="btn btn-danger">🗑️ Supprimer</button>
-                            </form>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <div th:if="${installations != null and !installations.empty}" class="installations-grid" data-aos="fade-up" data-aos-delay="400">
+            <div th:each="installation, iterStat : ${installations}" class="installation-card" data-aos="zoom-in" th:data-aos-delay="${400 + iterStat.index * 100}">
+                <!-- Image d'installation -->
+                <div class="installation-image" th:classappend="${installation.type != null ? installation.type.name().toLowerCase().replace('_', '-') : 'autre'}">
+                    <div class="installation-overlay">
+                        <span class="availability-badge" th:classappend="${installation.estDisponible() ? 'badge-available' : 'badge-unavailable'}">
+                            <i th:class="${installation.estDisponible() ? 'fas fa-check' : 'fas fa-times'}"></i>
+                            <span th:text="${installation.estDisponible() ? 'Disponible' : 'Indisponible'}">Statut</span>
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- Contenu de la carte -->
+                <div class="installation-content">
+                    <h3 class="installation-title" th:text="${installation.nom}">Nom de l'installation</h3>
+                    
+                    <div class="mb-3">
+                        <span th:if="${installation.type}" 
+                              class="installation-type"
+                              th:classappend="'type-' + ${installation.type.name().toLowerCase().replace('_', '-')}"
+                              th:text="${installation.type.libelle}">Type</span>
+                    </div>
+                    
+                    <div class="installation-meta">
+                        <div class="capacity-info">
+                            <i class="fas fa-users text-muted"></i>
+                            <span th:text="${installation.capacite != null ? installation.capacite + ' personnes' : 'Capacité non définie'}">Capacité</span>
+                        </div>
+                        <div>
+                            <i class="fas fa-hashtag text-muted"></i>
+                            <span th:text="'ID: ' + ${installation.id}">ID</span>
+                        </div>
+                    </div>
+                    
+                    <p class="installation-description" 
+                       th:text="${installation.description != null ? (installation.description.length() > 120 ? installation.description.substring(0, 120) + '...' : installation.description) : 'Aucune description disponible pour cette installation.'}">
+                        Description de l'installation
+                    </p>
+                    
+                    <div class="installation-actions">
+                        <a th:href="@{'/installations/' + ${installation.id}}" class="btn-action btn-view">
+                            <i class="fas fa-eye"></i> Voir
+                        </a>
+                        <a th:href="@{'/installations/' + ${installation.id} + '/modifier'}" class="btn-action btn-edit">
+                            <i class="fas fa-edit"></i> Modifier
+                        </a>
+                        
+                        <!-- Bouton de changement de disponibilité -->
+                        <form style="display:inline; flex: 1;" th:action="@{'/installations/' + ${installation.id} + '/changer-disponibilite'}" method="post">
+                            <input type="hidden" name="disponible" th:value="${!installation.estDisponible()}">
+                            <button type="submit" 
+                                    class="btn-action btn-toggle w-100"
+                                    th:classappend="${installation.estDisponible() ? 'deactivate' : ''}"
+                                    th:title="${installation.estDisponible() ? 'Désactiver cette installation' : 'Activer cette installation'}">
+                                <i th:class="${installation.estDisponible() ? 'fas fa-pause' : 'fas fa-play'}"></i>
+                                <span th:text="${installation.estDisponible() ? 'Désactiver' : 'Activer'}">Toggle</span>
+                            </button>
+                        </form>
+                        
+                        <form style="display:inline; flex: 1;" th:action="@{'/installations/' + ${installation.id} + '/supprimer'}" method="post" 
+                              onsubmit="return confirmDelete(this, event)">
+                            <button type="submit" class="btn-action btn-delete w-100" title="Supprimer cette installation">
+                                <i class="fas fa-trash"></i> Supprimer
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
         
-        <div th:if="${installations == null or installations.empty}">
-            <p style="text-align: center; color: #7f8c8d; font-style: italic;">
-                Aucune installation trouvée. <a href="/installations/nouvelle">Créer la première installation</a>
-            </p>
+        <div th:if="${installations == null or installations.empty}" class="empty-state" data-aos="fade-up">
+            <div class="empty-state-icon">
+                <i class="fas fa-building-slash"></i>
+            </div>
+            <h4 class="mb-3">Aucune installation trouvée</h4>
+            <p class="mb-4">Il n'y a actuellement aucune installation enregistrée dans le système.</p>
+            <a href="/installations/nouvelle" class="btn-modern btn-create">
+                <i class="fas fa-plus"></i> Créer la première installation
+            </a>
         </div>
         
-        <!-- Navigation -->
-        <div class="nav-links">
-            <a href="/" class="btn btn-primary">🏠 Accueil</a>
-            <a href="/clients" class="btn btn-success">👥 Clients</a>
-            <a href="/chambres" class="btn btn-warning">🏠 Chambres</a>
-            <a href="/employes" class="btn btn-primary">👨‍💼 Employés</a>
-            <a href="/evenements" class="btn btn-success">🎉 Événements</a>
+        <!-- Navigation rapide -->
+        <div class="text-center mt-4 mb-5" data-aos="fade-up" data-aos-delay="800">
+            <div class="d-flex flex-wrap justify-content-center gap-2">
+                <a href="/" class="btn-modern" style="background: linear-gradient(135deg, #6c757d, #495057); color: white;">
+                    <i class="fas fa-home"></i> Accueil
+                </a>
+                <a href="/clients" class="btn-modern" style="background: linear-gradient(135deg, #28a745, #1e7e34); color: white;">
+                    <i class="fas fa-users"></i> Clients
+                </a>
+                <a href="/chambres" class="btn-modern" style="background: linear-gradient(135deg, #fd7e14, #e8590c); color: white;">
+                    <i class="fas fa-bed"></i> Chambres
+                </a>
+                <a href="/employes" class="btn-modern" style="background: linear-gradient(135deg, #6f42c1, #5a32a3); color: white;">
+                    <i class="fas fa-user-tie"></i> Employés
+                </a>
+                <a href="/evenements" class="btn-modern" style="background: linear-gradient(135deg, #20c997, #1aa179); color: white;">
+                    <i class="fas fa-calendar-check"></i> Événements
+                </a>
+            </div>
         </div>
     </div>
+    
+    <!-- Bouton flottant d'ajout -->
+    <button class="floating-add-btn" onclick="window.location.href='/installations/nouvelle'" title="Créer une nouvelle installation">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+        // Initialisation AOS (Animate On Scroll)
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true,
+            offset: 100
+        });
+
+        // Animation des statistiques au scroll
+        const observerOptions = {
+            threshold: 0.5,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const numberElements = entry.target.querySelectorAll('.stats-number');
+                    numberElements.forEach(el => {
+                        const finalValue = parseInt(el.textContent);
+                        animateNumber(el, 0, finalValue, 1500);
+                    });
+                    statsObserver.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // Observer les cartes de statistiques
+        document.querySelectorAll('.stats-container').forEach(container => {
+            statsObserver.observe(container);
+        });
+
+        // Animation des nombres
+        function animateNumber(element, start, end, duration) {
+            const startTime = performance.now();
+            const change = end - start;
+
+            function animate(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // Fonction d'easing
+                const easeOutCubic = 1 - Math.pow(1 - progress, 3);
+                const current = Math.floor(start + (change * easeOutCubic));
+                
+                element.textContent = current;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                }
+            }
+            
+            requestAnimationFrame(animate);
+        }
+
+        // Effet de survol sur les cartes d'installations
+        document.querySelectorAll('.installation-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-15px) scale(1.03)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Confirmation stylisée pour la suppression
+        function confirmDelete(form, event) {
+            event.preventDefault();
+            
+            const installationName = form.closest('.installation-card').querySelector('.installation-title').textContent;
+            
+            if (confirm(`⚠️ Êtes-vous sûr de vouloir supprimer l'installation "${installationName}" ?\n\nCette action est irréversible et supprimera également tous les événements associés.`)) {
+                // Animation de suppression
+                const card = form.closest('.installation-card');
+                if (card) {
+                    card.style.transition = 'all 0.5s ease';
+                    card.style.transform = 'scale(0)';
+                    card.style.opacity = '0';
+                    
+                    setTimeout(() => {
+                        form.submit();
+                    }, 500);
+                } else {
+                    form.submit();
+                }
+                return true;
+            }
+            return false;
+        }
+
+        // Auto-masquage des alertes
+        setTimeout(() => {
+            document.querySelectorAll('.alert-modern').forEach(alert => {
+                alert.style.transition = 'all 0.5s ease';
+                alert.style.transform = 'translateY(-20px)';
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 500);
+            });
+        }, 5000);
+
+        // Effet parallaxe léger sur le header
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const header = document.querySelector('.page-header');
+            if (header) {
+                const speed = scrolled * 0.5;
+                header.style.transform = `translateY(${speed}px)`;
+            }
+        });
+
+        // Animation d'entrée des cartes avec stagger
+        const cards = document.querySelectorAll('.installation-card');
+        cards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(50px)';
+            card.style.transition = 'all 0.6s ease';
+            
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 100 * index);
+        });
+
+        // Filtrage dynamique par type (fonctionnalité bonus)
+        function filterByType(type) {
+            const cards = document.querySelectorAll('.installation-card');
+            cards.forEach(card => {
+                const cardType = card.querySelector('.installation-type');
+                if (type === 'all' || !cardType || cardType.textContent.toLowerCase().includes(type.toLowerCase())) {
+                    card.style.display = 'block';
+                    card.style.animation = 'slideInUp 0.6s ease-out';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    </script>
 </body>
 </html>

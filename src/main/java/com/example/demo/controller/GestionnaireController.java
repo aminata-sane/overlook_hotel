@@ -19,6 +19,9 @@ public class GestionnaireController {
 
     @Autowired
     private GestionnaireService gestionnaireService;
+    
+    @Autowired
+    private com.example.demo.service.EmployeService employeService;
 
     // Liste des gestionnaires
     @GetMapping
@@ -168,11 +171,55 @@ public class GestionnaireController {
     // Page des statistiques des gestionnaires
     @GetMapping("/statistiques")
     public String statistiquesGestionnaires(Model model) {
+        // Données des gestionnaires
         model.addAttribute("nombreTotal", gestionnaireService.compterGestionnairesActifs());
         model.addAttribute("gestionnairesSansChambres", gestionnaireService.obtenirGestionnairesSansChambres());
         model.addAttribute("gestionnairesParChambres", gestionnaireService.obtenirGestionnairesParNombreChambres());
         model.addAttribute("gestionnairesParFeedbacks", gestionnaireService.obtenirGestionnairesParNombreFeedbacks());
         
+        // Données des employés
+        model.addAttribute("tousLesEmployes", gestionnaireService.obtenirTousLesEmployes());
+        model.addAttribute("employesActifs", gestionnaireService.obtenirEmployesActifs());
+        model.addAttribute("employesEnConge", gestionnaireService.obtenirEmployesEnConge());
+        model.addAttribute("repartitionParRole", gestionnaireService.obtenirRepartitionParRole());
+        model.addAttribute("repartitionParStatut", gestionnaireService.obtenirRepartitionParStatut());
+        model.addAttribute("employesRecents", gestionnaireService.obtenirEmployesRecents(5));
+        
         return "gestionnaires/statistiques";
+    }
+    
+    // Formulaire de création d'employé par les gestionnaires
+    @GetMapping("/employes/nouveau")
+    public String formulaireNouvelEmploye(Model model) {
+        model.addAttribute("employe", new com.example.demo.model.Employe());
+        model.addAttribute("roles", com.example.demo.model.Employe.RoleEmploye.values());
+        model.addAttribute("statuts", com.example.demo.model.Employe.StatutEmploye.values());
+        return "gestionnaires/employe-form";
+    }
+    
+    // Traitement de la création d'employé par les gestionnaires  
+    @PostMapping("/employes/nouveau")
+    public String creerNouvelEmploye(@ModelAttribute com.example.demo.model.Employe employe,
+                                   RedirectAttributes redirectAttributes,
+                                   Model model) {
+        try {
+            employeService.createEmploye(employe);
+            redirectAttributes.addFlashAttribute("succes", 
+                "Employé " + employe.getNomComplet() + " créé avec succès !");
+            
+            return "redirect:/gestionnaires/employes/nouveau?success=true";
+        } catch (RuntimeException e) {
+            model.addAttribute("erreur", e.getMessage());
+            model.addAttribute("employe", employe);
+            model.addAttribute("roles", com.example.demo.model.Employe.RoleEmploye.values());
+            model.addAttribute("statuts", com.example.demo.model.Employe.StatutEmploye.values());
+            return "gestionnaires/employe-form";
+        } catch (Exception e) {
+            model.addAttribute("erreur", "Erreur lors de la création de l'employé : " + e.getMessage());
+            model.addAttribute("employe", employe);
+            model.addAttribute("roles", com.example.demo.model.Employe.RoleEmploye.values());
+            model.addAttribute("statuts", com.example.demo.model.Employe.StatutEmploye.values());
+            return "gestionnaires/employe-form";
+        }
     }
 }

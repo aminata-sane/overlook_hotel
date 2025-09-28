@@ -39,4 +39,10 @@ public interface EmployeRepository extends JpaRepository<Employe, Long> {
 
     // Vérifier si un email existe
     boolean existsByEmail(String email);
+
+    // Trouver les employés les plus récemment embauchés
+    List<Employe> findTop10ByOrderByDateEmbaucheDesc();
+
+    // Trouver les employés par ordre d'ancienneté
+    List<Employe> findAllByOrderByDateEmbaucheAsc();
 }

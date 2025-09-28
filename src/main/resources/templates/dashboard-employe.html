@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Overlook Hotel - Espace Employé</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="col-lg-8">`<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
             --primary-color: #17a2b8;
@@ -20,8 +23,22 @@
 
         body {
             background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            background-attachment: fixed;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="0.5" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="0.3" fill="rgba(255,255,255,0.08)"/><circle cx="50" cy="10" r="0.4" fill="rgba(255,255,255,0.06)"/><circle cx="10" cy="60" r="0.2" fill="rgba(255,255,255,0.1)"/><circle cx="90" cy="30" r="0.3" fill="rgba(255,255,255,0.07)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            pointer-events: none;
+            z-index: -1;
         }
 
         .navbar-custom {
@@ -34,147 +51,6 @@
             font-size: 1.5rem;
         }
 
-        .dashboard-header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, #0f7489 100%);
-            color: white;
-            padding: 3rem 0;
-            margin-bottom: 2rem;
-        }
-
-        .dashboard-title {
-            font-size: 2.5rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .dashboard-subtitle {
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
-
-        .stats-card {
-            background: white;
-            border-radius: 15px;
-            padding: 2rem;
-            text-align: center;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
-            border-left: 5px solid;
-            margin-bottom: 1.5rem;
-        }
-
-        .stats-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .stats-card.reservations {
-            border-left-color: var(--success-color);
-        }
-
-        .stats-card.chambres {
-            border-left-color: var(--info-color);
-        }
-
-        .stats-card.clients {
-            border-left-color: var(--warning-color);
-        }
-
-        .stats-card.revenus {
-            border-left-color: var(--danger-color);
-        }
-
-        .stats-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        .stats-number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .stats-label {
-            font-size: 0.9rem;
-            color: var(--secondary-color);
-            text-transform: uppercase;
-            font-weight: 500;
-        }
-
-        .quick-actions {
-            background: white;
-            border-radius: 15px;
-            padding: 2rem;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
-        }
-
-        .action-btn {
-            display: block;
-            width: 100%;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-radius: 10px;
-            text-decoration: none;
-            text-align: left;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-
-        .action-btn:hover {
-            transform: translateX(5px);
-            text-decoration: none;
-        }
-
-        .action-btn-primary {
-            background: linear-gradient(135deg, var(--primary-color), #0f7489);
-            color: white;
-        }
-
-        .action-btn-success {
-            background: linear-gradient(135deg, var(--success-color), #1e7e34);
-            color: white;
-        }
-
-        .action-btn-warning {
-            background: linear-gradient(135deg, var(--warning-color), #e0a800);
-            color: var(--dark-color);
-        }
-
-        .action-btn-info {
-            background: linear-gradient(135deg, var(--info-color), #117a8b);
-            color: white;
-        }
-
-        .recent-activity {
-            background: white;
-            border-radius: 15px;
-            padding: 2rem;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        }
-
-        .activity-item {
-            padding: 1rem 0;
-            border-bottom: 1px solid #e9ecef;
-            display: flex;
-            align-items: center;
-        }
-
-        .activity-item:last-child {
-            border-bottom: none;
-        }
-
-        .activity-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 1rem;
-            font-size: 1.2rem;
-        }
-
         .breadcrumb-custom {
             background: transparent;
             padding: 0;
@@ -182,13 +58,460 @@
         }
 
         .breadcrumb-custom .breadcrumb-item a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .breadcrumb-custom .breadcrumb-item a:hover {
             color: white;
-            opacity: 0.8;
         }
 
         .breadcrumb-custom .breadcrumb-item.active {
             color: white;
-            opacity: 1;
+            font-weight: 600;
+        }
+
+        .breadcrumb-custom .breadcrumb-item + .breadcrumb-item::before {
+            color: rgba(255,255,255,0.6);
+        }
+
+        .dashboard-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #0f7489 100%);
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="none"><path d="M0,20 Q250,80 500,40 T1000,20 L1000,0 L0,0 Z" fill="rgba(255,255,255,0.1)"/></svg>');
+            animation: wave 3s ease-in-out infinite;
+        }
+
+        @keyframes wave {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(-20px); }
+        }
+
+        .dashboard-title {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .dashboard-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stats-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: none;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            transition: height 0.3s ease;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .stats-card:hover::before {
+            height: 100%;
+            opacity: 0.05;
+        }
+
+        .stats-card.reservations::before {
+            background: linear-gradient(135deg, var(--success-color) 0%, #1e7e34 100%);
+        }
+
+        .stats-card.chambres::before {
+            background: linear-gradient(135deg, var(--info-color) 0%, #117a8b 100%);
+        }
+
+        .stats-card.clients::before {
+            background: linear-gradient(135deg, var(--warning-color) 0%, #e0a800 100%);
+        }
+
+        .stats-card.revenus::before {
+            background: linear-gradient(135deg, var(--danger-color) 0%, #c82333 100%);
+        }
+
+        .stats-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .stats-card:hover .stats-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .stats-number {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 2;
+            counter-reset: num var(--num);
+            animation: countUp 2s ease-out;
+        }
+
+        @keyframes countUp {
+            from { --num: 0; }
+            to { --num: var(--target); }
+        }
+
+        .stats-label {
+            font-size: 1rem;
+            color: var(--secondary-color);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .stats-trend {
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            font-weight: 600;
+        }
+
+        .trend-up {
+            color: var(--success-color);
+        }
+
+        .trend-down {
+            color: var(--danger-color);
+        }
+
+        .quick-actions {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quick-actions::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(23,162,184,0.05) 0%, transparent 50%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .action-btn {
+            display: block;
+            width: 100%;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 15px;
+            text-decoration: none;
+            text-align: left;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+            z-index: 2;
+        }
+
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .action-btn:hover::before {
+            left: 100%;
+        }
+
+        .action-btn:hover {
+            transform: translateX(10px) translateY(-2px);
+            text-decoration: none;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .action-btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), #0f7489);
+            color: white;
+            box-shadow: 0 5px 15px rgba(23,162,184,0.3);
+        }
+
+        .action-btn-success {
+            background: linear-gradient(135deg, var(--success-color), #1e7e34);
+            color: white;
+            box-shadow: 0 5px 15px rgba(40,167,69,0.3);
+        }
+
+        .action-btn-warning {
+            background: linear-gradient(135deg, var(--warning-color), #e0a800);
+            color: var(--dark-color);
+            box-shadow: 0 5px 15px rgba(255,193,7,0.3);
+        }
+
+        .action-btn-info {
+            background: linear-gradient(135deg, var(--info-color), #117a8b);
+            color: white;
+            box-shadow: 0 5px 15px rgba(23,162,184,0.3);
+        }
+
+        .recent-activity {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .activity-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 0;
+            background: linear-gradient(135deg, rgba(23,162,184,0.1), rgba(23,162,184,0.05));
+            transition: width 0.3s ease;
+        }
+
+        .activity-item:hover {
+            background: #f8f9fa;
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .activity-item:hover::before {
+            width: 100%;
+        }
+
+        .activity-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1.5rem;
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .activity-item:hover .activity-icon {
+            transform: scale(1.1);
+        }
+
+        .activity-content {
+            flex: 1;
+            position: relative;
+            z-index: 2;
+        }
+
+        .activity-title {
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 0.25rem;
+        }
+
+        .activity-description {
+            color: var(--secondary-color);
+            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+        }
+
+        .activity-time {
+            color: var(--secondary-color);
+            font-size: 0.8rem;
+            font-style: italic;
+        }
+
+        /* Styles pour la gestion des statuts des chambres */
+        .chambre-status-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1rem;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border-left: 4px solid #dee2e6;
+        }
+
+        .chambre-status-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+        .chambre-status-card-mini {
+            background: white;
+            transition: all 0.2s ease;
+        }
+
+        .chambre-status-card-mini:hover {
+            background: #f8f9fa;
+            transform: translateX(2px);
+        }
+
+        .chambre-status-card.border-success,
+        .chambre-status-card-mini.border-success {
+            border-left-color: var(--success-color) !important;
+        }
+
+        .chambre-status-card.border-primary,
+        .chambre-status-card-mini.border-primary {
+            border-left-color: var(--primary-color) !important;
+        }
+
+        .chambre-status-card.border-warning,
+        .chambre-status-card-mini.border-warning {
+            border-left-color: var(--warning-color) !important;
+        }
+
+        .chambre-status-card.border-danger,
+        .chambre-status-card-mini.border-danger {
+            border-left-color: var(--danger-color) !important;
+        }
+
+        .chambre-status-card.border-dark,
+        .chambre-status-card-mini.border-dark {
+            border-left-color: var(--dark-color) !important;
+        }
+
+        .chambre-status-card.border-info,
+        .chambre-status-card-mini.border-info {
+            border-left-color: var(--info-color) !important;
+        }
+
+        /* Styles pour l'accordéon personnalisé */
+        .accordion-button {
+            border: none !important;
+            border-radius: 10px !important;
+            box-shadow: none !important;
+        }
+
+        .accordion-button:not(.collapsed) {
+            background: linear-gradient(135deg, var(--primary-color), #0f7489) !important;
+            color: white !important;
+        }
+
+        .accordion-button:focus {
+            box-shadow: none !important;
+        }
+
+        .accordion-item {
+            border: none !important;
+        }
+
+        .accordion-body {
+            border-radius: 0 0 10px 10px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .chambre-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .chambre-numero {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin: 0;
+            color: var(--dark-color);
+        }
+
+        .chambre-type {
+            font-size: 0.75rem;
+        }
+
+        .chambre-info {
+            margin-bottom: 1rem;
+        }
+
+        .statut-selector {
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .statut-selector:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(23, 162, 184, 0.25);
+        }
+
+        .stats-overview-header {
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
         }
     </style>
 </head>
@@ -265,39 +588,51 @@
         <!-- Statistics Cards -->
         <div class="row mb-4">
             <div class="col-lg-3 col-md-6">
-                <div class="stats-card reservations">
+                <div class="stats-card reservations" data-aos="fade-up" data-aos-delay="100">
                     <div class="stats-icon text-success">
                         <i class="fas fa-calendar-check"></i>
                     </div>
-                    <div class="stats-number text-success">24</div>
+                    <div class="stats-number text-success" data-target="24">24</div>
                     <div class="stats-label">Réservations Aujourd'hui</div>
+                    <div class="stats-trend trend-up">
+                        <i class="fas fa-arrow-up me-1"></i>+15%
+                    </div>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6">
-                <div class="stats-card chambres">
+                <div class="stats-card chambres" data-aos="fade-up" data-aos-delay="200">
                     <div class="stats-icon text-info">
                         <i class="fas fa-bed"></i>
                     </div>
-                    <div class="stats-number text-info">18</div>
+                    <div class="stats-number text-info" data-target="18">18</div>
                     <div class="stats-label">Chambres Occupées</div>
+                    <div class="stats-trend trend-up">
+                        <i class="fas fa-arrow-up me-1"></i>+8%
+                    </div>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6">
-                <div class="stats-card clients">
+                <div class="stats-card clients" data-aos="fade-up" data-aos-delay="300">
                     <div class="stats-icon text-warning">
                         <i class="fas fa-users"></i>
                     </div>
-                    <div class="stats-number text-warning">42</div>
+                    <div class="stats-number text-warning" data-target="42">42</div>
                     <div class="stats-label">Clients Présents</div>
+                    <div class="stats-trend trend-up">
+                        <i class="fas fa-arrow-up me-1"></i>+22%
+                    </div>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6">
-                <div class="stats-card revenus">
+                <div class="stats-card revenus" data-aos="fade-up" data-aos-delay="400">
                     <div class="stats-icon text-danger">
                         <i class="fas fa-euro-sign"></i>
                     </div>
-                    <div class="stats-number text-danger">8.5K</div>
+                    <div class="stats-number text-danger" data-target="8500">8.5K</div>
                     <div class="stats-label">Revenus du Jour</div>
+                    <div class="stats-trend trend-down">
+                        <i class="fas fa-arrow-down me-1"></i>-3%
+                    </div>
                 </div>
             </div>
         </div>
@@ -310,11 +645,68 @@
                         <i class="fas fa-bolt text-warning"></i> Actions Rapides
                     </h4>
                     
-                    <a href="/chambres" class="action-btn action-btn-primary">
-                        <i class="fas fa-bed"></i>
-                        <span class="ms-2">Gérer les Chambres</span>
-                        <small class="d-block text-light mt-1">Statut, nettoyage, maintenance</small>
-                    </a>
+                    <!-- Accordéon pour Gérer les Chambres -->
+                    <div class="accordion mb-3" id="chambreAccordion">
+                        <div class="accordion-item border-0">
+                            <h2 class="accordion-header" id="chambreHeader">
+                                <button class="accordion-button collapsed action-btn action-btn-primary p-3" 
+                                        type="button" data-bs-toggle="collapse" 
+                                        data-bs-target="#chambreCollapse" 
+                                        aria-expanded="false" 
+                                        aria-controls="chambreCollapse">
+                                    <i class="fas fa-bed"></i>
+                                    <span class="ms-2">Gérer les Chambres</span>
+                                    <small class="d-block text-light mt-1">Statut, nettoyage, maintenance</small>
+                                </button>
+                            </h2>
+                            <div id="chambreCollapse" class="accordion-collapse collapse" 
+                                 aria-labelledby="chambreHeader" data-bs-parent="#chambreAccordion">
+                                <div class="accordion-body bg-light p-3">
+                                    <h6 class="mb-3">
+                                        <i class="fas fa-cogs text-primary"></i> Gestion des Statuts
+                                    </h6>
+                                    <small class="text-muted d-block mb-3">Cliquez sur une chambre pour changer son statut</small>
+                                    
+                                    <div class="row" th:if="${chambres}">
+                                        <div class="col-12 mb-2" th:each="chambre : ${chambres}">
+                                            <div class="chambre-status-card-mini border rounded p-2" 
+                                                 th:classappend="'border-' + ${chambre.statut.cssClass}">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <strong class="d-block" th:text="${chambre.numero}">101</strong>
+                                                        <small class="text-muted" th:text="${chambre.type.libelle}">Double</small>
+                                                    </div>
+                                                    <div class="flex-fill mx-2">
+                                                        <span class="badge" th:classappend="'bg-' + ${chambre.statut.cssClass}" 
+                                                              th:text="${chambre.statut.libelle}">Disponible</span>
+                                                    </div>
+                                                    <div>
+                                                        <form th:action="@{'/employes/chambres/' + ${chambre.id} + '/statut'}" method="post" class="d-inline">
+                                                            <select name="statut" class="form-select form-select-sm" 
+                                                                    onchange="this.form.submit()" style="width: 130px;">
+                                                                <option value="DISPONIBLE" th:selected="${chambre.statut == T(com.example.demo.model.Chambre$StatutChambre).DISPONIBLE}">Disponible</option>
+                                                                <option value="OCCUPEE" th:selected="${chambre.statut == T(com.example.demo.model.Chambre$StatutChambre).OCCUPEE}">Occupée</option>
+                                                                <option value="NETTOYAGE" th:selected="${chambre.statut == T(com.example.demo.model.Chambre$StatutChambre).NETTOYAGE}">Nettoyage</option>
+                                                                <option value="MAINTENANCE" th:selected="${chambre.statut == T(com.example.demo.model.Chambre$StatutChambre).MAINTENANCE}">Maintenance</option>
+                                                                <option value="HORS_SERVICE" th:selected="${chambre.statut == T(com.example.demo.model.Chambre$StatutChambre).HORS_SERVICE}">Hors service</option>
+                                                                <option value="INSPECTION" th:selected="${chambre.statut == T(com.example.demo.model.Chambre$StatutChambre).INSPECTION}">Inspection</option>
+                                                            </select>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-3">
+                                        <a href="/chambres" class="btn btn-outline-primary btn-sm">
+                                            <i class="fas fa-external-link-alt"></i> Voir tous les détails
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     
                     <a href="/clients" class="action-btn action-btn-success">
                         <i class="fas fa-user-plus"></i>
@@ -338,63 +730,75 @@
 
             <!-- Recent Activity -->
             <div class="col-lg-8">
-                <div class="recent-activity">
-                    <h4 class="mb-3">
-                        <i class="fas fa-clock text-primary"></i> Activité Récente
-                    </h4>
-                    
-                    <div class="activity-item">
-                        <div class="activity-icon bg-success text-white">
-                            <i class="fas fa-check"></i>
-                        </div>
-                        <div>
-                            <strong>Check-in terminé</strong>
-                            <p class="mb-0 text-muted">Chambre 105 - M. Dupont</p>
-                            <small class="text-muted">Il y a 15 minutes</small>
-                        </div>
-                    </div>
-                    
-                    <div class="activity-item">
-                        <div class="activity-icon bg-warning text-white">
-                            <i class="fas fa-wrench"></i>
-                        </div>
-                        <div>
-                            <strong>Maintenance programmée</strong>
-                            <p class="mb-0 text-muted">Chambre 203 - Climatisation</p>
-                            <small class="text-muted">Il y a 1 heure</small>
+                <div class="recent-activity" data-aos="fade-left" data-aos-delay="500">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="mb-0">
+                            <i class="fas fa-clock text-primary"></i> Activité Récente
+                        </h4>
+                        <div class="activity-controls">
+                            <button class="btn btn-outline-primary btn-sm me-2">
+                                <i class="fas fa-sync-alt"></i> Actualiser
+                            </button>
+                            <button class="btn btn-outline-secondary btn-sm">
+                                <i class="fas fa-history"></i> Voir tout
+                            </button>
                         </div>
                     </div>
                     
-                    <div class="activity-item">
-                        <div class="activity-icon bg-primary text-white">
-                            <i class="fas fa-calendar"></i>
+                    <div class="activity-timeline">
+                        <div class="activity-item" data-aos="fade-up" data-aos-delay="600">
+                            <div class="activity-icon bg-success text-white">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">Check-in terminé</div>
+                                <div class="activity-description">Chambre 105 - M. Dupont</div>
+                                <div class="activity-time">Il y a 15 minutes</div>
+                            </div>
                         </div>
-                        <div>
-                            <strong>Nouvelle réservation</strong>
-                            <p class="mb-0 text-muted">Suite 301 - Mme. Martin (3 nuits)</p>
-                            <small class="text-muted">Il y a 2 heures</small>
+                        
+                        <div class="activity-item" data-aos="fade-up" data-aos-delay="700">
+                            <div class="activity-icon bg-warning text-white">
+                                <i class="fas fa-wrench"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">Maintenance programmée</div>
+                                <div class="activity-description">Chambre 203 - Climatisation</div>
+                                <div class="activity-time">Il y a 1 heure</div>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="activity-item">
-                        <div class="activity-icon bg-info text-white">
-                            <i class="fas fa-broom"></i>
+                        
+                        <div class="activity-item" data-aos="fade-up" data-aos-delay="800">
+                            <div class="activity-icon bg-primary text-white">
+                                <i class="fas fa-calendar"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">Nouvelle réservation</div>
+                                <div class="activity-description">Suite 301 - Mme. Martin (3 nuits)</div>
+                                <div class="activity-time">Il y a 2 heures</div>
+                            </div>
                         </div>
-                        <div>
-                            <strong>Nettoyage terminé</strong>
-                            <p class="mb-0 text-muted">Chambres 110, 111, 112</p>
-                            <small class="text-muted">Il y a 3 heures</small>
+                        
+                        <div class="activity-item" data-aos="fade-up" data-aos-delay="900">
+                            <div class="activity-icon bg-info text-white">
+                                <i class="fas fa-broom"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">Nettoyage terminé</div>
+                                <div class="activity-description">Chambres 110, 111, 112</div>
+                                <div class="activity-time">Il y a 3 heures</div>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="activity-item">
-                        <div class="activity-icon bg-danger text-white">
-                            <i class="fas fa-exclamation"></i>
-                        </div>
-                        <div>
-                            <strong>Incident signalé</strong>
-                            <p class="mb-0 text-muted">Chambre 156 - Problème plomberie</p>
-                            <small class="text-muted">Il y a 4 heures</small>
+                        
+                        <div class="activity-item" data-aos="fade-up" data-aos-delay="1000">
+                            <div class="activity-icon bg-danger text-white">
+                                <i class="fas fa-exclamation"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">Incident signalé</div>
+                                <div class="activity-description">Chambre 156 - Problème plomberie</div>
+                                <div class="activity-time">Il y a 4 heures</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -403,51 +807,227 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
     <script>
-        // Animation des cartes statistiques
+        // Initialisation AOS (Animate On Scroll)
+        AOS.init({
+            duration: 800,
+            easing: 'ease-out-cubic',
+            once: true,
+            mirror: false
+        });
+
+        // Animation des compteurs
+        function animateCounter(element, target, duration = 2000) {
+            let start = 0;
+            const increment = target / (duration / 16);
+            
+            const timer = setInterval(() => {
+                start += increment;
+                if (start >= target) {
+                    start = target;
+                    clearInterval(timer);
+                }
+                
+                // Format pour les nombres avec K
+                if (target >= 1000) {
+                    element.textContent = (start / 1000).toFixed(1) + 'K';
+                } else {
+                    element.textContent = Math.floor(start);
+                }
+            }, 16);
+        }
+
+        // Animation des cartes statistiques au chargement
         document.addEventListener('DOMContentLoaded', function() {
-            const statsCards = document.querySelectorAll('.stats-card');
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '0';
-                        entry.target.style.transform = 'translateY(30px)';
-                        entry.target.style.transition = 'all 0.6s ease';
-                        
-                        setTimeout(() => {
-                            entry.target.style.opacity = '1';
-                            entry.target.style.transform = 'translateY(0)';
-                        }, 100);
-                    }
+            // Animation des compteurs
+            setTimeout(() => {
+                document.querySelectorAll('.stats-number').forEach(counter => {
+                    const target = parseInt(counter.getAttribute('data-target'));
+                    animateCounter(counter, target);
+                });
+            }, 500);
+
+            // Effets de particules sur les cartes stats
+            document.querySelectorAll('.stats-card').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    createParticles(this);
                 });
             });
-            
-            statsCards.forEach(card => {
-                observer.observe(card);
+
+            // Animation des éléments d'activité
+            const activityItems = document.querySelectorAll('.activity-item');
+            activityItems.forEach((item, index) => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateX(-30px)';
+                
+                setTimeout(() => {
+                    item.style.transition = 'all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateX(0)';
+                }, 1000 + (index * 200));
             });
         });
 
-        // Actualisation automatique des données (simulation)
-        setInterval(function() {
-            // Simulation de mise à jour des chiffres
-            const numbers = document.querySelectorAll('.stats-number');
-            numbers.forEach(number => {
-                const current = parseInt(number.textContent);
-                const variation = Math.floor(Math.random() * 3) - 1; // -1, 0, ou 1
+        // Création d'effets de particules
+        function createParticles(element) {
+            for (let i = 0; i < 6; i++) {
+                const particle = document.createElement('div');
+                particle.style.cssText = `
+                    position: absolute;
+                    width: 4px;
+                    height: 4px;
+                    background: radial-gradient(circle, #17a2b8, transparent);
+                    border-radius: 50%;
+                    pointer-events: none;
+                    z-index: 1000;
+                `;
+                
+                const rect = element.getBoundingClientRect();
+                particle.style.left = (rect.left + Math.random() * rect.width) + 'px';
+                particle.style.top = (rect.top + Math.random() * rect.height) + 'px';
+                
+                document.body.appendChild(particle);
+                
+                // Animation de la particule
+                particle.animate([
+                    { transform: 'translateY(0) scale(1)', opacity: 1 },
+                    { transform: 'translateY(-50px) scale(0)', opacity: 0 }
+                ], {
+                    duration: 1000,
+                    easing: 'ease-out'
+                }).onfinish = () => particle.remove();
+            }
+        }
+
+        // Mise à jour temps réel simulée
+        function updateRealTimeData() {
+            const statsNumbers = document.querySelectorAll('.stats-number');
+            const trends = document.querySelectorAll('.stats-trend');
+            
+            statsNumbers.forEach((number, index) => {
+                const current = parseInt(number.getAttribute('data-target'));
+                const variation = Math.floor(Math.random() * 5) - 2; // -2 à +2
                 const newValue = Math.max(0, current + variation);
                 
                 if (variation !== 0) {
+                    number.setAttribute('data-target', newValue);
+                    
+                    // Animation de changement
+                    number.style.transform = 'scale(1.1)';
                     number.style.color = variation > 0 ? '#28a745' : '#dc3545';
+                    
                     setTimeout(() => {
+                        number.style.transform = 'scale(1)';
                         number.style.color = '';
-                    }, 1000);
-                }
-                
-                if (newValue !== current) {
-                    number.textContent = newValue;
+                        animateCounter(number, newValue, 1000);
+                    }, 200);
+                    
+                    // Mise à jour de la tendance
+                    const trend = trends[index];
+                    if (trend) {
+                        const isPositive = variation > 0;
+                        trend.className = isPositive ? 'stats-trend trend-up' : 'stats-trend trend-down';
+                        trend.innerHTML = `<i class="fas fa-arrow-${isPositive ? 'up' : 'down'} me-1"></i>${isPositive ? '+' : ''}${Math.abs(variation * 2)}%`;
+                    }
                 }
             });
-        }, 30000); // Toutes les 30 secondes
+        }
+
+        // Horloge temps réel
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('fr-FR');
+            
+            // Mettre à jour l'heure dans le header si elle existe
+            const clockElement = document.getElementById('real-time-clock');
+            if (clockElement) {
+                clockElement.textContent = timeString;
+            }
+        }
+
+        // Notification système
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+            notification.style.cssText = `
+                top: 20px;
+                right: 20px;
+                z-index: 9999;
+                min-width: 300px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            `;
+            notification.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto-suppression après 5 secondes
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
+
+        // Gestion des boutons d'action
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.btn[onclick*="actualiser"]')) {
+                e.preventDefault();
+                showNotification('<i class="fas fa-sync-alt me-2"></i>Données actualisées avec succès!', 'success');
+                updateRealTimeData();
+            }
+        });
+
+        // Intervalles de mise à jour
+        setInterval(updateRealTimeData, 45000); // Toutes les 45 secondes
+        setInterval(updateClock, 1000); // Toutes les secondes
+
+        // Effet de parallaxe sur le header
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const header = document.querySelector('.dashboard-header');
+            if (header) {
+                const parallax = scrolled * 0.5;
+                header.style.transform = `translateY(${parallax}px)`;
+            }
+        });
+
+        // Raccourcis clavier
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 'r':
+                        e.preventDefault();
+                        updateRealTimeData();
+                        showNotification('<i class="fas fa-keyboard me-2"></i>Actualisation via raccourci clavier', 'info');
+                        break;
+                }
+            }
+        });
+
+        // Ajout d'une horloge temps réel dans le header
+        document.addEventListener('DOMContentLoaded', function() {
+            const subtitle = document.querySelector('.dashboard-subtitle');
+            if (subtitle) {
+                const clockSpan = document.createElement('span');
+                clockSpan.id = 'real-time-clock';
+                clockSpan.style.cssText = `
+                    display: block;
+                    font-size: 1rem;
+                    margin-top: 0.5rem;
+                    opacity: 0.8;
+                    font-family: 'Courier New', monospace;
+                `;
+                subtitle.appendChild(clockSpan);
+                updateClock();
+            }
+        });
+
+        console.log('🏨 Dashboard Employé Overlook Hotel - Version Premium chargé avec succès!');
     </script>
 </body>
 </html>

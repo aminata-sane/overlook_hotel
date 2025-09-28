@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Console Développeur - Overlook Hotel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+        }
+
+        .dev-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .dev-header {
+            margin-bottom: 30px;
+        }
+
+        .dev-title {
+            font-size: 2.5rem;
+            color: #1e3c72;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .dev-subtitle {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .dev-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #2a5298;
+        }
+
+        .console-info {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            border-left: 5px solid #007bff;
+        }
+
+        .console-info h3 {
+            color: #1e3c72;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .connection-details {
+            text-align: left;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border: 1px solid #e9ecef;
+        }
+
+        .connection-details strong {
+            color: #007bff;
+            display: inline-block;
+            width: 120px;
+        }
+
+        .connection-details div {
+            margin: 8px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .btn-console {
+            display: inline-block;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
+            margin: 10px;
+        }
+
+        .btn-console:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(0, 123, 255, 0.4);
+            text-decoration: none;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d, #545b62);
+            box-shadow: 0 8px 25px rgba(108, 117, 125, 0.3);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 12px 35px rgba(108, 117, 125, 0.4);
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            color: #856404;
+        }
+
+        .warning-box h4 {
+            color: #d63031;
+            margin-bottom: 10px;
+        }
+
+        .features-list {
+            text-align: left;
+            margin: 20px 0;
+        }
+
+        .features-list li {
+            margin: 8px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .features-list li:before {
+            content: "⚡";
+            position: absolute;
+            left: 0;
+            color: #007bff;
+        }
+
+        @media (max-width: 768px) {
+            .dev-container {
+                padding: 30px 20px;
+            }
+            
+            .dev-title {
+                font-size: 2rem;
+            }
+            
+            .connection-details strong {
+                width: 100px;
+                font-size: 0.9rem;
+            }
+        }
+
+        .back-link {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .back-link:hover {
+            opacity: 1;
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="back-link">← Retour à l'accueil</a>
+    
+    <div class="dev-container">
+        <div class="dev-header">
+            <div class="dev-icon">🔧</div>
+            <h1 class="dev-title">Console Développeur</h1>
+            <p class="dev-subtitle">Accès aux outils de développement et base de données</p>
+        </div>
+
+        <div class="console-info">
+            <h3>🗄️ Console H2 Database</h3>
+            <p>Accédez à la console H2 pour administrer la base de données de l'hôtel</p>
+            
+            <div class="connection-details">
+                <div><strong>URL JDBC:</strong> jdbc:h2:file:./data/hoteldb</div>
+                <div><strong>Driver:</strong> org.h2.Driver</div>
+                <div><strong>Username:</strong> sa</div>
+                <div><strong>Password:</strong> <em>(laisser vide)</em></div>
+            </div>
+        </div>
+
+        <div class="warning-box">
+            <h4>⚠️ Attention Développeur</h4>
+            <p>Cette console donne un accès complet à la base de données. Soyez prudent avec les opérations de modification (UPDATE, DELETE, DROP).</p>
+        </div>
+
+        <div class="console-info">
+            <h3>🚀 Fonctionnalités disponibles</h3>
+            <ul class="features-list">
+                <li>Exécution de requêtes SQL personnalisées</li>
+                <li>Inspection des tables et structures</li>
+                <li>Analyse des données en temps réel</li>
+                <li>Export/Import de données</li>
+                <li>Monitoring des performances</li>
+            </ul>
+        </div>
+
+        <div style="margin-top: 30px;">
+            <a href="/h2-console" class="btn-console" target="_blank">
+                🔗 Ouvrir Console H2
+            </a>
+            <a href="/dashboard-gestionnaire" class="btn-console btn-secondary">
+                📊 Dashboard Principal
+            </a>
+        </div>
+
+        <div style="margin-top: 30px; font-size: 0.9rem; color: #666;">
+            <p>💡 <strong>Astuce:</strong> La console s'ouvrira dans un nouvel onglet pour faciliter le développement</p>
+        </div>
+    </div>
+</body>
+</html>

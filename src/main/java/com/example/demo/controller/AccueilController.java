@@ -31,6 +31,26 @@ public class AccueilController {
         System.out.println("INITIALISATION: " + nombreChambres + " chambre(s) trouvée(s) en base");
         System.out.println("============================================");
         
+        // Initialiser les statuts des chambres existantes
+        List<Chambre> chambresExistantes = chambreRepository.findAll();
+        boolean statutsMisAJour = false;
+        for (Chambre chambre : chambresExistantes) {
+            if (chambre.getStatut() == null) {
+                // Définir le statut selon la disponibilité
+                if (chambre.getDisponible()) {
+                    chambre.setStatut(Chambre.StatutChambre.DISPONIBLE);
+                } else {
+                    chambre.setStatut(Chambre.StatutChambre.OCCUPEE);
+                }
+                chambreRepository.save(chambre);
+                statutsMisAJour = true;
+            }
+        }
+        
+        if (statutsMisAJour) {
+            System.out.println("Statuts des chambres existantes mis à jour !");
+        }
+        
         if(nombreChambres < 3) {
             System.out.println("Seulement " + nombreChambres + " chambre(s) trouvée(s). Ajout de chambres d'exemple...");
             
@@ -108,7 +128,7 @@ public class AccueilController {
         // Ajouter les types de chambres pour la sélection
         model.addAttribute("typesChambres", Chambre.TypeChambre.values());
         
-        // Ajouter quelques chambres en vedette (diversifiées par type)
+        // Ajouter seulement 3 chambres en vedette pour donner envie au client
         List<Chambre> chambresVedette = chambres.stream()
                 .sorted((c1, c2) -> {
                     // Prioriser les chambres disponibles mais inclure toutes
@@ -117,13 +137,8 @@ public class AccueilController {
                     // Ensuite trier par type pour avoir de la diversité
                     return c1.getType().compareTo(c2.getType());
                 })
-                .limit(6) // Prendre plus de chambres pour assurer la diversité
+                .limit(3) // Limiter à 3 chambres pour donner envie de voir plus
                 .collect(Collectors.toList());
-        
-        // S'assurer qu'on a au moins 3 chambres
-        if (chambresVedette.size() < 3 && chambres.size() >= 3) {
-            chambresVedette = chambres.stream().limit(3).collect(Collectors.toList());
-        }
         
         model.addAttribute("chambresVedette", chambresVedette);
 
@@ -171,6 +186,8 @@ public class AccueilController {
         
         return "details-chambre";
     }
+
+
 
     private boolean estChambreDisponible(Chambre chambre, LocalDate dateArrivee, LocalDate dateDepart) {
         List<Reservation> reservationsConflictuelles = reservationRepository

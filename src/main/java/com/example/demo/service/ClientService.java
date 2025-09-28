@@ -46,6 +46,20 @@ public class ClientService {
 
     // Créer un nouveau client (inscription)
     public Client createClient(Client client) {
+        // Validation des champs requis
+        if (client.getNom() == null || client.getNom().trim().isEmpty()) {
+            throw new RuntimeException("Le nom est obligatoire");
+        }
+        if (client.getPrenom() == null || client.getPrenom().trim().isEmpty()) {
+            throw new RuntimeException("Le prénom est obligatoire");
+        }
+        if (client.getEmail() == null || client.getEmail().trim().isEmpty()) {
+            throw new RuntimeException("L'email est obligatoire");
+        }
+        if (client.getMotDePasse() == null || client.getMotDePasse().trim().isEmpty()) {
+            throw new RuntimeException("Le mot de passe est obligatoire");
+        }
+        
         // Vérifier si l'email existe déjà
         Optional<Client> clientExistant = clientRepository.findByEmail(client.getEmail());
         if (clientExistant.isPresent()) {

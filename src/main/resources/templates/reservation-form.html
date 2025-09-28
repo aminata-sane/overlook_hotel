@@ -215,7 +215,7 @@
                     <i class="fas fa-user-check"></i> Connecté en tant que <span th:text="${clientConnecte.prenom + ' ' + clientConnecte.nom}"></span>
                 </h3>
                 
-                <form th:action="@{/panier/ajouter}" method="post" th:object="${reservation}" id="reservationForm">
+                <form th:action="@{/reservation/ajouter-panier}" method="post" th:object="${reservation}" id="reservationForm">
                     <input type="hidden" name="chambreId" th:value="${chambre.id}">
                     
                     <div class="row">
@@ -481,9 +481,9 @@
     </div>
 
     <script>
-        // Variables globales
-        let cartCount = 0;
-        let cartTotal = 0;
+        // Variables globales pour le panier
+        var cartCount = 0;
+        var cartTotal = 0;
 
         // Validation des dates
         document.addEventListener('DOMContentLoaded', function() {
@@ -533,6 +533,12 @@
             // Préparer les données du formulaire
             const formData = new FormData(form);
             
+            // Debug: Afficher les données envoyées
+            console.log('Données du formulaire:');
+            for (let [key, value] of formData.entries()) {
+                console.log(key, value);
+            }
+            
             // Envoyer la requête AJAX
             fetch(form.action, {
                 method: 'POST',
@@ -541,8 +547,12 @@
                     'X-Requested-With': 'XMLHttpRequest'
                 }
             })
-            .then(response => response.json())
+            .then(response => {
+                console.log('Statut de la réponse:', response.status);
+                return response.json();
+            })
             .then(data => {
+                console.log('Réponse du serveur:', data);
                 btn.disabled = false;
                 btn.innerHTML = originalText;
                 
@@ -572,14 +582,14 @@
                     
                 } else {
                     // Afficher l'erreur
-                    alert('Erreur: ' + data.message);
+                    alert('Erreur: ' + (data.message || 'Une erreur est survenue'));
                 }
             })
             .catch(error => {
                 btn.disabled = false;
                 btn.innerHTML = originalText;
-                console.error('Erreur:', error);
-                alert('Une erreur est survenue lors de l\'ajout au panier.');
+                console.error('Erreur complète:', error);
+                alert('Une erreur est survenue lors de l\'ajout au panier: ' + error.message);
             });
         }
 

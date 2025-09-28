@@ -14,6 +14,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
+import org.springframework.validation.BindingResult;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -153,11 +155,23 @@ public class ClientReservationController {
 
     // Traiter la réservation avec inscription rapide (client non connecté)
     @PostMapping("/reservation/avec-inscription")
-    public String reserverAvecInscription(@ModelAttribute("client") Client client,
+    public String reserverAvecInscription(@Valid @ModelAttribute("client") Client client,
+                                          BindingResult bindingResult,
                                           @ModelAttribute("reservation") Reservation reservation,
                                           @RequestParam Long chambreId,
                                           HttpSession session,
                                           Model model) {
+        // Vérifier les erreurs de validation du client
+        if (bindingResult.hasErrors()) {
+            // Récupérer la chambre pour le formulaire
+            Optional<Chambre> chambreOpt = chambreService.getChambreById(chambreId);
+            if (chambreOpt.isPresent()) {
+                model.addAttribute("chambre", chambreOpt.get());
+            }
+            model.addAttribute("erreur", "Veuillez corriger les erreurs dans le formulaire d'inscription.");
+            return "reservation-form";
+        }
+        
         try {
             // Créer le compte client
             Client nouveauClient = clientService.createClient(client);

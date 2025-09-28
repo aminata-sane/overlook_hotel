@@ -87,7 +87,7 @@ public class ClientController {
                 session.setAttribute("nomClient", client.getPrenom() + " " + client.getNom());
                 
                 model.addAttribute("succes", "Connexion réussie ! Bienvenue " + client.getPrenom() + " !");
-                return "index"; // Redirection vers l'accueil
+                return "dashboard-client"; // Redirection vers le dashboard client
             } else {
                 model.addAttribute("erreur", "Erreur de connexion.");
                 return "connexion";
@@ -109,4 +109,78 @@ public class ClientController {
         return "index";
     }
     
+    // Dashboard client (espace personnel)
+    @GetMapping("/dashboard-client")
+    public String dashboardClient(HttpSession session, Model model) {
+        Client clientConnecte = (Client) session.getAttribute("clientConnecte");
+        if (clientConnecte == null) {
+            model.addAttribute("erreur", "Vous devez être connecté pour accéder à cette page.");
+            return "connexion";
+        }
+        
+        model.addAttribute("client", clientConnecte);
+        return "dashboard-client";
+    }
+
+    // Mes réservations
+    @GetMapping("/mes-reservations")
+    public String mesReservations(HttpSession session, Model model) {
+        Client clientConnecte = (Client) session.getAttribute("clientConnecte");
+        if (clientConnecte == null) {
+            return "redirect:/connexion";
+        }
+        
+        // TODO: Récupérer les réservations du client
+        model.addAttribute("message", "Fonctionnalité en développement - Vos réservations apparaîtront ici prochainement.");
+        return "dashboard-client";
+    }
+
+    // Mon historique
+    @GetMapping("/mon-historique")
+    public String monHistorique(HttpSession session, Model model) {
+        Client clientConnecte = (Client) session.getAttribute("clientConnecte");
+        if (clientConnecte == null) {
+            return "redirect:/connexion";
+        }
+        
+        model.addAttribute("message", "Fonctionnalité en développement - Votre historique apparaîtra ici prochainement.");
+        return "dashboard-client";
+    }
+
+    // Mon profil
+    @GetMapping("/mon-profil")
+    public String monProfil(HttpSession session, Model model) {
+        Client clientConnecte = (Client) session.getAttribute("clientConnecte");
+        if (clientConnecte == null) {
+            return "redirect:/connexion";
+        }
+        
+        model.addAttribute("message", "Fonctionnalité en développement - Modification du profil bientôt disponible.");
+        return "dashboard-client";
+    }
+
+    // Services
+    @GetMapping("/services")
+    public String services(HttpSession session, Model model) {
+        Client clientConnecte = (Client) session.getAttribute("clientConnecte");
+        if (clientConnecte == null) {
+            return "redirect:/connexion";
+        }
+        
+        model.addAttribute("message", "Fonctionnalité en développement - Nos services seront détaillés ici prochainement.");
+        return "dashboard-client";
+    }
+
+    // Avis
+    @GetMapping("/avis")
+    public String avis(HttpSession session, Model model) {
+        Client clientConnecte = (Client) session.getAttribute("clientConnecte");
+        if (clientConnecte == null) {
+            return "redirect:/connexion";
+        }
+        
+        model.addAttribute("message", "Fonctionnalité en développement - Système d'avis bientôt disponible.");
+        return "dashboard-client";
+    }
+
 }
